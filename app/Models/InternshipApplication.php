@@ -9,23 +9,23 @@ use Carbon\Carbon;
 class InternshipApplication extends Model
 {
     protected $fillable = [
-        'application_code',
-        'nama',
-        'nim',
-        'universitas',
-        'fakultas',
-        'program_studi',
-        'semester',
-        'email',
-        'no_hp',
-        'alamat',
-        'periode_mulai',
-        'periode_selesai',
-        'bidang_diminati',
-        'tujuan_magang',
-        'status',
-        'catatan_admin',
-    ];
+    'application_code',
+    'nama',
+    'nim',
+    'universitas',
+    'fakultas',
+    'program_studi',
+    'semester',
+    'email',
+    'no_hp',
+    'alamat',
+    'periode_mulai',
+    'periode_selesai',
+    'bidang_id',
+    'tujuan_magang',
+    'status',
+    'catatan_admin',
+];
 
     protected $casts = [
         'periode_mulai' => 'date',
@@ -37,6 +37,11 @@ class InternshipApplication extends Model
     {
         return $this->hasOne(ApplicationDocument::class);
     }
+
+    public function bidang(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+{
+    return $this->belongsTo(Bidang::class);
+}
 
     // Generate nomor pengajuan otomatis, contoh: MAG20260001
     public static function generateApplicationCode(): string

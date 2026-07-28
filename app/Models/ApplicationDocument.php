@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ApplicationDocument extends Model
 {
-    protected $fillable = [
-        'internship_application_id',
-        'surat_pengantar',
-        'cv',
-        'proposal',
-    ];
+   protected $fillable = [
+    'internship_application_id',
+    'surat_pengantar',
+    'foto',
+    'cv',
+    'proposal',
+    'portofolio',
+];
 
     public function application(): BelongsTo
     {

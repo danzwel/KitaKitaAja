@@ -1,36 +1,65 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@yield('title', 'Sistem Magang Upelkes Jabar')</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="bg-[#EEF1F5] text-gray-800 font-sans antialiased">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
-
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
-
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
-
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+    <header class="bg-navy text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="{{ route('home') }}" class="flex items-center gap-3">
+    <img src="{{ asset('images/logo.jpg') }}" alt="Logo UPTD Pelatihan Kesehatan" class="w-9 h-9 rounded-full object-cover ring-2 ring-gold/50">
+    <div class="leading-tight">
+                    <p class="font-display font-semibold text-sm">UPTD Pelatihan Kesehatan</p>
+                    <p class="text-[11px] text-gray-300">Dinas Kesehatan Provinsi Jawa Barat</p>
+                </div>
+            </a>
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+                <a href="{{ route('home') }}" class="hover:text-gold-light transition">Beranda</a>
+                <a href="{{ route('persyaratan') }}" class="hover:text-gold-light transition">Persyaratan</a>
+                <a href="{{ route('pengajuan.create') }}" class="hover:text-gold-light transition">Ajukan Magang</a>
+                <a href="{{ route('cek-status') }}" class="hover:text-gold-light transition">Cek Status</a>
+            </nav>
+            <a href="{{ route('pengajuan.create') }}"
+               class="hidden md:inline-block bg-gold text-navy font-semibold text-sm px-4 py-2 rounded-md hover:bg-gold-light transition">
+                Ajukan Sekarang
+            </a>
         </div>
-    </body>
+    </header>
+
+    <main>
+        @yield('content')
+        @stack('scripts')
+    </main>
+
+    <footer class="bg-navy text-gray-300 mt-24">
+        <div class="max-w-6xl mx-auto px-6 py-12 grid md:grid-cols-3 gap-10 text-sm">
+            <div>
+                <p class="font-display font-semibold text-white mb-2">UPTD Pelatihan Kesehatan</p>
+                <p>Dinas Kesehatan Provinsi Jawa Barat</p>
+                <p class="mt-3">Jl. Pasteur No.31, Pasir Kaliki, Kec. Cicendo, Kota Bandung, Jawa Barat 40171</p>
+            </div>
+            <div>
+                <p class="font-display font-semibold text-white mb-2">Kontak</p>
+                <p>upelkes@jabarprov.go.id</p>
+                <p>0224238422</p>
+            </div>
+            <div>
+                <p class="font-display font-semibold text-white mb-2">Tautan</p>
+                <ul class="space-y-1">
+                    <li><a href="{{ route('pengajuan.create') }}" class="hover:text-gold-light">Ajukan Magang</a></li>
+                    <li><a href="{{ route('cek-status') }}" class="hover:text-gold-light">Cek Status Pengajuan</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-white/10 text-center text-xs py-4 text-gray-400">
+            © {{ date('Y') }} UPTD Pelatihan Kesehatan Dinas Kesehatan Provinsi Jawa Barat
+        </div>
+    </footer>
+</body>
 </html>
