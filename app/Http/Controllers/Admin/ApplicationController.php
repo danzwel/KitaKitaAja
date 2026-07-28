@@ -14,6 +14,15 @@ use Illuminate\View\View;
 
 class ApplicationController extends Controller
 {
+    private const SORTABLE_COLUMNS = [
+        'name',
+        'nim',
+        'university',
+        'application_date',
+        'status',
+        'created_at',
+    ];
+
     public function __construct(
         private readonly ApplicationApprovalService $approvalService,
     ) {}
@@ -25,14 +34,16 @@ class ApplicationController extends Controller
     {
         $this->authorize('viewAny', Application::class);
 
+        $sort = in_array($request->input('sort'), self::SORTABLE_COLUMNS, true)
+            ? $request->input('sort')
+            : 'application_date';
+        $direction = $request->input('direction') === 'asc' ? 'asc' : 'desc';
+
         $applications = Application::query()
             ->with('department')
             ->search($request->input('q'))
             ->status($request->input('status'))
-            ->orderBy(
-                $request->input('sort', 'application_date'),
-                $request->input('direction', 'desc')
-            )
+            ->orderBy($sort, $direction)
             ->paginate(10)
             ->withQueryString();
 
@@ -75,6 +86,8 @@ class ApplicationController extends Controller
      */
     public function reject(RejectApplicationRequest $request, Application $application): RedirectResponse
     {
+        $this->authorize('process', $application);
+
         try {
             $this->approvalService->reject(
                 $application,

@@ -20,9 +20,13 @@ class ApplicationApprovalService
      */
     public function approve(Application $application, Admin $admin): array
     {
-        $this->ensureIsProcessable($application);
-
         return DB::transaction(function () use ($application, $admin) {
+            $application = Application::query()
+                ->lockForUpdate()
+                ->findOrFail($application->id);
+
+            $this->ensureIsProcessable($application);
+
             $username = $this->generateUniqueUsername($application->name);
             $plainPassword = Str::password(10, symbols: false);
 
@@ -74,7 +78,7 @@ class ApplicationApprovalService
 
     private function generateUniqueUsername(string $name): string
     {
-        $base = Str::slug($name, '');
+        $base = Str::slug($name, '') ?: 'intern';
         $username = $base;
         $suffix = 1;
 

@@ -14,6 +14,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-heading { font-family: 'Plus Jakarta Sans', sans-serif; }
+        [x-cloak] { display: none !important; }
     </style>
 </head>
 <body class="bg-[#F6F7F4] text-[#1E2A24] antialiased" x-data="{ sidebarOpen: false }">

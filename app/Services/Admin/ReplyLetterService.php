@@ -14,11 +14,17 @@ class ReplyLetterService
     {
         $path = $file->store('reply-letters', 'public');
 
-        return ReplyLetter::create([
-            'intern_id' => $intern->id,
-            'uploaded_by' => $admin->id,
-            'file_path' => $path,
-        ]);
+        try {
+            return ReplyLetter::create([
+                'intern_id' => $intern->id,
+                'uploaded_by' => $admin->id,
+                'file_path' => $path,
+            ]);
+        } catch (\Throwable $exception) {
+            Storage::disk('public')->delete($path);
+
+            throw $exception;
+        }
     }
 
     public function delete(ReplyLetter $replyLetter): void

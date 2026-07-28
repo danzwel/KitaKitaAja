@@ -24,6 +24,13 @@ class UpdateDepartmentRequest extends FormRequest
         ];
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'is_active' => $this->boolean('is_active'),
+        ]);
+    }
+
     public function messages(): array
     {
         return [

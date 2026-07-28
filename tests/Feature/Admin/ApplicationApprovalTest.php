@@ -103,6 +103,18 @@ class ApplicationApprovalTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_application_that_is_already_processed_cannot_be_rejected_again(): void
+    {
+        $admin = Admin::factory()->create();
+        $application = Application::factory()->diterima()->create();
+
+        $this->actingAs($admin, 'admin')
+            ->patch(route('admin.applications.reject', $application), [
+                'rejection_reason' => 'Tidak dapat diproses ulang.',
+            ])
+            ->assertForbidden();
+    }
+
     public function test_guest_cannot_access_applications(): void
     {
         $application = Application::factory()->create();

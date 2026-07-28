@@ -22,7 +22,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // ---------- Guest (belum login) ----------
     Route::middleware('admin.guest')->group(function () {
         Route::get('login', [AdminAuthenticatedSessionController::class, 'create'])->name('login');
-        Route::post('login', [AdminAuthenticatedSessionController::class, 'store']);
+        Route::post('login', [AdminAuthenticatedSessionController::class, 'store'])
+            ->name('login.authenticate');
     });
 
     // ---------- Protected (harus login sebagai admin) ----------

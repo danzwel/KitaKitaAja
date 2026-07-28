@@ -52,6 +52,24 @@ class DepartmentTest extends TestCase
         $this->assertDatabaseHas('departments', ['id' => $department->id, 'name' => 'Baru']);
     }
 
+    public function test_unchecked_active_flag_deactivates_department(): void
+    {
+        $admin = Admin::factory()->create();
+        $department = Department::factory()->create(['is_active' => true]);
+
+        $this->actingAs($admin, 'admin')
+            ->put(route('admin.departments.update', $department), [
+                'name' => $department->name,
+                'description' => $department->description,
+            ])
+            ->assertRedirect(route('admin.departments.index'));
+
+        $this->assertDatabaseHas('departments', [
+            'id' => $department->id,
+            'is_active' => false,
+        ]);
+    }
+
     public function test_admin_can_delete_department_without_relations(): void
     {
         $admin = Admin::factory()->create();

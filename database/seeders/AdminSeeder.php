@@ -15,10 +15,10 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         Admin::updateOrCreate(
-            ['email' => 'admin@uptdpelatihankesehatan.go.id'],
+            ['email' => env('ADMIN_EMAIL', 'admin@uptdpelatihankesehatan.go.id')],
             [
-                'name' => 'Super Admin',
-                'password' => Hash::make('password123'), // WAJIB diganti sebelum production
+                'name' => env('ADMIN_NAME', 'Super Admin'),
+                'password' => Hash::make(env('ADMIN_PASSWORD', 'password123')), // WAJIB diganti sebelum production
                 'email_verified_at' => now(),
             ]
         );

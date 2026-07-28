@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Admin;
+use App\Models\Application;
 use App\Models\Intern;
 
 class InternPolicy
@@ -34,6 +35,7 @@ class InternPolicy
 
     public function uploadReplyLetter(Admin $admin, Intern $intern): bool
     {
-        return $intern->status === Intern::STATUS_AKTIF;
+        return $intern->status === Intern::STATUS_AKTIF
+            && $intern->application?->status === Application::STATUS_DITERIMA;
     }
 }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Intern;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -21,15 +20,18 @@ class DashboardController extends Controller
             'active_interns' => Intern::status(Intern::STATUS_AKTIF)->count(),
         ];
 
-        // Grafik jumlah pengajuan per bulan (12 bulan terakhir)
+        // Grafik jumlah pengajuan per bulan dalam 12 bulan terakhir.
+        $periodStart = now()->startOfMonth()->subMonths(11);
+        $periodEnd = now()->endOfMonth();
         $monthlyApplications = Application::query()
-            ->select(DB::raw('MONTH(application_date) as month'), DB::raw('COUNT(*) as total'))
-            ->whereYear('application_date', now()->year)
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('total', 'month');
+            ->whereBetween('application_date', [$periodStart, $periodEnd])
+            ->get(['application_date'])
+            ->groupBy(fn (Application $application) => $application->application_date->format('Y-m'))
+            ->map->count();
 
-        $chartData = collect(range(1, 12))->map(fn ($month) => $monthlyApplications->get($month, 0));
+        $chartData = collect(range(0, 11))->map(
+            fn (int $offset) => $monthlyApplications->get($periodStart->copy()->addMonths($offset)->format('Y-m'), 0)
+        );
 
         $latestApplications = Application::with('department')
             ->latest('application_date')

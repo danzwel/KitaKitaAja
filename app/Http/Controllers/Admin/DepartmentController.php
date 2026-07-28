@@ -49,6 +49,8 @@ class DepartmentController extends Controller
 
     public function update(UpdateDepartmentRequest $request, Department $department): RedirectResponse
     {
+        $this->authorize('update', $department);
+
         $department->update($request->validated());
 
         return redirect()->route('admin.departments.index')
