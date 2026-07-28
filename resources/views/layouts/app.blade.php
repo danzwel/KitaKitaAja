@@ -19,12 +19,14 @@
                     <p class="text-[11px] text-gray-300">Dinas Kesehatan Provinsi Jawa Barat</p>
                 </div>
             </a>
-            <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
-                <a href="{{ route('home') }}" class="hover:text-gold-light transition">Beranda</a>
-                <a href="{{ route('persyaratan') }}" class="hover:text-gold-light transition">Persyaratan</a>
-                <a href="{{ route('pengajuan.create') }}" class="hover:text-gold-light transition">Ajukan Magang</a>
-                <a href="{{ route('cek-status') }}" class="hover:text-gold-light transition">Cek Status</a>
-            </nav>
+           <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+    <a href="{{ route('home') }}" class="hover:text-gold-light transition">Beranda</a>
+    <a href="{{ route('persyaratan') }}" class="hover:text-gold-light transition">Persyaratan</a>
+    <a href="{{ route('pengajuan.create') }}" class="hover:text-gold-light transition">Ajukan Magang</a>
+    <a href="{{ route('cek-status') }}" class="hover:text-gold-light transition">Cek Status</a>
+    <a href="{{ route('faq') }}" class="hover:text-gold-light transition">FAQ</a>
+    <a href="{{ route('kontak') }}" class="hover:text-gold-light transition">Kontak</a>
+</nav>
             <a href="{{ route('pengajuan.create') }}"
                class="hidden md:inline-block bg-gold text-navy font-semibold text-sm px-4 py-2 rounded-md hover:bg-gold-light transition">
                 Ajukan Sekarang
@@ -51,10 +53,13 @@
             </div>
             <div>
                 <p class="font-display font-semibold text-white mb-2">Tautan</p>
-                <ul class="space-y-1">
-                    <li><a href="{{ route('pengajuan.create') }}" class="hover:text-gold-light">Ajukan Magang</a></li>
-                    <li><a href="{{ route('cek-status') }}" class="hover:text-gold-light">Cek Status Pengajuan</a></li>
-                </ul>
+               <ul class="space-y-1">
+    <li><a href="{{ route('persyaratan') }}" class="hover:text-gold-light">Persyaratan Magang</a></li>
+    <li><a href="{{ route('pengajuan.create') }}" class="hover:text-gold-light">Ajukan Magang</a></li>
+    <li><a href="{{ route('cek-status') }}" class="hover:text-gold-light">Cek Status Pengajuan</a></li>
+    <li><a href="{{ route('faq') }}" class="hover:text-gold-light">FAQ</a></li>
+    <li><a href="{{ route('kontak') }}" class="hover:text-gold-light">Kontak</a></li>
+</ul>
             </div>
         </div>
         <div class="border-t border-white/10 text-center text-xs py-4 text-gray-400">

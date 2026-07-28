@@ -16,6 +16,16 @@ public function persyaratan()
     return view('public.persyaratan');
 }
 
+public function faq()
+{
+    return view('public.faq');
+}
+
+public function kontak()
+{
+    return view('public.kontak');
+}
+
    public function create()
 {
     $bidangs = \App\Models\Bidang::where('is_active', true)->get();

@@ -8,6 +8,8 @@ Route::get('/', [LandingController::class, 'index'])->name('home');
 
 Route::get('/persyaratan', [PengajuanController::class, 'persyaratan'])->name('persyaratan');
 
+Route::get('/faq', [PengajuanController::class, 'faq'])->name('faq');
+Route::get('/kontak', [PengajuanController::class, 'kontak'])->name('kontak');
 Route::get('/pengajuan', [PengajuanController::class, 'create'])->name('pengajuan.create');
 Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
 Route::get('/pengajuan/sukses/{application_code}', [PengajuanController::class, 'success'])->name('pengajuan.success');
