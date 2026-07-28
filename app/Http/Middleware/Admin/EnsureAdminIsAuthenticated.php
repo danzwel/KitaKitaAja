@@ -22,6 +22,11 @@ class EnsureAdminIsAuthenticated
                 ->with('error', 'Silakan login terlebih dahulu.');
         }
 
+        // Pastikan Gate/Policy Laravel memakai user dari guard Admin,
+        // bukan guard web default. Tanpa ini authorize() akan menerima
+        // user null dan seluruh halaman Admin berakhir 403.
+        Auth::shouldUse('admin');
+
         return $next($request);
     }
 }

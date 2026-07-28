@@ -27,7 +27,10 @@
         >
             <div class="flex h-16 items-center gap-3 border-b border-[#E3E5DE] px-5">
                 <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0F6E56] text-white">
-                    <i class="ti ti-shield-check text-lg"></i>
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3 5 6v5c0 4.5 2.9 8.4 7 10 4.1-1.6 7-5.5 7-10V6l-7-3Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4" />
+                    </svg>
                 </div>
                 <div class="leading-tight">
                     <p class="font-heading text-sm font-semibold text-[#1E2A24]">SIM Magang</p>
@@ -50,7 +53,22 @@
                     <a href="{{ route($item['route']) }}"
                        class="flex items-center gap-3 rounded-lg border-l-[3px] px-3 py-2.5 text-sm font-medium transition-colors
                        {{ $active ? 'border-[#C99A3B] bg-[#F6F7F4] text-[#0F6E56]' : 'border-transparent text-[#4B564B] hover:bg-[#F6F7F4]' }}">
-                        <i class="ti {{ $item['icon'] }} text-lg"></i>
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg {{ $active ? 'bg-[#E7F2ED] text-[#0F6E56]' : 'bg-[#F6F7F4] text-[#64705F]' }}">
+                            @switch($item['icon'])
+                                @case('ti-layout-dashboard')
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                                    @break
+                                @case('ti-file-description')
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6Z"/><path stroke-linecap="round" d="M14 3v6h6M8 13h8M8 17h6"/></svg>
+                                    @break
+                                @case('ti-users')
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM21 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                    @break
+                                @case('ti-building')
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M2 21h20M8 7h2M8 11h2M8 15h2M12 7h2M12 11h2M19 21v-7a2 2 0 0 0-2-2h-1"/></svg>
+                                    @break
+                            @endswitch
+                        </span>
                         {{ $item['label'] }}
                     </a>
                 @endforeach
@@ -64,7 +82,7 @@
         <div class="flex min-h-screen flex-1 flex-col">
             <header class="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-[#E3E5DE] bg-white/90 px-4 backdrop-blur lg:px-8">
                 <button @click="sidebarOpen = true" class="text-[#4B564B] lg:hidden" aria-label="Buka menu">
-                    <i class="ti ti-menu-2 text-xl"></i>
+                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
 
                 <h1 class="font-heading hidden text-lg font-semibold text-[#1E2A24] lg:block">{{ $title ?? 'Dashboard' }}</h1>
