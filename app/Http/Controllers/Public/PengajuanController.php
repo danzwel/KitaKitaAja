@@ -83,23 +83,26 @@ public function store(StorePengajuanRequest $request)
         return view('application.cek-status');
     }
 
-    public function checkStatus(Request $request)
-    {
-        $request->validate([
-            'application_code' => ['required', 'string'],
-            'email' => ['required', 'email'],
-        ]);
+public function checkStatus(Request $request)
+{
+    $request->validate([
+        'application_code' => ['required', 'string'],
+        'email' => ['required', 'email'],
+    ]);
 
-        $application = InternshipApplication::where('application_code', $request->application_code)
-            ->where('email', $request->email)
-            ->first();
+    $applicationCode = trim($request->application_code);
+    $email = trim($request->email);
 
-        if (! $application) {
-            return back()->withErrors([
-                'application_code' => 'Nomor pengajuan atau email tidak ditemukan.',
-            ])->withInput();
-        }
+    $application = InternshipApplication::whereRaw('UPPER(application_code) = ?', [strtoupper($applicationCode)])
+        ->whereRaw('LOWER(email) = ?', [strtolower($email)])
+        ->first();
 
-        return view('application.cek-status-result', compact('application'));
+    if (! $application) {
+        return back()->withErrors([
+            'application_code' => 'Nomor pengajuan atau email tidak ditemukan. Pastikan penulisan sudah benar, tanpa spasi tambahan.',
+        ])->withInput();
     }
+
+    return view('application.cek-status-result', compact('application'));
+}
 }
