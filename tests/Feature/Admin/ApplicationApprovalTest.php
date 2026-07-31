@@ -3,8 +3,10 @@
 namespace Tests\Feature\Admin;
 
 use App\Models\Admin;
+use App\Models\Intern;
 use App\Models\InternshipApplication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class ApplicationApprovalTest extends TestCase
@@ -54,6 +56,45 @@ class ApplicationApprovalTest extends TestCase
         $this->assertDatabaseHas('internship_applications', [
             'id' => $application->id,
             'status' => 'diterima',
+        ]);
+
+        $intern = Intern::where('internship_application_id', $application->id)->firstOrFail();
+
+        $this->assertSame($application->nim, $intern->username);
+        $this->assertNotEmpty($intern->temporary_initial_password);
+        $this->assertTrue(Hash::check($intern->temporary_initial_password, $intern->password));
+    }
+
+    public function test_approving_application_twice_does_not_create_duplicate_intern(): void
+    {
+        $admin = Admin::factory()->create();
+        $application = InternshipApplication::factory()->create();
+
+        $this->actingAs($admin, 'admin')
+            ->patch(route('admin.applications.approve', $application))
+            ->assertRedirect();
+
+        $this->actingAs($admin, 'admin')
+            ->patch(route('admin.applications.approve', $application))
+            ->assertRedirect()
+            ->assertSessionHas('error');
+
+        $this->assertSame(1, Intern::where('internship_application_id', $application->id)->count());
+    }
+
+    public function test_username_gets_numeric_suffix_when_nim_is_already_used(): void
+    {
+        $admin = Admin::factory()->create();
+        $application = InternshipApplication::factory()->create(['nim' => 'NIM-UNIK']);
+        Intern::factory()->create(['username' => 'NIM-UNIK']);
+
+        $this->actingAs($admin, 'admin')
+            ->patch(route('admin.applications.approve', $application))
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('interns', [
+            'internship_application_id' => $application->id,
+            'username' => 'NIM-UNIK1',
         ]);
     }
 
