@@ -45,6 +45,11 @@ class InternshipApplication extends Model
     return $this->belongsTo(Bidang::class);
 }
 
+    public function intern(): HasOne
+    {
+        return $this->hasOne(Intern::class, 'internship_application_id');
+    }
+
     // Generate nomor pengajuan otomatis, contoh: MAG20260001
     public static function generateApplicationCode(): string
     {

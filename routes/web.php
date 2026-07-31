@@ -3,6 +3,8 @@
 use App\Http\Controllers\Public\LandingController;
 use App\Http\Controllers\Public\PengajuanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Intern\Auth\AuthenticatedSessionController as InternAuthenticatedSessionController;
+use App\Http\Controllers\Intern\DashboardController as InternDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
@@ -18,6 +20,16 @@ Route::get('/pengajuan/sukses/{application_code}', [PengajuanController::class, 
 
 Route::get('/cek-status', [PengajuanController::class, 'checkStatusForm'])->name('cek-status');
 Route::post('/cek-status', [PengajuanController::class, 'checkStatus'])->name('cek-status.result');
+
+Route::middleware('guest:intern')->group(function () {
+    Route::get('/mahasiswa/login', [InternAuthenticatedSessionController::class, 'create'])->name('intern.login');
+    Route::post('/mahasiswa/login', [InternAuthenticatedSessionController::class, 'store']);
+});
+
+Route::middleware('auth:intern')->group(function () {
+    Route::get('/mahasiswa/dashboard', InternDashboardController::class)->name('intern.dashboard');
+    Route::post('/mahasiswa/logout', [InternAuthenticatedSessionController::class, 'destroy'])->name('intern.logout');
+});
 
 Route::view('/dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

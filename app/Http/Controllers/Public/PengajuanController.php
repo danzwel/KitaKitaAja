@@ -93,7 +93,8 @@ public function checkStatus(Request $request)
     $applicationCode = trim($request->application_code);
     $email = trim($request->email);
 
-    $application = InternshipApplication::whereRaw('UPPER(application_code) = ?', [strtoupper($applicationCode)])
+    $application = InternshipApplication::with('intern')
+        ->whereRaw('UPPER(application_code) = ?', [strtoupper($applicationCode)])
         ->whereRaw('LOWER(email) = ?', [strtolower($email)])
         ->first();
 

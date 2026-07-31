@@ -3,8 +3,10 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\ApplicationAlreadyProcessedException;
+use App\Models\Intern;
 use App\Models\InternshipApplication;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ApplicationApprovalService
 {
@@ -24,8 +26,26 @@ class ApplicationApprovalService
                 'status' => 'diterima',
             ]);
 
-            // TODO: Buat akun Intern setelah model Intern resmi tersedia.
-            return $application->fresh();
+            $intern = Intern::query()
+                ->where('internship_application_id', $application->id)
+                ->first();
+
+            if (! $intern) {
+                $initialPassword = Str::password(random_int(8, 10), symbols: false);
+
+                Intern::create([
+                    'internship_application_id' => $application->id,
+                    'name' => $application->nama,
+                    'university' => $application->universitas,
+                    'period' => $application->periode_mulai->format('d M Y').' - '.$application->periode_selesai->format('d M Y'),
+                    'status' => Intern::STATUS_AKTIF,
+                    'username' => $this->generateUsername($application->nim),
+                    'password' => $initialPassword,
+                    'temporary_initial_password' => $initialPassword,
+                ]);
+            }
+
+            return $application->fresh(['intern']);
         });
     }
 
@@ -55,5 +75,19 @@ class ApplicationApprovalService
         if (! in_array($application->status, ['menunggu_verifikasi', 'diproses'], true)) {
             throw new ApplicationAlreadyProcessedException();
         }
+    }
+
+    private function generateUsername(string $nim): string
+    {
+        $baseUsername = trim($nim);
+        $username = $baseUsername;
+        $suffix = 0;
+
+        while (Intern::withTrashed()->where('username', $username)->exists()) {
+            $suffix++;
+            $username = $baseUsername.$suffix;
+        }
+
+        return $username;
     }
 }
