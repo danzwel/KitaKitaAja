@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin.auth' => EnsureAdminIsAuthenticated::class,
             'admin.guest' => RedirectIfAdminAuthenticated::class,
+            'intern.password.change' => \App\Http\Middleware\EnsureInternHasChangedPassword::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
