@@ -5,6 +5,8 @@ use App\Http\Controllers\Public\PengajuanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Intern\Auth\AuthenticatedSessionController as InternAuthenticatedSessionController;
 use App\Http\Controllers\Intern\DashboardController as InternDashboardController;
+use App\Http\Controllers\Intern\ForceChangePasswordController;
+use App\Http\Controllers\Intern\ProfileController as InternProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
@@ -27,7 +29,20 @@ Route::middleware('guest:intern')->group(function () {
 });
 
 Route::middleware('auth:intern')->group(function () {
-    Route::get('/mahasiswa/dashboard', InternDashboardController::class)->name('intern.dashboard');
+    // Rute yang hanya bisa diakses setelah ganti password
+    Route::middleware('intern.password.change')->group(function () {
+        Route::get('/mahasiswa/dashboard', InternDashboardController::class)->name('intern.dashboard');
+        
+        Route::get('/mahasiswa/profil', [InternProfileController::class, 'edit'])->name('intern.profile.edit');
+        Route::patch('/mahasiswa/profil', [InternProfileController::class, 'update'])->name('intern.profile.update');
+        Route::put('/mahasiswa/profil/password', [InternProfileController::class, 'updatePassword'])->name('intern.profile.password');
+        Route::post('/mahasiswa/profil/foto', [InternProfileController::class, 'uploadPhoto'])->name('intern.profile.photo');
+    });
+
+    // Rute Force Change Password
+    Route::get('/mahasiswa/ganti-password', [ForceChangePasswordController::class, 'create'])->name('intern.password.change');
+    Route::post('/mahasiswa/ganti-password', [ForceChangePasswordController::class, 'store']);
+
     Route::post('/mahasiswa/logout', [InternAuthenticatedSessionController::class, 'destroy'])->name('intern.logout');
 });
 

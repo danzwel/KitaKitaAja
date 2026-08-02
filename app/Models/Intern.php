@@ -25,6 +25,10 @@ class Intern extends Authenticatable
         'username',
         'password',
         'temporary_initial_password',
+        'photo',
+        'email',
+        'phone',
+        'address',
     ];
 
     protected $hidden = ['password', 'temporary_initial_password'];

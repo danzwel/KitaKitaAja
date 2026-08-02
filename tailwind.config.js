@@ -10,19 +10,22 @@ export default {
     theme: {
         extend: {
             colors: {
-                navy: {
-                    DEFAULT: '#0B1F3D',
-                    light: '#12305C',
-                },
-                gold: {
-                    DEFAULT: '#B8912F',
-                    light: '#D9B65C',
-                },
-                health: {
-                    DEFAULT: '#1F7A4D',
-                    dark: '#155C39',
-                },
-            },
+    navy: {
+        DEFAULT: '#0B1F3D',
+        light: '#12305C',
+    },
+    gold: {
+        DEFAULT: '#B8912F',
+        light: '#D9B65C',
+    },
+    health: {
+        DEFAULT: '#1F7A4D',
+        dark: '#155C39',
+    },
+    orange: {
+        DEFAULT: '#FF7602',
+    },
+},
             fontFamily: {
                 sans: ['Inter', ...defaultTheme.fontFamily.sans],
                 display: ['Poppins', ...defaultTheme.fontFamily.sans],

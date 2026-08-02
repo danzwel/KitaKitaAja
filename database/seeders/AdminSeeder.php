@@ -9,18 +9,38 @@ use Illuminate\Support\Facades\Hash;
 class AdminSeeder extends Seeder
 {
     /**
-     * Seeder akun Admin default untuk keperluan development/testing.
+     * Seeder akun Admin menggunakan data real/contoh pegawai.
      * Jalankan: php artisan db:seed --class=AdminSeeder
      */
     public function run(): void
     {
-        Admin::updateOrCreate(
-            ['email' => env('ADMIN_EMAIL', 'admin@uptdpelatihankesehatan.go.id')],
+        $admins = [
             [
-                'name' => env('ADMIN_NAME', 'Super Admin'),
-                'password' => Hash::make(env('ADMIN_PASSWORD', 'password123')), // WAJIB diganti sebelum production
-                'email_verified_at' => now(),
+                'name' => 'Drg. Hj. Rini Kartikawati, M.Kes',
+                'email' => 'rini.kartikawati@uptdpelatihankesehatan.go.id',
+                'password' => Hash::make('password123'),
+            ],
+            [
+                'name' => 'Asep Sutisna, S.Kep., Ners',
+                'email' => 'asep.sutisna@uptdpelatihankesehatan.go.id',
+                'password' => Hash::make('password123'),
+            ],
+            [
+                'name' => 'Dra. Nengsih Haryati',
+                'email' => 'nengsih.haryati@uptdpelatihankesehatan.go.id',
+                'password' => Hash::make('password123'),
             ]
-        );
+        ];
+
+        foreach ($admins as $admin) {
+            Admin::updateOrCreate(
+                ['email' => $admin['email']],
+                [
+                    'name' => $admin['name'],
+                    'password' => $admin['password'],
+                    'email_verified_at' => now(),
+                ]
+            );
+        }
     }
 }
