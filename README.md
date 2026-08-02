@@ -1,59 +1,192 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SIM Magang — Sistem Informasi Manajemen Magang
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem Informasi Manajemen Magang untuk **UPTD Pelatihan Kesehatan Dinas Kesehatan Provinsi Jawa Barat**.
 
-## About Laravel
+Dibangun menggunakan framework **Laravel 12** dengan **Blade**, **Tailwind CSS**, dan **Vite**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 👥 Tim Pengembang
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Nama | Peran | Modul |
+|------|-------|-------|
+| **Sofi Aura Fatimah** | Frontend | Landing Page & Form Pendaftaran Mahasiswa |
+| **Daniel Desmanto Nugraha** | Backend | Super Admin (Manajemen Akun, Kelola Pengajuan, Auto-Approval) |
+| **Raihan Pratama** | Full-Stack | Login Mahasiswa, Dashboard Mahasiswa, Profil Mahasiswa |
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 📋 Fitur Utama
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🌐 Landing Page (Sofi)
+- Halaman utama dengan informasi magang
+- Formulir pendaftaran / pengajuan magang online
+- Cek status pengajuan dengan kode aplikasi
+- Halaman persyaratan, FAQ, dan kontak
 
-## Laravel Sponsors
+### 🔐 Super Admin (Daniel)
+- Login admin terpisah dengan guard `admin`
+- Dashboard admin dengan statistik dan grafik pengajuan
+- Kelola pengajuan magang (verifikasi, terima, tolak)
+- Manajemen mahasiswa magang aktif
+- Manajemen bidang/departemen magang
+- Auto-create akun mahasiswa saat pengajuan disetujui
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 🎓 Portal Mahasiswa (Raihan)
+- **Login Mahasiswa** — Autentikasi menggunakan NIM/username & password
+- **Force Change Password** — Wajib ganti password saat login pertama kali
+- **Dashboard** — Menampilkan profil singkat, statistik absensi (dummy), dan menu cepat
+- **Profil Mahasiswa** — Edit informasi kontak, upload foto profil, ganti password
+- Middleware `EnsureInternHasChangedPassword` untuk keamanan
+- Guard terpisah (`intern`) dari admin dan user default
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🛠️ Teknologi
 
-## Contributing
+| Komponen | Teknologi |
+|----------|-----------|
+| Framework | Laravel 12 |
+| Frontend | Blade Templates, Tailwind CSS |
+| Build Tool | Vite |
+| Database | SQLite (development) / MySQL (production) |
+| Authentication | Laravel Breeze + Custom Guards |
+| Icons | Tabler Icons (CDN) |
+| Fonts | Inter, Plus Jakarta Sans, Poppins |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## ⚙️ Instalasi & Setup
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Prasyarat
+- PHP >= 8.2
+- Composer
+- Node.js >= 18 & npm
 
-## Security Vulnerabilities
+### Langkah Instalasi
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+# 1. Clone repository
+git clone https://github.com/danzwel/KitaKitaAja.git
+cd KitaKitaAja
 
-## License
+# 2. Install dependensi PHP
+composer install
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# 3. Install dependensi Node.js
+npm install
+
+# 4. Salin file environment
+cp .env.example .env
+
+# 5. Generate application key
+php artisan key:generate
+
+# 6. Jalankan migrasi & seeder
+php artisan migrate --seed
+
+# 7. Buat symlink storage (untuk upload foto)
+php artisan storage:link
+
+# 8. Jalankan development server
+php artisan serve       # Terminal 1
+npm run dev             # Terminal 2
+```
+
+Akses aplikasi di **http://localhost:8000**
+
+---
+
+## 🔑 Akun Default (Seeder)
+
+### Admin
+| Nama | Email | Password |
+|------|-------|----------|
+| Drg. Hj. Rini Kartikawati | `rini.kartikawati@uptdpelatihankesehatan.go.id` | `password123` |
+| Asep Sutisna, S.Kep. | `asep.sutisna@uptdpelatihankesehatan.go.id` | `password123` |
+| Dra. Nengsih Haryati | `nengsih.haryati@uptdpelatihankesehatan.go.id` | `password123` |
+
+Akses: **http://localhost:8000/admin/login**
+
+### Mahasiswa Magang
+| Nama | NIM (Username) | Password | Bidang |
+|------|----------------|----------|--------|
+| Raihan Maulana Fadly | `2211102441` | `password123` | Teknologi Informasi |
+| Sofia Risa Aulia | `2211102358` | `password123` | Teknologi Informasi |
+| Daniel Desmanto Nugraha | `2211102390` | `password123` | Teknologi Informasi |
+| Aisyah Nurhaliza | `2311101045` | `password123` | Rekam Medis |
+| Muhammad Rizky Fauzan | `2111201078` | `password123` | Farmasi |
+| Putri Wulandari | `2211303112` | `password123` | Keperawatan |
+| Ahmad Fadilah | `2011104090` | `password123` | Kesehatan Masyarakat |
+
+Akses: **http://localhost:8000/mahasiswa/login**
+
+> ⚠️ Semua akun mahasiswa akan diminta **wajib ganti password** saat login pertama kali.
+
+---
+
+## 📁 Struktur Proyek (Modul Mahasiswa)
+
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   └── Intern/
+│   │       ├── Auth/
+│   │       │   └── AuthenticatedSessionController.php  # Login & Logout
+│   │       ├── DashboardController.php                 # Dashboard
+│   │       ├── ForceChangePasswordController.php       # Ganti password pertama
+│   │       └── ProfileController.php                   # Edit profil & password
+│   └── Middleware/
+│       └── EnsureInternHasChangedPassword.php          # Cek password sementara
+├── Models/
+│   └── Intern.php                                      # Model mahasiswa magang
+│
+resources/views/
+├── components/
+│   └── intern/layouts/
+│       └── app.blade.php                               # Layout dashboard mahasiswa
+├── intern/
+│   ├── auth/
+│   │   ├── login.blade.php                             # Halaman login
+│   │   └── force-change-password.blade.php             # Halaman ganti password
+│   ├── dashboard.blade.php                             # Dashboard mahasiswa
+│   └── profile/
+│       └── edit.blade.php                              # Halaman edit profil
+│
+routes/
+└── web.php                                             # Route mahasiswa (prefix /mahasiswa)
+```
+
+---
+
+## 🔒 Alur Autentikasi Mahasiswa
+
+```
+Admin menyetujui pengajuan
+        │
+        ▼
+Akun intern otomatis dibuat (username = NIM, password acak)
+        │
+        ▼
+Mahasiswa login di /mahasiswa/login
+        │
+        ▼
+Middleware cek: temporary_initial_password masih ada?
+        │
+   ┌────┴────┐
+   Ya       Tidak
+   │         │
+   ▼         ▼
+Redirect   Akses
+ke ganti   Dashboard
+password   & Profil
+```
+
+---
+
+## 📄 Lisensi
+
+Proyek ini dibuat untuk keperluan akademik.
+
+© 2026 UPTD Pelatihan Kesehatan Dinas Kesehatan Provinsi Jawa Barat

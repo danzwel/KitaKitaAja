@@ -15,4 +15,9 @@ class Department extends Model
 
     public function applications() { return $this->hasMany(Application::class); }
     public function interns() { return $this->hasMany(Intern::class); }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 }
