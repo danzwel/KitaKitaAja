@@ -27,10 +27,12 @@
     <a href="{{ route('faq') }}" class="hover:text-gold-light transition">FAQ</a>
     <a href="{{ route('kontak') }}" class="hover:text-gold-light transition">Kontak</a>
 </nav>
-            <a href="{{ route('pengajuan.create') }}"
-               class="hidden md:inline-block bg-gold text-navy font-semibold text-sm px-4 py-2 rounded-md hover:bg-gold-light transition">
-                Ajukan Sekarang
-            </a>
+            @unless(request()->routeIs('pengajuan.create'))
+    <a href="{{ route('pengajuan.create') }}"
+       class="hidden md:inline-block bg-gold text-navy font-semibold text-sm px-4 py-2 rounded-md hover:bg-gold-light transition">
+        Ajukan Sekarang
+    </a>
+@endunless
         </div>
     </header>
 

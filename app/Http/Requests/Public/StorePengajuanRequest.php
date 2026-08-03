@@ -47,4 +47,38 @@ class StorePengajuanRequest extends FormRequest
             'bidang_id.required' => 'Silakan pilih bidang yang diminati.',
         ];
     }
+
+    public function withValidator($validator)
+{
+    $validator->after(function ($validator) {
+        $this->validateFileContent($validator, 'surat_pengantar', ['application/pdf']);
+        $this->validateFileContent($validator, 'foto', ['image/jpeg', 'image/png']);
+
+        if ($this->hasFile('cv')) {
+            $this->validateFileContent($validator, 'cv', ['application/pdf']);
+        }
+        if ($this->hasFile('proposal')) {
+            $this->validateFileContent($validator, 'proposal', ['application/pdf']);
+        }
+        if ($this->hasFile('portofolio')) {
+            $this->validateFileContent($validator, 'portofolio', [
+                'application/pdf', 'image/jpeg', 'image/png',
+            ]);
+        }
+    });
+}
+
+private function validateFileContent($validator, string $field, array $allowedMimes): void
+{
+    if (! $this->hasFile($field)) {
+        return;
+    }
+
+    $file = $this->file($field);
+    $realMime = $file->getMimeType();
+
+    if (! in_array($realMime, $allowedMimes, true)) {
+        $validator->errors()->add($field, 'Isi file tidak sesuai dengan format yang diizinkan (terdeteksi: '.$realMime.').');
+    }
+}
 }
