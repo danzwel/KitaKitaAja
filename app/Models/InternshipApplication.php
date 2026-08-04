@@ -55,11 +55,21 @@ class InternshipApplication extends Model
     {
         $year = Carbon::now()->format('Y');
 
-        $lastCode = self::where('application_code', 'like', "MAG{$year}%")
-            ->orderByDesc('id')
-            ->value('application_code');
+        // Do not rely on the latest row ID. Seeders/imports can insert an older
+        // code after a newer one, which would make the old implementation
+        // generate an already-existing application code.
+        $codes = self::where('application_code', 'like', "MAG{$year}%")
+            ->lockForUpdate()
+            ->pluck('application_code');
 
-        $lastNumber = $lastCode ? (int) substr($lastCode, -4) : 0;
+        $lastNumber = $codes->reduce(function (int $highest, string $code): int {
+            if (preg_match('/(\d{4})$/', $code, $matches) !== 1) {
+                return $highest;
+            }
+
+            return max($highest, (int) $matches[1]);
+        }, 0);
+
         $nextNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
 
         return "MAG{$year}{$nextNumber}";
