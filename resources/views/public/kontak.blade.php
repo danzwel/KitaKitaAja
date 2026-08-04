@@ -15,7 +15,8 @@
         </div>
     </section>
 
-    <div class="grid md:grid-cols-3 gap-5">
+    <div class="max-w-5xl mx-auto px-6 -mt-8 pb-24">
+        <div class="grid md:grid-cols-3 gap-5">
 
             <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 flex flex-col">
                 <div class="w-11 h-11 rounded-lg bg-navy/5 flex items-center justify-center text-navy mb-4">
@@ -37,7 +38,8 @@
                     </svg>
                 </a>
             </div>
-<div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 flex flex-col">
+
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 flex flex-col">
                 <div class="w-11 h-11 rounded-lg bg-health/10 flex items-center justify-center text-health mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -77,7 +79,7 @@
         <div class="bg-navy text-white rounded-2xl p-8 mt-8">
             <div class="flex items-center gap-3 mb-6">
                 <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-gold-light">
-                    <svg xmlns="http://www:w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
