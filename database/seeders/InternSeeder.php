@@ -7,6 +7,9 @@ use App\Models\Department;
 use App\Models\Intern;
 use App\Models\InternshipApplication;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class InternSeeder extends Seeder
@@ -136,7 +139,6 @@ class InternSeeder extends Seeder
             $application = InternshipApplication::updateOrCreate(
                 ['nim' => $data['nim']],
                 [
-                    'application_code' => InternshipApplication::generateApplicationCode(),
                     'nama'            => $data['nama'],
                     'universitas'     => $data['universitas'],
                     'fakultas'        => $data['fakultas'],
@@ -155,7 +157,7 @@ class InternSeeder extends Seeder
 
             // Buat akun intern (password default: password123)
             $initialPassword = 'password123';
-            Intern::updateOrCreate(
+            DB::table('interns')->updateOrInsert(
                 ['username' => $data['nim']],
                 [
                     'internship_application_id' => $application->id,
@@ -164,11 +166,13 @@ class InternSeeder extends Seeder
                     'university'                => $data['universitas'],
                     'period'                    => '01 Agustus 2026 - 31 Desember 2026',
                     'status'                    => 'aktif',
-                    'password'                  => $initialPassword,
-                    'temporary_initial_password' => $initialPassword,
+                    'password'                  => Hash::make($initialPassword),
+                    'temporary_initial_password' => Crypt::encryptString($initialPassword),
                     'email'                     => $data['email'],
                     'phone'                     => $data['no_hp'],
                     'address'                   => $data['alamat'],
+                    'updated_at'                => now(),
+                    'created_at'                => now(),
                 ]
             );
         }
