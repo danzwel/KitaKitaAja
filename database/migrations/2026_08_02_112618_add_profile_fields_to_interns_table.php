@@ -12,10 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('interns', function (Blueprint $table) {
-            $table->string('photo')->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
-            $table->text('address')->nullable();
+            if (! Schema::hasColumn('interns', 'photo')) {
+                $table->string('photo')->nullable();
+            }
+
+            if (! Schema::hasColumn('interns', 'email')) {
+                $table->string('email')->nullable();
+            }
+
+            if (! Schema::hasColumn('interns', 'phone')) {
+                $table->string('phone')->nullable();
+            }
+
+            if (! Schema::hasColumn('interns', 'address')) {
+                $table->text('address')->nullable();
+            }
         });
     }
 
@@ -25,7 +36,14 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('interns', function (Blueprint $table) {
-            $table->dropColumn(['photo', 'email', 'phone', 'address']);
+            $columns = array_values(array_filter(
+                ['photo', 'email', 'phone', 'address'],
+                fn (string $column): bool => Schema::hasColumn('interns', $column),
+            ));
+
+            if ($columns !== []) {
+                $table->dropColumn($columns);
+            }
         });
     }
 };

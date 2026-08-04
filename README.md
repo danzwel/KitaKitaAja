@@ -49,7 +49,7 @@ Dibangun menggunakan framework **Laravel 12** dengan **Blade**, **Tailwind CSS**
 | Framework | Laravel 12 |
 | Frontend | Blade Templates, Tailwind CSS |
 | Build Tool | Vite |
-| Database | SQLite (development) / MySQL (production) |
+| Database | MySQL (`kitakitaaja`) |
 | Authentication | Laravel Breeze + Custom Guards |
 | Icons | Tabler Icons (CDN) |
 | Fonts | Inter, Plus Jakarta Sans, Poppins |
@@ -62,6 +62,7 @@ Dibangun menggunakan framework **Laravel 12** dengan **Blade**, **Tailwind CSS**
 - PHP >= 8.2
 - Composer
 - Node.js >= 18 & npm
+- MySQL 8+ atau MariaDB yang berjalan pada `127.0.0.1:3306`
 
 ### Langkah Instalasi
 
@@ -82,13 +83,16 @@ cp .env.example .env
 # 5. Generate application key
 php artisan key:generate
 
-# 6. Jalankan migrasi & seeder
+# 6. Buat database MySQL bernama kitakitaaja jika belum ada
+#    CREATE DATABASE kitakitaaja CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+# 7. Jalankan migrasi & seeder
 php artisan migrate --seed
 
-# 7. Buat symlink storage (untuk upload foto)
+# 8. Buat symlink storage (untuk upload foto)
 php artisan storage:link
 
-# 8. Jalankan development server
+# 9. Jalankan development server
 php artisan serve       # Terminal 1
 npm run dev             # Terminal 2
 ```
