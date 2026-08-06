@@ -21,16 +21,6 @@
     <main class="mx-auto flex min-h-screen w-full max-w-[1280px] items-center p-0 sm:p-6 lg:p-8">
         <div class="grid min-h-[680px] w-full overflow-hidden bg-white shadow-2xl shadow-[#0C2340]/10 sm:rounded-[2rem] lg:grid-cols-[0.9fr_1.1fr]">
             <section class="flex flex-col justify-center px-6 py-10 sm:px-12 lg:px-16">
-                <div class="mb-10 flex items-center gap-3">
-                    <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#0C2340] text-white shadow-lg shadow-[#0C2340]/20">
-                        <i class="ti ti-shield-check text-2xl"></i>
-                    </div>
-                    <div>
-                        <p class="font-heading text-base font-bold text-[#0C2340]">SIM Magang</p>
-                        <p class="text-xs text-slate-500">Portal Administrator</p>
-                    </div>
-                </div>
-
                 <div class="mb-8">
                     <p class="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-[#0C2340]/70">Selamat datang kembali</p>
                     <h1 class="font-heading text-4xl font-bold leading-tight text-[#0C2340] sm:text-5xl">Masuk ke<br><span class="text-[#1E5AA8]">Dashboard Admin</span></h1>
@@ -55,5 +45,19 @@
         </div>
     </main>
 
+    <script>
+        document.querySelectorAll('[data-password-toggle]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const input = document.getElementById(button.dataset.passwordToggle);
+                const isVisible = input.type === 'text';
+
+                input.type = isVisible ? 'password' : 'text';
+                button.setAttribute('aria-label', isVisible ? 'Tampilkan password' : 'Sembunyikan password');
+                button.querySelector('[data-password-icon="eye"]').classList.toggle('hidden', !isVisible);
+                button.querySelector('[data-password-icon="eye-off"]').classList.toggle('hidden', isVisible);
+            });
+        });
+    </script>
 </body>
 </html>
+

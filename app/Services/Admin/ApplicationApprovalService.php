@@ -13,9 +13,9 @@ class ApplicationApprovalService
     /**
      * Terima pengajuan secara atomik.
      */
-    public function approve(InternshipApplication $application): InternshipApplication
+    public function approve(InternshipApplication $application, ?string $note = null): InternshipApplication
     {
-        return DB::transaction(function () use ($application): InternshipApplication {
+        return DB::transaction(function () use ($application, $note): InternshipApplication {
             $application = InternshipApplication::query()
                 ->lockForUpdate()
                 ->findOrFail($application->id);
@@ -24,6 +24,7 @@ class ApplicationApprovalService
 
             $application->update([
                 'status' => 'diterima',
+                'catatan_admin' => $note,
             ]);
 
             $intern = Intern::query()

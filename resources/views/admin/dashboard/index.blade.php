@@ -4,12 +4,12 @@
     <div class="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
         @php
             $cards = [
-                ['label' => 'Total Pengajuan', 'value' => $stats['total_applications'], 'icon' => 'ti-file-description', 'accent' => 'text-[#0F6E56] bg-[#E7F2ED]'],
+                ['label' => 'Total Pengajuan', 'value' => $stats['total_applications'], 'icon' => 'ti-file-description', 'accent' => 'text-[#0C2340] bg-[#E8EEF5]'],
                 ['label' => 'Menunggu Verifikasi', 'value' => $stats['pending'], 'icon' => 'ti-clock', 'accent' => 'text-[#5B6660] bg-[#EFF1EC]'],
                 ['label' => 'Diproses', 'value' => $stats['processed'], 'icon' => 'ti-loader-2', 'accent' => 'text-[#8A661E] bg-[#FBF3E1]'],
-                ['label' => 'Diterima', 'value' => $stats['accepted'], 'icon' => 'ti-circle-check', 'accent' => 'text-[#0B5443] bg-[#E7F2ED]'],
+                ['label' => 'Diterima', 'value' => $stats['accepted'], 'icon' => 'ti-circle-check', 'accent' => 'text-[#081A30] bg-[#E8EEF5]'],
                 ['label' => 'Ditolak', 'value' => $stats['rejected'], 'icon' => 'ti-circle-x', 'accent' => 'text-[#9B3A3A] bg-[#FBEAEA]'],
-                ['label' => 'Mahasiswa Aktif', 'value' => $stats['active_interns'], 'icon' => 'ti-users', 'accent' => 'text-[#0F6E56] bg-[#E7F2ED]'],
+                ['label' => 'Mahasiswa Aktif', 'value' => $stats['active_interns'], 'icon' => 'ti-users', 'accent' => 'text-[#0C2340] bg-[#E8EEF5]'],
             ];
         @endphp
 
@@ -63,7 +63,7 @@
                 datasets: [{
                     label: 'Jumlah Pengajuan',
                     data: @json($chartData),
-                    backgroundColor: '#0F6E56',
+                    backgroundColor: '#0C2340',
                     borderRadius: 6,
                     maxBarThickness: 28,
                 }]
@@ -80,3 +80,4 @@
     </script>
     @endpush
 </x-admin.layouts.app>
+

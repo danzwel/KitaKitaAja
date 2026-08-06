@@ -5,10 +5,10 @@
             <form method="GET" class="relative flex-1 sm:max-w-xs">
                 <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-[#8B958A]"></i>
                 <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari bidang..."
-                       class="w-full rounded-lg border border-[#E3E5DE] py-2.5 pl-10 pr-3 text-sm focus:border-[#0F6E56] focus:outline-none focus:ring-1 focus:ring-[#0F6E56]">
+                       class="w-full rounded-lg border border-[#E3E5DE] py-2.5 pl-10 pr-3 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">
             </form>
 
-            <a href="{{ route('admin.departments.create') }}" class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0F6E56] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#0B5443]">
+            <a href="{{ route('admin.departments.create') }}" class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0C2340] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#081A30]">
                 <i class="ti ti-plus"></i> Tambah Bidang
             </a>
         </div>
@@ -30,8 +30,8 @@
                             <td class="py-3 pr-4 text-[#4B564B]">{{ $bidang->requires_portfolio ? 'Diperlukan' : 'Tidak diperlukan' }}</td>
                             <td class="py-3 pr-4">
                                 @if ($bidang->is_active)
-                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-[#E7F2ED] px-2.5 py-1 text-xs font-medium text-[#0B5443]">
-                                        <span class="h-1.5 w-1.5 rounded-full bg-[#0F6E56]"></span> Aktif
+                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-[#E8EEF5] px-2.5 py-1 text-xs font-medium text-[#081A30]">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-[#0C2340]"></span> Aktif
                                     </span>
                                 @else
                                     <span class="inline-flex items-center gap-1.5 rounded-full bg-[#EFF1EC] px-2.5 py-1 text-xs font-medium text-[#5B6660]">
@@ -68,3 +68,4 @@
         </div>
     </x-admin.card>
 </x-admin.layouts.app>
+

@@ -5,17 +5,17 @@
             <div class="relative flex-1">
                 <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-[#8B958A]"></i>
                 <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama atau universitas..."
-                       class="w-full rounded-lg border border-[#E3E5DE] py-2.5 pl-10 pr-3 text-sm focus:border-[#0F6E56] focus:outline-none focus:ring-1 focus:ring-[#0F6E56]">
+                       class="w-full rounded-lg border border-[#E3E5DE] py-2.5 pl-10 pr-3 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">
             </div>
 
             <select name="status" onchange="this.form.submit()"
-                    class="rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0F6E56] focus:outline-none focus:ring-1 focus:ring-[#0F6E56]">
+                    class="rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">
                 <option value="">Semua Status</option>
                 <option value="aktif" @selected(request('status') === 'aktif')>Aktif</option>
                 <option value="selesai" @selected(request('status') === 'selesai')>Selesai</option>
             </select>
 
-            <button type="submit" class="rounded-lg bg-[#0F6E56] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#0B5443]">
+            <button type="submit" class="rounded-lg bg-[#0C2340] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#081A30]">
                 Terapkan
             </button>
         </form>
@@ -72,3 +72,4 @@
         </div>
     </x-admin.card>
 </x-admin.layouts.app>
+

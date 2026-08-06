@@ -32,7 +32,7 @@
                                 Surat Balasan — {{ $letter->created_at->translatedFormat('d M Y') }}
                             </div>
                             <div class="flex items-center gap-3">
-                                <a href="{{ Storage::url($letter->file_path) }}" target="_blank" class="text-xs font-medium text-[#0F6E56] hover:underline">Lihat</a>
+                                <a href="{{ Storage::url($letter->file_path) }}" target="_blank" class="text-xs font-medium text-[#0C2340] hover:underline">Lihat</a>
                                 <form method="POST" action="{{ route('admin.reply-letters.destroy', $letter) }}" onsubmit="return confirm('Hapus surat balasan ini?');">
                                     @csrf
                                     @method('DELETE')
@@ -49,8 +49,8 @@
                     <form method="POST" action="{{ route('admin.reply-letters.store', $intern) }}" enctype="multipart/form-data" class="flex flex-col gap-3 sm:flex-row sm:items-center">
                         @csrf
                         <input type="file" name="file" accept="application/pdf" required
-                               class="min-w-0 flex-1 rounded-lg border border-[#E3E5DE] px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-[#E7F2ED] file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-[#0B5443]">
-                        <button type="submit" class="whitespace-nowrap rounded-lg bg-[#0F6E56] px-4 py-2 text-sm font-medium text-white hover:bg-[#0B5443]">
+                               class="min-w-0 flex-1 rounded-lg border border-[#E3E5DE] px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-[#E8EEF5] file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-[#081A30]">
+                        <button type="submit" class="whitespace-nowrap rounded-lg bg-[#0C2340] px-4 py-2 text-sm font-medium text-white hover:bg-[#081A30]">
                             <i class="ti ti-upload"></i> Unggah
                         </button>
                     </form>
@@ -78,3 +78,4 @@
         </div>
     </div>
 </x-admin.layouts.app>
+
