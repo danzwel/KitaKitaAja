@@ -48,7 +48,9 @@ class ApplicationApprovalTest extends TestCase
         $application = InternshipApplication::factory()->create(['nama' => 'Citra Lestari']);
 
         $response = $this->actingAs($admin, 'admin')
-            ->patch(route('admin.applications.approve', $application));
+            ->patch(route('admin.applications.approve', $application), [
+                'approval_note' => 'Diterima sesuai kebutuhan dan periode magang.',
+            ]);
 
         $response->assertRedirect();
         $response->assertSessionHas('success');
@@ -56,6 +58,7 @@ class ApplicationApprovalTest extends TestCase
         $this->assertDatabaseHas('internship_applications', [
             'id' => $application->id,
             'status' => 'diterima',
+            'catatan_admin' => 'Diterima sesuai kebutuhan dan periode magang.',
         ]);
 
         $intern = Intern::where('internship_application_id', $application->id)->firstOrFail();
@@ -71,11 +74,15 @@ class ApplicationApprovalTest extends TestCase
         $application = InternshipApplication::factory()->create();
 
         $this->actingAs($admin, 'admin')
-            ->patch(route('admin.applications.approve', $application))
+            ->patch(route('admin.applications.approve', $application), [
+                'approval_note' => 'Diterima sesuai kebutuhan dan periode magang.',
+            ])
             ->assertRedirect();
 
         $this->actingAs($admin, 'admin')
-            ->patch(route('admin.applications.approve', $application))
+            ->patch(route('admin.applications.approve', $application), [
+                'approval_note' => 'Diterima sesuai kebutuhan dan periode magang.',
+            ])
             ->assertRedirect()
             ->assertSessionHas('error');
 
@@ -89,7 +96,9 @@ class ApplicationApprovalTest extends TestCase
         Intern::factory()->create(['username' => 'NIM-UNIK']);
 
         $this->actingAs($admin, 'admin')
-            ->patch(route('admin.applications.approve', $application))
+            ->patch(route('admin.applications.approve', $application), [
+                'approval_note' => 'Diterima sesuai kebutuhan dan periode magang.',
+            ])
             ->assertRedirect();
 
         $this->assertDatabaseHas('interns', [
@@ -132,7 +141,9 @@ class ApplicationApprovalTest extends TestCase
         $application = InternshipApplication::factory()->diterima()->create();
 
         $this->actingAs($admin, 'admin')
-            ->patch(route('admin.applications.approve', $application))
+            ->patch(route('admin.applications.approve', $application), [
+                'approval_note' => 'Pengajuan ini sudah pernah diproses sebelumnya.',
+            ])
             ->assertRedirect()
             ->assertSessionHas('error');
     }

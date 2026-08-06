@@ -136,7 +136,18 @@
                                 <svg class="h-[18px] w-[18px] text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                             </div>
                             <input id="password" type="password" name="password" required placeholder="••••••••"
-                                class="block w-full rounded-xl border border-gray-200 bg-white py-3 pl-11 pr-4 text-sm text-gray-900 shadow-sm placeholder-gray-400 transition focus:border-navy focus:shadow-md focus:ring-2 focus:ring-navy/10 focus:outline-none">
+                                class="block w-full rounded-xl border border-gray-200 bg-white py-3 pl-11 pr-12 text-sm text-gray-900 shadow-sm placeholder-gray-400 transition focus:border-navy focus:shadow-md focus:ring-2 focus:ring-navy/10 focus:outline-none">
+                            <button type="button" data-password-toggle="password"
+                                class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 transition hover:text-navy focus:outline-none focus:ring-2 focus:ring-inset focus:ring-navy/30"
+                                aria-label="Tampilkan password">
+                                <svg data-password-icon="eye" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                                    <circle cx="12" cy="12" r="2.5" />
+                                </svg>
+                                <svg data-password-icon="eye-off" class="hidden h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.2A10.5 10.5 0 0 1 12 5c6 0 9.5 7 9.5 7a17 17 0 0 1-3.1 3.9M6.2 6.3A10.5 10.5 0 0 0 2.5 12s3.5 7 9.5 7c1.5 0 2.8-.4 4-.9" />
+                                </svg>
+                            </button>
                         </div>
                         @error('password')<p class="mt-1.5 flex items-center gap-1 text-xs font-medium text-red-500"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 8v4m0 4h.01"/></svg>{{ $message }}</p>@enderror
                     </div>
@@ -159,5 +170,18 @@
         </div>
     </div>
 
+    <script>
+        document.querySelectorAll('[data-password-toggle]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const input = document.getElementById(button.dataset.passwordToggle);
+                const isVisible = input.type === 'text';
+
+                input.type = isVisible ? 'password' : 'text';
+                button.setAttribute('aria-label', isVisible ? 'Tampilkan password' : 'Sembunyikan password');
+                button.querySelector('[data-password-icon="eye"]').classList.toggle('hidden', !isVisible);
+                button.querySelector('[data-password-icon="eye-off"]').classList.toggle('hidden', isVisible);
+            });
+        });
+    </script>
 </body>
 </html>

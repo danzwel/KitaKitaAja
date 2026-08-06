@@ -44,7 +44,7 @@
                                 <i class="ti ti-file-text text-[#64705F]"></i> {{ $label }}
                             </div>
                             @if ($path)
-                                <a href="{{ Storage::url($path) }}" target="_blank" class="text-xs font-medium text-[#0F6E56] hover:underline">Lihat</a>
+                                <a href="{{ Storage::url($path) }}" target="_blank" class="text-xs font-medium text-[#0C2340] hover:underline">Lihat</a>
                             @else
                                 <span class="text-xs text-[#8B958A]">Tidak ada</span>
                             @endif
@@ -73,15 +73,32 @@
                 <div class="mb-4"><x-admin.badge :status="$application->status === 'menunggu_verifikasi' ? 'menunggu' : $application->status" class="!text-sm" /></div>
 
                 @if (in_array($application->status, ['menunggu_verifikasi', 'diproses'], true))
-                    <div class="space-y-2" x-data="{ rejectOpen: false }">
-                        <form method="POST" action="{{ route('admin.applications.approve', $application) }}"
-                              onsubmit="return confirm('Terima pengajuan ini?');">
-                            @csrf
-                            @method('PATCH')
-                            <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0F6E56] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#0B5443]">
-                                <i class="ti ti-check"></i> Terima Pengajuan
-                            </button>
-                        </form>
+                    <div class="space-y-2" x-data="{ approveOpen: @json($errors->has('approval_note')), rejectOpen: false }">
+                        <button @click="approveOpen = true" type="button"
+                                class="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0C2340] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#081A30]">
+                            <i class="ti ti-check"></i> Terima Pengajuan
+                        </button>
+
+                        <div x-show="approveOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+                            <div @click.outside="approveOpen = false" class="w-full max-w-md rounded-2xl bg-white p-5">
+                                <h3 class="font-heading mb-3 text-base font-semibold text-[#1E2A24]">Terima Pengajuan</h3>
+                                <form method="POST" action="{{ route('admin.applications.approve', $application) }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <label class="mb-1.5 block text-sm font-medium text-[#1E2A24]">Catatan penerimaan</label>
+                                    <textarea name="approval_note" rows="4" required minlength="10"
+                                              class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]"
+                                              placeholder="Tuliskan catatan penerimaan...">{{ old('approval_note') }}</textarea>
+                                    @error('approval_note')
+                                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                    @enderror
+                                    <div class="mt-4 flex justify-end gap-2">
+                                        <button type="button" @click="approveOpen = false" class="rounded-lg border border-[#E3E5DE] px-4 py-2 text-sm font-medium text-[#4B564B]">Batal</button>
+                                        <button type="submit" class="rounded-lg bg-[#0C2340] px-4 py-2 text-sm font-medium text-white hover:bg-[#081A30]">Terima</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
 
                         <button @click="rejectOpen = true" type="button"
                                 class="flex w-full items-center justify-center gap-2 rounded-lg border border-[#F0C9C9] px-4 py-2.5 text-sm font-medium text-[#9B3A3A] hover:bg-[#FBEAEA]">
@@ -96,7 +113,7 @@
                                     @method('PATCH')
                                     <label class="mb-1.5 block text-sm font-medium text-[#1E2A24]">Alasan penolakan</label>
                                     <textarea name="rejection_reason" rows="4" required
-                                              class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0F6E56] focus:outline-none focus:ring-1 focus:ring-[#0F6E56]"
+                                              class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]"
                                               placeholder="Jelaskan alasan penolakan..."></textarea>
                                     <div class="mt-4 flex justify-end gap-2">
                                         <button type="button" @click="rejectOpen = false" class="rounded-lg border border-[#E3E5DE] px-4 py-2 text-sm font-medium text-[#4B564B]">Batal</button>
@@ -113,3 +130,4 @@
         </div>
     </div>
 </x-admin.layouts.app>
+

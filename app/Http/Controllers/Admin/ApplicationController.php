@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\ApplicationAlreadyProcessedException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\ApproveApplicationRequest;
 use App\Http\Requests\Admin\RejectApplicationRequest;
 use App\Models\InternshipApplication;
 use App\Services\Admin\ApplicationApprovalService;
@@ -72,10 +73,10 @@ class ApplicationController extends Controller
     /**
      * Terima pengajuan -> generate akun mahasiswa otomatis -> simpan ke interns.
      */
-    public function approve(InternshipApplication $application): RedirectResponse
+    public function approve(ApproveApplicationRequest $request, InternshipApplication $application): RedirectResponse
     {
         try {
-            $this->approvalService->approve($application);
+            $this->approvalService->approve($application, $request->validated('approval_note'));
         } catch (ApplicationAlreadyProcessedException $e) {
             return back()->with('error', $e->getMessage());
         }

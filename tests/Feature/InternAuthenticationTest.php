@@ -13,6 +13,12 @@ class InternAuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_guest_is_redirected_to_intern_login_for_intern_pages(): void
+    {
+        $this->get(route('intern.dashboard'))
+            ->assertRedirect(route('intern.login'));
+    }
+
     public function test_accepted_application_shows_intern_credentials_on_status_page(): void
     {
         $application = InternshipApplication::factory()->diterima()->create();

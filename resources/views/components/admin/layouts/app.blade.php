@@ -26,7 +26,7 @@
             :class="{ 'translate-x-0': sidebarOpen }"
         >
             <div class="flex h-16 items-center gap-3 border-b border-[#E3E5DE] px-5">
-                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0F6E56] text-white">
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0C2340] text-white">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 3 5 6v5c0 4.5 2.9 8.4 7 10 4.1-1.6 7-5.5 7-10V6l-7-3Z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4" />
@@ -52,8 +52,8 @@
                     @php $active = request()->routeIs($item['route'].'*'); @endphp
                     <a href="{{ route($item['route']) }}"
                        class="flex items-center gap-3 rounded-lg border-l-[3px] px-3 py-2.5 text-sm font-medium transition-colors
-                       {{ $active ? 'border-[#C99A3B] bg-[#F6F7F4] text-[#0F6E56]' : 'border-transparent text-[#4B564B] hover:bg-[#F6F7F4]' }}">
-                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg {{ $active ? 'bg-[#E7F2ED] text-[#0F6E56]' : 'bg-[#F6F7F4] text-[#64705F]' }}">
+                       {{ $active ? 'border-[#C99A3B] bg-[#F6F7F4] text-[#0C2340]' : 'border-transparent text-[#4B564B] hover:bg-[#F6F7F4]' }}">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg {{ $active ? 'bg-[#E8EEF5] text-[#0C2340]' : 'bg-[#F6F7F4] text-[#64705F]' }}">
                             @switch($item['icon'])
                                 @case('ti-layout-dashboard')
                                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -89,7 +89,7 @@
 
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open" class="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-[#F6F7F4]">
-                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#E7F2ED] text-sm font-semibold text-[#0B5443]">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EEF5] text-sm font-semibold text-[#081A30]">
                             {{ Str::upper(Str::substr(auth('admin')->user()->name ?? 'A', 0, 1)) }}
                         </div>
                         <span class="hidden text-sm font-medium text-[#1E2A24] sm:block">{{ auth('admin')->user()->name ?? 'Admin' }}</span>
@@ -118,3 +118,4 @@
     @stack('scripts')
 </body>
 </html>
+

@@ -1,8 +1,8 @@
 @if (session('success'))
-    <div class="mb-6 flex items-start gap-3 rounded-xl border border-[#CFE6DA] bg-[#E7F2ED] px-4 py-3 text-sm text-[#0B5443]" x-data="{ show: true }" x-show="show">
+    <div class="mb-6 flex items-start gap-3 rounded-xl border border-[#D4DFEA] bg-[#E8EEF5] px-4 py-3 text-sm text-[#081A30]" x-data="{ show: true }" x-show="show">
         <i class="ti ti-check mt-0.5"></i>
         <span class="flex-1">{{ session('success') }}</span>
-        <button type="button" @click="show = false" aria-label="Tutup" class="text-[#0B5443]/70 hover:text-[#0B5443]">
+        <button type="button" @click="show = false" aria-label="Tutup" class="text-[#081A30]/70 hover:text-[#081A30]">
             <i class="ti ti-x"></i>
         </button>
     </div>
@@ -28,3 +28,4 @@
         </ul>
     </div>
 @endif
+
