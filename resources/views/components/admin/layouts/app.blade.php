@@ -17,28 +17,28 @@
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="bg-[#F6F7F4] text-[#1E2A24] antialiased" x-data="{ sidebarOpen: false }">
+<body class="bg-[#F4F6FB] text-[#1E2A24] antialiased" x-data="{ sidebarOpen: false }">
 
     <div class="flex min-h-screen">
         {{-- Sidebar --}}
         <aside
-            class="fixed inset-y-0 left-0 z-40 w-64 -translate-x-full border-r border-[#E3E5DE] bg-white transition-transform duration-200 lg:static lg:translate-x-0"
+            class="fixed inset-y-0 left-0 z-40 flex w-[250px] shrink-0 -translate-x-full flex-col border-r border-[#E7EAF1] bg-white transition-transform duration-200 lg:static lg:translate-x-0"
             :class="{ 'translate-x-0': sidebarOpen }"
         >
-            <div class="flex h-16 items-center gap-3 border-b border-[#E3E5DE] px-5">
-                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0C2340] text-white">
+            <div class="flex h-[82px] items-center gap-3 border-b border-[#EEF0F5] px-6">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0C2340] text-white shadow-sm shadow-[#0C2340]/20">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 3 5 6v5c0 4.5 2.9 8.4 7 10 4.1-1.6 7-5.5 7-10V6l-7-3Z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4" />
                     </svg>
                 </div>
                 <div class="leading-tight">
-                    <p class="font-heading text-sm font-semibold text-[#1E2A24]">SIM Magang</p>
-                    <p class="text-[11px] text-[#64705F]">UPTD Pelatihan Kesehatan</p>
+                    <p class="font-heading text-base font-bold text-[#1E2A24]">SIM Magang</p>
+                    <p class="text-[10px] text-[#8A94A6]">UPTD Pelatihan Kesehatan</p>
                 </div>
             </div>
 
-            <nav class="space-y-1 px-3 py-4">
+            <nav class="flex-1 space-y-1 px-4 py-7">
                 @php
                     $navItems = [
                         ['route' => 'admin.dashboard', 'icon' => 'ti-layout-dashboard', 'label' => 'Dashboard'],
@@ -48,12 +48,14 @@
                     ];
                 @endphp
 
+                <p class="mb-3 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#A0A8B8]">Menu Utama</p>
+
                 @foreach ($navItems as $item)
                     @php $active = request()->routeIs($item['route'].'*'); @endphp
                     <a href="{{ route($item['route']) }}"
-                       class="flex items-center gap-3 rounded-lg border-l-[3px] px-3 py-2.5 text-sm font-medium transition-colors
-                       {{ $active ? 'border-[#C99A3B] bg-[#F6F7F4] text-[#0C2340]' : 'border-transparent text-[#4B564B] hover:bg-[#F6F7F4]' }}">
-                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg {{ $active ? 'bg-[#E8EEF5] text-[#0C2340]' : 'bg-[#F6F7F4] text-[#64705F]' }}">
+                       class="group flex items-center gap-3 rounded-xl px-3 py-3 text-[13px] font-medium transition-colors
+                       {{ $active ? 'bg-[#E8EEF5] font-semibold text-[#0C2340]' : 'text-[#687386] hover:bg-[#F7F8FB] hover:text-[#0C2340]' }}">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg {{ $active ? 'bg-[#0C2340] text-white' : 'bg-[#F5F6FA] text-[#8A94A6] group-hover:text-[#0C2340]' }}">
                             @switch($item['icon'])
                                 @case('ti-layout-dashboard')
                                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -72,28 +74,49 @@
                         {{ $item['label'] }}
                     </a>
                 @endforeach
+
+                <p class="mb-3 mt-8 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#A0A8B8]">Pengaturan</p>
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 text-[13px] font-medium text-[#687386] transition-colors hover:bg-[#F7F8FB] hover:text-[#0C2340]">
+                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F5F6FA] text-[#8A94A6]"><i class="ti ti-settings text-base"></i></span>
+                    Preferensi Sistem
+                </a>
             </nav>
+
+            <div class="border-t border-[#EEF0F5] p-4">
+                <form method="POST" action="{{ route('admin.logout') }}">
+                    @csrf
+                    <button type="submit" class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-[13px] font-medium text-[#9B3A3A] transition hover:bg-[#FBEAEA]">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#FFF3F3]"><i class="ti ti-logout text-base"></i></span>
+                        Keluar
+                    </button>
+                </form>
+            </div>
         </aside>
 
         {{-- Overlay mobile --}}
         <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-30 bg-black/30 lg:hidden" style="display: none;"></div>
 
         {{-- Main content --}}
-        <div class="flex min-h-screen flex-1 flex-col">
-            <header class="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-[#E3E5DE] bg-white/90 px-4 backdrop-blur lg:px-8">
-                <button @click="sidebarOpen = true" class="text-[#4B564B] lg:hidden" aria-label="Buka menu">
+        <div class="flex min-h-screen min-w-0 flex-1 flex-col">
+            <header class="sticky top-0 z-20 flex h-[82px] items-center justify-between border-b border-[#E7EAF1] bg-white/90 px-4 backdrop-blur lg:px-9">
+                <div class="flex min-w-0 items-center gap-4">
+                <button @click="sidebarOpen = true" class="rounded-lg p-2 text-[#4B564B] hover:bg-[#F4F6FB] lg:hidden" aria-label="Buka menu">
                         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
 
-                <h1 class="font-heading hidden text-lg font-semibold text-[#1E2A24] lg:block">{{ $title ?? 'Dashboard' }}</h1>
+                <h1 class="font-heading min-w-0 truncate text-lg font-semibold text-[#1E2A24]">{{ $title ?? 'Dashboard' }}</h1>
+                </div>
 
-                <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" class="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-[#F6F7F4]">
-                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EEF5] text-sm font-semibold text-[#081A30]">
+                <div class="flex items-center gap-3">
+                    <button class="hidden h-10 w-10 items-center justify-center rounded-full text-[#687386] hover:bg-[#F4F6FB] sm:inline-flex" aria-label="Notifikasi"><i class="ti ti-bell text-lg"></i></button>
+                    <div class="hidden h-7 w-px bg-[#E7EAF1] sm:block"></div>
+                    <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" class="flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-[#F4F6FB]">
+                        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#E8EEF5] text-sm font-semibold text-[#0C2340] ring-2 ring-white shadow-sm">
                             {{ Str::upper(Str::substr(auth('admin')->user()->name ?? 'A', 0, 1)) }}
                         </div>
-                        <span class="hidden text-sm font-medium text-[#1E2A24] sm:block">{{ auth('admin')->user()->name ?? 'Admin' }}</span>
-                        <i class="ti ti-chevron-down text-sm text-[#64705F]"></i>
+                        <span class="hidden text-sm font-semibold text-[#1E2A24] sm:block">{{ auth('admin')->user()->name ?? 'Admin' }}</span>
+                        <i class="ti ti-chevron-down text-sm text-[#8A94A6]"></i>
                     </button>
 
                     <div x-show="open" @click.outside="open = false" x-cloak
@@ -105,10 +128,11 @@
                             </button>
                         </form>
                     </div>
+                    </div>
                 </div>
             </header>
 
-            <main class="flex-1 px-4 py-6 lg:px-8">
+            <main class="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-9 lg:py-8">
                 <x-admin.alert />
                 {{ $slot }}
             </main>

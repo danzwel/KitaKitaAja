@@ -19,6 +19,7 @@ class InternAccountService
 
         $intern->update([
             'password' => Hash::make($newPassword),
+            'temporary_initial_password' => $newPassword,
         ]);
 
         return $newPassword;

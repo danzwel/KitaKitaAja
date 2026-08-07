@@ -21,7 +21,7 @@ class InternController extends Controller
         $this->authorize('viewAny', Intern::class);
 
         $interns = Intern::query()
-            ->with('department')
+            ->with(['department', 'internshipApplication.bidang'])
             ->search($request->input('q'))
             ->status($request->input('status'))
             ->latest()
@@ -35,7 +35,7 @@ class InternController extends Controller
     {
         $this->authorize('view', $intern);
 
-        $intern->load('department', 'application', 'replyLetters');
+        $intern->load('department', 'application', 'internshipApplication.bidang', 'replyLetters');
 
         return view('admin.interns.show', compact('intern'));
     }

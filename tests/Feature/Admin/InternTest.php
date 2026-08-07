@@ -54,6 +54,22 @@ class InternTest extends TestCase
         $this->assertNotEquals($oldPasswordHash, $intern->fresh()->password);
     }
 
+    public function test_reset_password_updates_the_temporary_password_too(): void
+    {
+        $admin = Admin::factory()->create();
+        $intern = Intern::factory()->create([
+            'temporary_initial_password' => 'password-lama',
+        ]);
+
+        $this->actingAs($admin, 'admin')
+            ->patch(route('admin.interns.reset-password', $intern))
+            ->assertSessionHas('success');
+
+        $fresh = $intern->fresh();
+        $this->assertNotNull($fresh->temporary_initial_password);
+        $this->assertTrue(\Hash::check($fresh->temporary_initial_password, $fresh->password));
+    }
+
     public function test_admin_can_delete_intern(): void
     {
         $admin = Admin::factory()->create();

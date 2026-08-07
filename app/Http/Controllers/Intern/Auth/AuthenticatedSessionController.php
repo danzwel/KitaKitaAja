@@ -10,8 +10,12 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
+        if (Auth::guard('intern')->check()) {
+            return redirect()->route('intern.dashboard');
+        }
+
         return view('intern.auth.login');
     }
 

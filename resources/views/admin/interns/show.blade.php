@@ -11,7 +11,7 @@
                     @foreach ([
                         'Nama' => $intern->name,
                         'Universitas' => $intern->university,
-                        'Bidang Magang' => $intern->department->name ?? '-',
+                        'Bidang Magang' => $intern->internshipApplication?->bidang?->nama_bidang ?? $intern->department?->name ?? '-',
                         'Periode' => $intern->period,
                         'Username' => $intern->username,
                     ] as $label => $value)

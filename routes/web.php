@@ -23,7 +23,10 @@ Route::get('/pengajuan/sukses/{application_code}', [PengajuanController::class, 
 Route::get('/cek-status', [PengajuanController::class, 'checkStatusForm'])->name('cek-status');
 Route::post('/cek-status', [PengajuanController::class, 'checkStatus'])->name('cek-status.result');
 
-Route::middleware('guest:intern')->group(function () {
+// Login mahasiswa harus selalu menggunakan halaman login mahasiswa.
+// Pemeriksaan guard dilakukan di controller agar redirect umum Laravel
+// tidak mengarah ke login pengguna biasa (/login).
+Route::group([], function () {
     Route::get('/mahasiswa/login', [InternAuthenticatedSessionController::class, 'create'])->name('intern.login');
     Route::post('/mahasiswa/login', [InternAuthenticatedSessionController::class, 'store']);
 });

@@ -2,6 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    html {
+        min-width: 320px;
+        overflow-x: hidden;
+    }
+
+    body {
+        min-width: 320px;
+        overflow-x: hidden;
+    }
+
+    /* Keep long user-provided values from forcing the page wider than the viewport. */
+    img,
+    svg,
+    video,
+    canvas,
+    iframe {
+        max-width: 100%;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+        max-width: 100%;
+    }
+}
+
+@layer components {
+    .responsive-table {
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .responsive-table table {
+        min-width: 42rem;
+    }
+}
+
+@media (max-width: 639px) {
+    .responsive-table table {
+        min-width: 36rem;
+    }
+
+    /* Comfortable touch targets without making forms wider than the phone. */
+    input,
+    select,
+    textarea,
+    button {
+        min-height: 2.75rem;
+    }
+}
+
 @layer utilities {
     @keyframes gradient-shift {
         0%, 100% { background-position: 0% 50%; }
