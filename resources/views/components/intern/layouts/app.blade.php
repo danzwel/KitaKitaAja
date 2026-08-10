@@ -22,7 +22,7 @@
     <div class="flex min-h-screen">
         {{-- ===================== SIDEBAR ===================== --}}
         <aside
-            class="fixed inset-y-0 left-0 z-40 flex w-[260px] -translate-x-full flex-col bg-[#0B1F3D] transition-transform duration-300 lg:static lg:translate-x-0"
+            class="fixed inset-y-0 left-0 z-40 flex w-[260px] shrink-0 -translate-x-full flex-col bg-[#0B1F3D] transition-transform duration-300 lg:static lg:translate-x-0"
             :class="{ 'translate-x-0': sidebarOpen }"
         >
             {{-- Brand --}}
@@ -94,14 +94,14 @@
         <div x-show="sidebarOpen" @click="sidebarOpen = false" x-cloak class="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"></div>
 
         {{-- ===================== MAIN ===================== --}}
-        <div class="flex min-h-screen flex-1 flex-col">
+        <div class="flex min-h-screen min-w-0 flex-1 flex-col">
             {{-- Top Bar --}}
             <header class="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-gray-200/80 bg-white/80 px-4 backdrop-blur-md lg:px-8">
                 <div class="flex items-center gap-4">
                     <button @click="sidebarOpen = true" class="rounded-lg p-1.5 text-gray-500 transition hover:bg-gray-100 lg:hidden" aria-label="Buka menu">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
-                    <h1 class="font-heading text-base font-bold text-gray-900 lg:text-lg">{{ $title ?? 'Dashboard' }}</h1>
+                    <h1 class="font-heading min-w-0 truncate text-base font-bold text-gray-900 lg:text-lg">{{ $title ?? 'Dashboard' }}</h1>
                 </div>
 
                 {{-- User Dropdown --}}
@@ -138,7 +138,7 @@
             </header>
 
             {{-- Page Content --}}
-            <main class="flex-1 px-4 py-6 lg:px-8">
+            <main class="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8">
                 {{-- Flash Messages --}}
                 @if (session('status'))
                     <div class="mb-5 flex items-center gap-3 rounded-xl bg-emerald-50 p-4 ring-1 ring-emerald-200/60" x-data="{ show: true }" x-show="show" x-transition>

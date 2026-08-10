@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin;
 use App\Models\Admin;
 use App\Models\Application;
 use App\Models\Intern;
+use App\Models\InternshipApplication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -46,5 +47,25 @@ class ReplyLetterTest extends TestCase
             ->assertForbidden();
 
         $this->assertDatabaseCount('reply_letters', 0);
+    }
+
+    public function test_admin_can_upload_reply_letter_for_new_accepted_application(): void
+    {
+        Storage::fake('public');
+        $admin = Admin::factory()->create();
+        $application = InternshipApplication::factory()->diterima()->create();
+        $intern = Intern::factory()->create([
+            'internship_application_id' => $application->id,
+            'department_id' => null,
+            'status' => Intern::STATUS_AKTIF,
+        ]);
+        $file = UploadedFile::fake()->create('surat-balasan-baru.pdf', 100, 'application/pdf');
+
+        $this->actingAs($admin, 'admin')
+            ->post(route('admin.reply-letters.store', $intern), ['file' => $file])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseCount('reply_letters', 1);
     }
 }

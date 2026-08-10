@@ -13,7 +13,7 @@
             </a>
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="responsive-table">
             <table class="w-full text-left text-sm">
                 <thead>
                     <tr class="border-b border-[#E3E5DE] text-xs uppercase tracking-wide text-[#64705F]">

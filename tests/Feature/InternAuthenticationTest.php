@@ -11,6 +11,13 @@ use Tests\TestCase;
 
 class InternAuthenticationTest extends TestCase
 {
+    public function test_guest_can_open_the_intern_login_page(): void
+    {
+        $this->get(route('intern.login'))
+            ->assertOk()
+            ->assertViewIs('intern.auth.login');
+    }
+
     use RefreshDatabase;
 
     public function test_guest_is_redirected_to_intern_login_for_intern_pages(): void

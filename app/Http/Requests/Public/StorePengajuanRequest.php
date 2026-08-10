@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Public;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StorePengajuanRequest extends FormRequest
 {
@@ -25,7 +26,7 @@ class StorePengajuanRequest extends FormRequest
         'alamat' => ['required', 'string'],
         'periode_mulai' => ['required', 'date'],
         'periode_selesai' => ['required', 'date', 'after_or_equal:periode_mulai'],
-        'bidang_id' => ['required', 'exists:bidangs,id'],
+        'bidang_id' => ['required', Rule::exists('bidangs', 'id')->where('is_active', true)],
         'tujuan_magang' => ['required', 'string'],
 
         'surat_pengantar' => ['required', 'file', 'mimes:pdf', 'max:2048'],

@@ -20,7 +20,7 @@
             </button>
         </form>
 
-        <div class="overflow-x-auto">
+        <div class="responsive-table">
             <table class="w-full text-left text-sm">
                 <thead>
                     <tr class="border-b border-[#E3E5DE] text-xs uppercase tracking-wide text-[#64705F]">
@@ -37,7 +37,7 @@
                         <tr class="hover:bg-[#F6F7F4]">
                             <td class="py-3 pr-4 font-medium text-[#1E2A24]">{{ $intern->name }}</td>
                             <td class="py-3 pr-4 text-[#4B564B]">{{ $intern->university }}</td>
-                            <td class="py-3 pr-4 text-[#4B564B]">{{ $intern->department->name ?? '-' }}</td>
+                            <td class="py-3 pr-4 text-[#4B564B]">{{ $intern->internshipApplication?->bidang?->nama_bidang ?? $intern->department?->name ?? '-' }}</td>
                             <td class="py-3 pr-4 text-[#4B564B]">{{ $intern->period }}</td>
                             <td class="py-3 pr-4"><x-admin.badge :status="$intern->status" /></td>
                             <td class="py-3 pr-4">

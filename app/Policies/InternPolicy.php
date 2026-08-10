@@ -35,7 +35,11 @@ class InternPolicy
 
     public function uploadReplyLetter(Admin $admin, Intern $intern): bool
     {
-        return $intern->status === Intern::STATUS_AKTIF
-            && $intern->application?->status === Application::STATUS_DITERIMA;
+        if ($intern->status !== Intern::STATUS_AKTIF) {
+            return false;
+        }
+
+        return $intern->internshipApplication?->status === 'diterima'
+            || $intern->application?->status === Application::STATUS_DITERIMA;
     }
 }

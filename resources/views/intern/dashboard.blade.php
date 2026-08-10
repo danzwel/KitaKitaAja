@@ -29,7 +29,7 @@
             <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm sm:flex-col sm:items-end sm:gap-y-1 sm:text-right">
                 <div>
                     <p class="text-[11px] font-medium uppercase tracking-wider text-blue-200/40">Bidang</p>
-                    <p class="font-semibold text-white">{{ auth('intern')->user()->department->name ?? '-' }}</p>
+                    <p class="font-semibold text-white">{{ auth('intern')->user()->internshipApplication?->bidang?->nama_bidang ?? auth('intern')->user()->department?->name ?? '-' }}</p>
                 </div>
                 <div>
                     <p class="text-[11px] font-medium uppercase tracking-wider text-blue-200/40">Periode</p>
