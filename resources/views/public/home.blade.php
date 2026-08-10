@@ -8,7 +8,7 @@
        <div class="absolute inset-0 bg-navy/80 mix-blend-multiply"></div>
        <div class="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white"></div>
 
-        <div class="relative z-10 max-w-5xl mx-auto px-6 pt-16 pb-10 text-center">
+        <div class="relative z-10 max-w-5xl mx-auto px-6 pt-28 pb-10 text-center">
             <p class="inline-flex items-center gap-1.5 text-xs font-semibold tracking-[0.2em] text-health uppercase mb-4 bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm">
                 <span class="w-1.5 h-1.5 rounded-full bg-health"></span> Program Magang Resmi
             </p>

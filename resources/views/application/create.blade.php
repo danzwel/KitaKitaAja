@@ -1,7 +1,10 @@
 @extends('layouts.app')
 @section('title', 'Form Pengajuan Magang')
 @section('content')
-<div class="max-w-3xl mx-auto px-6 py-16">
+<div class="relative isolate overflow-hidden bg-gradient-to-b from-[#E8EEF5] via-[#EEF1F5] to-[#EEF1F5]">
+    <div class="pointer-events-none absolute -left-24 top-28 h-64 w-64 rounded-full bg-[#0C2340]/[0.06]"></div>
+    <div class="pointer-events-none absolute -right-28 top-10 h-80 w-80 rounded-full border-[36px] border-[#B8912F]/[0.08]"></div>
+<div class="relative max-w-3xl mx-auto px-6 pt-28 pb-24">
 
     {{-- HEADER --}}
     <div class="text-center mb-14">
@@ -207,7 +210,8 @@
                 class="w-full bg-health hover:bg-health-dark transition text-white font-semibold py-3.5 rounded-lg shadow-md shadow-health/30">
             Kirim Pengajuan Magang
         </button>
-    </form>
+</form>
+</div>
 </div>
 @endsection
 

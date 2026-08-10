@@ -4,7 +4,7 @@
 
     {{-- HEADER --}}
     <section class="bg-navy text-white">
-        <div class="max-w-5xl mx-auto px-6 py-16 text-center">
+        <div class="max-w-5xl mx-auto px-6 pt-32 pb-16 text-center">
             <p class="inline-flex items-center gap-1.5 text-xs font-semibold tracking-[0.2em] text-gold-light uppercase mb-3">
                 <span class="w-1.5 h-1.5 rounded-full bg-gold-light"></span> Sebelum Mengajukan
             </p>

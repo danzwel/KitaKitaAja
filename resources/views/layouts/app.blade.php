@@ -21,8 +21,8 @@
         ];
     @endphp
 
-    <header class="sticky top-0 z-50 isolate bg-navy text-white shadow-md">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+    <header class="fixed inset-x-0 top-0 z-50 isolate bg-navy text-white shadow-md">
+        <div class="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-4">
           <div class="flex justify-between items-center gap-3">
             <a href="{{ route('home') }}" class="flex items-center gap-3">
     <img src="{{ asset('images/logo.jpg') }}" alt="Logo UPTD Pelatihan Kesehatan" class="w-9 h-9 rounded-full object-cover ring-2 ring-gold/50">

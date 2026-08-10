@@ -1,7 +1,10 @@
 @extends('layouts.app')
 @section('title', 'Cek Status Pengajuan')
 @section('content')
-<div class="max-w-md mx-auto px-6 py-16">
+<div class="relative isolate overflow-hidden bg-gradient-to-b from-[#E8EEF5] via-[#EEF1F5] to-[#EEF1F5]">
+    <div class="pointer-events-none absolute -right-24 top-24 h-64 w-64 rounded-full bg-[#1F7A4D]/[0.06]"></div>
+    <div class="pointer-events-none absolute -left-20 top-8 h-56 w-56 rounded-full border-[30px] border-[#0C2340]/[0.06]"></div>
+<div class="relative max-w-md mx-auto px-6 pt-28 pb-24">
 
     {{-- HEADER --}}
     <div class="text-center mb-10">
@@ -58,5 +61,6 @@
             </button>
         </form>
     </div>
+</div>
 </div>
 @endsection
