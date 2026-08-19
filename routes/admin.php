@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\InternController;
 use App\Http\Controllers\Admin\ReplyLetterController;
+use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\AttendanceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,6 +31,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // ---------- Protected (harus login sebagai admin) ----------
     Route::middleware('admin.auth')->group(function () {
         Route::post('logout', [AdminAuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+        Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::put('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+
+        Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance.index');
+        Route::get('attendance/recap', [AttendanceController::class, 'recap'])->name('attendance.recap');
+        Route::post('attendance/sessions', [AttendanceController::class, 'storeSession'])->name('attendance.sessions.store');
+        Route::patch('attendance/sessions/{session}/close', [AttendanceController::class, 'closeSession'])->name('attendance.sessions.close');
+        Route::patch('attendance/records/{record}/review', [AttendanceController::class, 'reviewAttendance'])->name('attendance.records.review');
+        Route::patch('attendance/leave/{leaveRequest}/review', [AttendanceController::class, 'reviewLeave'])->name('attendance.leave.review');
 
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 

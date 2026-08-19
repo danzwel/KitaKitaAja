@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @include('components.vite-assets')
 
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -43,6 +43,8 @@
                     $navItems = [
                         ['route' => 'admin.dashboard', 'icon' => 'ti-layout-dashboard', 'label' => 'Dashboard'],
                         ['route' => 'admin.applications.index', 'icon' => 'ti-file-description', 'label' => 'Kelola Pengajuan'],
+                        ['route' => 'admin.attendance.index', 'icon' => 'ti-calendar-check', 'label' => 'Sesi QR Absensi'],
+                        ['route' => 'admin.attendance.recap', 'icon' => 'ti-report-analytics', 'label' => 'Rekap Absensi'],
                         ['route' => 'admin.interns.index', 'icon' => 'ti-users', 'label' => 'Mahasiswa Magang'],
                         ['route' => 'admin.departments.index', 'icon' => 'ti-building', 'label' => 'Bidang Magang'],
                     ];
@@ -66,6 +68,12 @@
                                 @case('ti-users')
                                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM21 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                                     @break
+                                @case('ti-calendar-check')
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path stroke-linecap="round" d="M16 3v4M8 3v4M3 10h18M8 15l2 2 5-5"/></svg>
+                                    @break
+                                @case('ti-report-analytics')
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" d="M4 19V5M4 19h17M8 16v-4M12 16V8M16 16v-6M20 16v-9"/></svg>
+                                    @break
                                 @case('ti-building')
                                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M2 21h20M8 7h2M8 11h2M8 15h2M12 7h2M12 11h2M19 21v-7a2 2 0 0 0-2-2h-1"/></svg>
                                     @break
@@ -75,11 +83,6 @@
                     </a>
                 @endforeach
 
-                <p class="mb-3 mt-8 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#A0A8B8]">Pengaturan</p>
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 text-[13px] font-medium text-[#687386] transition-colors hover:bg-[#F7F8FB] hover:text-[#0C2340]">
-                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F5F6FA] text-[#8A94A6]"><i class="ti ti-settings text-base"></i></span>
-                    Preferensi Sistem
-                </a>
             </nav>
 
             <div class="border-t border-[#EEF0F5] p-4">
@@ -121,6 +124,10 @@
 
                     <div x-show="open" @click.outside="open = false" x-cloak
                          class="absolute right-0 mt-2 w-48 rounded-xl border border-[#E3E5DE] bg-white p-1.5 shadow-lg">
+                        <a href="{{ route('admin.profile.edit') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[#1E2A24] hover:bg-[#F4F6FB]">
+                            <i class="ti ti-user-circle"></i> Profil Saya
+                        </a>
+                        <hr class="my-1 border-[#EEF0F5]">
                         <form method="POST" action="{{ route('admin.logout') }}">
                             @csrf
                             <button type="submit" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-[#9B3A3A] hover:bg-[#FBEAEA]">
