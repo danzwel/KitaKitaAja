@@ -11,6 +11,9 @@ class DashboardController extends Controller
 {
     public function index(): View
     {
+        $hour = now()->hour;
+        $greeting = $hour < 11 ? 'Selamat pagi' : ($hour < 15 ? 'Selamat siang' : ($hour < 18 ? 'Selamat sore' : 'Selamat malam'));
+        $adminName = auth('admin')->user()->name ?? 'Admin';
         $pendingStatus = 'menunggu_verifikasi';
         $processedStatus = 'diproses';
         $acceptedStatus = 'diterima';
@@ -53,6 +56,8 @@ class DashboardController extends Controller
             'chartLabels',
             'chartData',
             'latestApplications',
+            'greeting',
+            'adminName',
         ));
     }
 }

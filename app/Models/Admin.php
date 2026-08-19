@@ -30,4 +30,14 @@ class Admin extends Authenticatable
     {
         return $this->hasMany(ReplyLetter::class, 'uploaded_by');
     }
+
+    public function attendanceSessions()
+    {
+        return $this->hasMany(AttendanceSession::class, 'created_by');
+    }
+
+    public function reviewedLeaveRequests()
+    {
+        return $this->hasMany(LeaveRequest::class, 'reviewed_by');
+    }
 }

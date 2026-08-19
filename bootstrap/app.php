@@ -14,6 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // LocalTunnel/HTTPS reverse proxies must be trusted so that Laravel
+        // keeps the original host and scheme for sessions and form URLs.
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'admin.auth' => EnsureAdminIsAuthenticated::class,
             'admin.guest' => RedirectIfAdminAuthenticated::class,

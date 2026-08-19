@@ -6,8 +6,8 @@
             <div class="absolute -bottom-20 right-28 h-48 w-48 rounded-full border-[22px] border-[#C99A3B]/10"></div>
             <div class="relative max-w-2xl">
                 <p class="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#D9B65C]">Panel Administrasi</p>
-                <h2 class="font-heading max-w-lg text-2xl font-bold leading-tight sm:text-3xl">Kelola Program Magang dengan Lebih Mudah</h2>
-                <p class="mt-3 max-w-xl text-sm leading-relaxed text-blue-100/75">Pantau pengajuan, mahasiswa magang, dan bidang penempatan dari satu tempat.</p>
+                <h2 class="font-heading max-w-lg text-2xl font-bold leading-tight sm:text-3xl">{{ $greeting }}, {{ $adminName }} 👋</h2>
+                <p class="mt-3 max-w-xl text-sm leading-relaxed text-blue-100/75">Semangat bekerja. Pantau pengajuan dan kelola aktivitas magang hari ini dari satu tempat.</p>
                 <a href="{{ route('admin.applications.index') }}" class="mt-6 inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-[#0C2340] transition hover:bg-[#F4F6FB]">
                     Lihat Pengajuan <i class="ti ti-arrow-up-right"></i>
                 </a>
@@ -59,7 +59,16 @@
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-5">
         {{-- Chart --}}
         <x-admin.card title="Grafik Pengajuan" subtitle="Jumlah pengajuan per bulan dalam 12 bulan terakhir" class="xl:col-span-3">
-            <canvas id="applicationsChart" height="110"></canvas>
+            @php $chartMax = max(1, (int) $chartData->max()); @endphp
+            <div class="mt-4 flex h-52 items-end gap-2 border-b border-[#EEF1F7] px-1 sm:gap-3">
+                @foreach ($chartData as $index => $value)
+                    <div class="group flex min-w-0 flex-1 flex-col items-center justify-end gap-2">
+                        <span class="text-[10px] font-semibold text-[#0C2340] opacity-0 transition group-hover:opacity-100">{{ $value }}</span>
+                        <div class="w-full max-w-8 rounded-t-md bg-[#0C2340] transition hover:bg-[#1E5AA8]" style="height: {{ max(8, round(((int) $value / $chartMax) * 100)) }}%" title="{{ $chartLabels[$index] }}: {{ $value }} pengajuan"></div>
+                        <span class="w-12 truncate text-center text-[10px] text-[#8A94A6]">{{ $chartLabels[$index] }}</span>
+                    </div>
+                @endforeach
+            </div>
         </x-admin.card>
 
         {{-- Latest applications --}}
@@ -80,32 +89,5 @@
         </x-admin.card>
     </div>
 
-    @push('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
-    <script>
-        const ctx = document.getElementById('applicationsChart');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                    labels: @json($chartLabels),
-                datasets: [{
-                    label: 'Jumlah Pengajuan',
-                    data: @json($chartData),
-                    backgroundColor: '#0C2340',
-                    borderRadius: 6,
-                    maxBarThickness: 28,
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#EFF1EC' } },
-                    x: { grid: { display: false } },
-                }
-            }
-        });
-    </script>
-    @endpush
 </x-admin.layouts.app>
 

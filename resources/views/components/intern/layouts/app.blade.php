@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('components.vite-assets')
 
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -44,12 +44,8 @@
                 @php
                     $navItems = [
                         ['route' => 'intern.dashboard', 'icon' => 'ti-layout-dashboard', 'label' => 'Dashboard'],
-                        ['route' => 'intern.profile.edit', 'icon' => 'ti-user-circle', 'label' => 'Profil Saya'],
-                    ];
-                    $comingSoon = [
-                        ['icon' => 'ti-fingerprint', 'label' => 'Absen Datang'],
-                        ['icon' => 'ti-logout', 'label' => 'Absen Pulang'],
-                        ['icon' => 'ti-history', 'label' => 'Riwayat Absensi'],
+                        ['route' => 'intern.attendance.index', 'icon' => 'ti-fingerprint', 'label' => 'Absensi'],
+                        ['route' => 'intern.attendance.history', 'icon' => 'ti-history', 'label' => 'Riwayat Absensi'],
                     ];
                 @endphp
 
@@ -67,15 +63,10 @@
                     </a>
                 @endforeach
 
-                <p class="mt-6 mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-blue-300/40">Absensi</p>
-
-                @foreach ($comingSoon as $item)
-                    <span class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-blue-200/30 cursor-not-allowed">
-                        <i class="ti {{ $item['icon'] }} text-lg"></i>
-                        {{ $item['label'] }}
-                        <span class="ml-auto rounded-full bg-white/5 px-2 py-0.5 text-[9px] font-semibold text-blue-300/40">Soon</span>
-                    </span>
-                @endforeach
+                <p class="mt-6 mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-blue-300/40">Layanan</p>
+                <a href="{{ route('intern.attendance.leave') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-blue-200/60 transition-all hover:bg-white/5 hover:text-white">
+                    <i class="ti ti-notes text-lg"></i> Izin / Sakit
+                </a>
             </nav>
 
             {{-- Sidebar Footer --}}

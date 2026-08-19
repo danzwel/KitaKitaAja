@@ -43,10 +43,10 @@
     <div class="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
         @php
             $stats = [
-                ['label' => 'Total Hadir', 'value' => '0', 'icon' => 'ti-circle-check', 'iconBg' => 'bg-emerald-100 text-emerald-600', 'border' => 'border-l-emerald-500'],
-                ['label' => 'Total Izin', 'value' => '0', 'icon' => 'ti-mail-forward', 'iconBg' => 'bg-blue-100 text-blue-600', 'border' => 'border-l-blue-500'],
-                ['label' => 'Total Sakit', 'value' => '0', 'icon' => 'ti-heart-rate-monitor', 'iconBg' => 'bg-amber-100 text-amber-600', 'border' => 'border-l-amber-500'],
-                ['label' => 'Total Terlambat', 'value' => '0', 'icon' => 'ti-alarm', 'iconBg' => 'bg-rose-100 text-rose-600', 'border' => 'border-l-rose-500'],
+                ['label' => 'Total Hadir', 'value' => $attendanceStats['hadir'], 'icon' => 'ti-circle-check', 'iconBg' => 'bg-emerald-100 text-emerald-600', 'border' => 'border-l-emerald-500'],
+                ['label' => 'Total Izin', 'value' => $attendanceStats['izin'], 'icon' => 'ti-mail-forward', 'iconBg' => 'bg-blue-100 text-blue-600', 'border' => 'border-l-blue-500'],
+                ['label' => 'Total Sakit', 'value' => $attendanceStats['sakit'], 'icon' => 'ti-heart-rate-monitor', 'iconBg' => 'bg-amber-100 text-amber-600', 'border' => 'border-l-amber-500'],
+                ['label' => 'Total Terlambat', 'value' => $attendanceStats['terlambat'], 'icon' => 'ti-alarm', 'iconBg' => 'bg-rose-100 text-rose-600', 'border' => 'border-l-rose-500'],
             ];
         @endphp
 
@@ -71,9 +71,9 @@
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
             @php
                 $menus = [
-                    ['label' => 'Absen Datang', 'desc' => 'Catat kehadiran', 'icon' => 'ti-fingerprint', 'gradient' => 'from-emerald-500 to-teal-600', 'route' => '#'],
-                    ['label' => 'Absen Pulang', 'desc' => 'Catat kepulangan', 'icon' => 'ti-logout', 'gradient' => 'from-rose-500 to-pink-600', 'route' => '#'],
-                    ['label' => 'Riwayat', 'desc' => 'Lihat rekap absensi', 'icon' => 'ti-history', 'gradient' => 'from-blue-500 to-indigo-600', 'route' => '#'],
+                    ['label' => 'Absensi', 'desc' => 'Scan QR kehadiran', 'icon' => 'ti-fingerprint', 'gradient' => 'from-emerald-500 to-teal-600', 'route' => route('intern.attendance.index')],
+                    ['label' => 'Izin / Sakit', 'desc' => 'Ajukan ketidakhadiran', 'icon' => 'ti-notes', 'gradient' => 'from-rose-500 to-pink-600', 'route' => route('intern.attendance.leave')],
+                    ['label' => 'Riwayat', 'desc' => 'Lihat rekap absensi', 'icon' => 'ti-history', 'gradient' => 'from-blue-500 to-indigo-600', 'route' => route('intern.attendance.history')],
                     ['label' => 'Profil', 'desc' => 'Edit data diri', 'icon' => 'ti-user-circle', 'gradient' => 'from-violet-500 to-purple-600', 'route' => route('intern.profile.edit')],
                 ];
             @endphp

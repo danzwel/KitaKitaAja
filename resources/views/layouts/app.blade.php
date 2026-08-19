@@ -6,7 +6,7 @@
     <title>@yield('title', 'Sistem Magang Upelkes Jabar')</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @include('components.vite-assets')
 </head>
 <body class="bg-[#EEF1F5] text-gray-800 font-sans antialiased" x-data="{ mobileMenuOpen: false }">
 

@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @include('components.vite-assets')
 
     <style>
         body { font-family: 'Inter', sans-serif; }
