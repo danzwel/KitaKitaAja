@@ -38,6 +38,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance.index');
         Route::get('attendance/recap', [AttendanceController::class, 'recap'])->name('attendance.recap');
+        Route::get('attendance/recap/pdf', [AttendanceController::class, 'recapPdf'])->name('attendance.recap.pdf');
+        Route::get('attendance/recap/{intern}', [AttendanceController::class, 'internRecap'])->name('attendance.intern-recap');
+        Route::get('attendance/recap/{intern}/pdf', [AttendanceController::class, 'internRecapPdf'])->name('attendance.intern-recap.pdf');
         Route::post('attendance/sessions', [AttendanceController::class, 'storeSession'])->name('attendance.sessions.store');
         Route::patch('attendance/sessions/{session}/close', [AttendanceController::class, 'closeSession'])->name('attendance.sessions.close');
         Route::patch('attendance/records/{record}/review', [AttendanceController::class, 'reviewAttendance'])->name('attendance.records.review');

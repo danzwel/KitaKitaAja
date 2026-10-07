@@ -98,8 +98,8 @@
                 {{-- User Dropdown --}}
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open" class="flex items-center gap-2.5 rounded-xl px-2 py-1.5 transition hover:bg-gray-100">
-                        @if(auth('intern')->user()->photo)
-                            <img src="{{ Storage::url(auth('intern')->user()->photo) }}" alt="Foto" class="h-8 w-8 rounded-full object-cover ring-2 ring-gray-100">
+                        @if(auth('intern')->user()->profile_photo_path)
+                            <img src="{{ Storage::url(auth('intern')->user()->profile_photo_path) }}" alt="Foto" class="h-8 w-8 rounded-full object-cover ring-2 ring-gray-100">
                         @else
                             <div class="flex h-8 w-8 items-center justify-center rounded-full bg-navy text-xs font-bold text-white">
                                 {{ Str::upper(Str::substr(auth('intern')->user()->name ?? 'M', 0, 1)) }}

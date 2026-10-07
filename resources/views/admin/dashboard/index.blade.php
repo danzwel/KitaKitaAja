@@ -64,7 +64,7 @@
                 @foreach ($chartData as $index => $value)
                     <div class="group flex min-w-0 flex-1 flex-col items-center justify-end gap-2">
                         <span class="text-[10px] font-semibold text-[#0C2340] opacity-0 transition group-hover:opacity-100">{{ $value }}</span>
-                        <div class="w-full max-w-8 rounded-t-md bg-[#0C2340] transition hover:bg-[#1E5AA8]" style="height: {{ max(8, round(((int) $value / $chartMax) * 100)) }}%" title="{{ $chartLabels[$index] }}: {{ $value }} pengajuan"></div>
+                        <div class="w-full max-w-8 rounded-t-md bg-[#0C2340] transition hover:bg-[#1E5AA8]" style="height: {{ max(8, round(((int) $value / $chartMax) * 176)) }}px" title="{{ $chartLabels[$index] }}: {{ $value }} pengajuan"></div>
                         <span class="w-12 truncate text-center text-[10px] text-[#8A94A6]">{{ $chartLabels[$index] }}</span>
                     </div>
                 @endforeach

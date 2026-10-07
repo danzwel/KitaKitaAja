@@ -110,8 +110,36 @@
                 <h1 class="font-heading min-w-0 truncate text-lg font-semibold text-[#1E2A24]">{{ $title ?? 'Dashboard' }}</h1>
                 </div>
 
+                @php
+                    $pendingApplicationNotifications = \App\Models\InternshipApplication::whereIn('status', ['menunggu_verifikasi', 'diproses'])->count();
+                    $pendingLeaveNotifications = \App\Models\LeaveRequest::where('status', 'pending')->count();
+                    $notificationCount = $pendingApplicationNotifications + $pendingLeaveNotifications;
+                @endphp
                 <div class="flex items-center gap-3">
-                    <button class="hidden h-10 w-10 items-center justify-center rounded-full text-[#687386] hover:bg-[#F4F6FB] sm:inline-flex" aria-label="Notifikasi"><i class="ti ti-bell text-lg"></i></button>
+                    <div class="relative hidden sm:block" x-data="{ open: false }">
+                        <button @click="open = !open" class="relative flex h-11 w-11 items-center justify-center rounded-full text-[#687386] hover:bg-[#F4F6FB]" aria-label="Notifikasi">
+                            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
+                            @if ($notificationCount > 0)
+                                <span class="absolute right-0 top-0 h-3 w-3 rounded-full ring-2 ring-white" style="background-color:#dc2626" aria-label="Ada notifikasi baru"></span>
+                            @endif
+                        </button>
+                        <div x-show="open" @click.outside="open = false" x-cloak class="absolute right-0 z-30 mt-2 w-80 rounded-xl border border-[#E3E5DE] bg-white p-3 shadow-lg">
+                            <div class="flex items-center justify-between px-2 pb-2">
+                                <p class="font-semibold text-[#1E2A24]">Notifikasi</p>
+                                <span class="text-xs text-[#8A94A6]">{{ $notificationCount }} perlu ditinjau</span>
+                            </div>
+                            <div class="space-y-1 border-t border-[#EEF0F5] pt-2">
+                                <a href="{{ route('admin.applications.index', ['status' => 'menunggu_verifikasi']) }}" class="flex items-start gap-3 rounded-lg px-2 py-2.5 hover:bg-[#F4F6FB]">
+                                    <span class="mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg bg-[#E8EEF5] text-[#0C2340]"><i class="ti ti-file-description"></i></span>
+                                    <span><span class="block text-sm font-medium text-[#1E2A24]">Pengajuan magang baru</span><span class="block text-xs text-[#8A94A6]">{{ $pendingApplicationNotifications }} pengajuan menunggu proses</span></span>
+                                </a>
+                                <a href="{{ route('admin.attendance.recap') }}#pengajuan-izin-sakit" class="flex items-start gap-3 rounded-lg px-2 py-2.5 hover:bg-[#F4F6FB]">
+                                    <span class="mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600"><i class="ti ti-calendar-event"></i></span>
+                                    <span><span class="block text-sm font-medium text-[#1E2A24]">Pengajuan izin/sakit</span><span class="block text-xs text-[#8A94A6]">{{ $pendingLeaveNotifications }} pengajuan menunggu persetujuan</span></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     <div class="hidden h-7 w-px bg-[#E7EAF1] sm:block"></div>
                     <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open" class="flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-[#F4F6FB]">
@@ -146,6 +174,34 @@
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('form.js-auto-filter').forEach(form => {
+                const search = form.querySelector('[data-filter-search]');
+                const status = form.querySelector('select[name="status"]');
+                const table = document.getElementById(form.dataset.filterTarget);
+                const rows = table ? [...table.querySelectorAll('[data-filter-row]')] : [];
+                const empty = table?.querySelector('[data-filter-empty]');
+                const applyFilter = () => {
+                    const keyword = (search?.value || '').trim().toLowerCase();
+                    const selectedStatus = status?.value || '';
+                    let visible = 0;
+                    rows.forEach(row => {
+                        const matchesKeyword = !keyword || row.dataset.search.includes(keyword);
+                        const matchesStatus = !selectedStatus || row.dataset.status === selectedStatus;
+                        const show = matchesKeyword && matchesStatus;
+                        row.hidden = !show;
+                        if (show) visible++;
+                    });
+                    if (empty) empty.hidden = visible > 0 || rows.length > 0 && rows.some(row => !row.hidden) ? true : false;
+                };
+
+                status?.addEventListener('change', applyFilter);
+                search?.addEventListener('input', applyFilter);
+                applyFilter();
+            });
+        });
+    </script>
     @stack('scripts')
 </body>
 </html>

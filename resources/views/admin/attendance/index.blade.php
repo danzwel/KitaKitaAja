@@ -48,7 +48,7 @@
         @endif
 
         <div class="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
-            <x-admin.card title="Buat Sesi QR" subtitle="QR aktif untuk tanggal hari ini atau jadwal yang dipilih.">
+            <x-admin.card title="Buat Sesi QR" subtitle="Buat satu QR datang dan satu QR pulang yang berlaku setiap hari kerja.">
                 <form method="POST" action="{{ route('admin.attendance.sessions.store') }}" class="space-y-4">
                     @csrf
                     <div>
@@ -60,8 +60,12 @@
                     </div>
                     <div>
                         <label class="mb-1.5 block text-sm font-medium text-[#1E2A24]">Tanggal</label>
-                        <input type="date" name="attendance_date" value="{{ $date }}" required class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">
+                        <input id="attendance-date" type="date" name="attendance_date" value="{{ $date }}" class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">
                     </div>
+                    <label class="flex items-center gap-2 rounded-lg bg-[#F4F6FB] px-3 py-2.5 text-sm text-[#1E2A24]">
+                        <input type="checkbox" name="is_recurring" value="1" checked class="rounded border-[#C9CED8] text-[#0C2340]">
+                        <span>QR berlaku setiap hari kerja (disarankan)</span>
+                    </label>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="mb-1.5 block text-sm font-medium text-[#1E2A24]">Latitude</label>
@@ -90,7 +94,7 @@
                             <div class="flex items-start justify-between gap-3">
                                 <div>
                                     <p class="font-semibold text-[#0C2340]">Absen {{ ucfirst($session->type) }}</p>
-                                    <p class="mt-1 text-xs text-[#8A94A6]">{{ $session->attendance_date->translatedFormat('d F Y') }} · Radius {{ $session->radius_meters }} m</p>
+                                    <p class="mt-1 text-xs text-[#8A94A6]">{{ $session->is_recurring ? 'Setiap hari kerja' : $session->attendance_date->translatedFormat('d F Y') }} · Radius {{ $session->radius_meters }} m</p>
                                 </div>
                                 <span class="rounded-full px-2 py-1 text-[10px] font-semibold {{ $session->isAvailable() ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500' }}">{{ $session->isAvailable() ? 'Aktif' : 'Ditutup' }}</span>
                             </div>
@@ -117,47 +121,6 @@
             </x-admin.card>
         </div>
 
-        @if(false)
-        <x-admin.card title="Rekap Absensi" subtitle="{{ $selectedIntern ? 'Satu peserta dalam periode magang.' : 'Semua peserta untuk tanggal hari ini.' }} Lokasi dicatat saat mahasiswa melakukan scan.">
-            <div class="responsive-table">
-                <table class="w-full min-w-[760px] text-left text-sm">
-                    <thead><tr class="border-b border-[#E7EAF1] text-xs uppercase tracking-wide text-[#8A94A6]"><th class="py-3 pr-4">Mahasiswa</th><th class="py-3 pr-4">Datang</th><th class="py-3 pr-4">Pulang</th><th class="py-3 pr-4">Lokasi</th><th class="py-3 pr-4">Aksi</th></tr></thead>
-                    <tbody class="divide-y divide-[#EEF0F5]">
-                    @forelse ($records as $record)
-                        <tr>
-                            <td class="py-3 pr-4"><p class="font-medium text-[#1E2A24]">{{ $record->intern->name }}</p><p class="text-xs text-[#8A94A6]">{{ $record->intern->username }}</p></td>
-                            <td class="py-3 pr-4"><span class="font-medium">{{ $record->check_in_at?->format('H:i') ?? '-' }}</span><span class="ml-2 rounded-full bg-[#E8EEF5] px-2 py-1 text-[10px] text-[#0C2340]">{{ $record->check_in_status ? ucwords(str_replace('_', ' ', $record->check_in_status)) : '-' }}</span></td>
-                            <td class="py-3 pr-4">{{ $record->check_out_at?->format('H:i') ?? '-' }}</td>
-                            <td class="py-3 pr-4 text-xs"><div class="text-[#687386]">Masuk: {{ $record->check_in_distance_meters !== null ? $record->check_in_distance_meters.' m' : 'GPS belum disetel' }}</div><div class="mt-1 text-[#A0A8B8]">Pulang: {{ $record->check_out_distance_meters !== null ? $record->check_out_distance_meters.' m' : '-' }}</div></td>
-                            <td class="py-3 pr-4">
-                                @if ($record->check_in_status === 'menunggu_verifikasi')
-                                    <div class="flex gap-2">
-                                        <form method="POST" action="{{ route('admin.attendance.records.review', $record) }}">@csrf @method('PATCH')<input type="hidden" name="decision" value="approve"><button class="rounded-lg bg-[#0C2340] px-2.5 py-1.5 text-xs font-semibold text-white">Terima</button></form>
-                                        <form method="POST" action="{{ route('admin.attendance.records.review', $record) }}">@csrf @method('PATCH')<input type="hidden" name="decision" value="reject"><button class="rounded-lg border border-[#F0C9C9] px-2.5 py-1.5 text-xs font-semibold text-[#9B3A3A]">Tolak</button></form>
-                                    </div>
-                                @else <span class="text-xs text-[#8A94A6]">Tidak perlu verifikasi</span> @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="5" class="py-8 text-center text-sm text-[#8A94A6]">Belum ada data absensi.</td></tr>
-                    @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </x-admin.card>
-
-        <x-admin.card title="Pengajuan Izin / Sakit" subtitle="Pengajuan yang masih menunggu keputusan admin.">
-            <div class="space-y-3">
-                @forelse ($leaveRequests as $leave)
-                    <div class="flex flex-col gap-3 rounded-xl border border-[#E7EAF1] p-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div><p class="font-medium text-[#1E2A24]">{{ $leave->intern->name }} · {{ ucfirst($leave->type) }}</p><p class="text-xs text-[#8A94A6]">{{ $leave->start_date->format('d M Y') }} - {{ $leave->end_date->format('d M Y') }} · {{ $leave->reason }}</p></div>
-                        <div class="flex gap-2"><form method="POST" action="{{ route('admin.attendance.leave.review', $leave) }}">@csrf @method('PATCH')<input type="hidden" name="decision" value="approved"><button class="rounded-lg bg-[#0C2340] px-3 py-2 text-xs font-semibold text-white">Setujui</button></form><form method="POST" action="{{ route('admin.attendance.leave.review', $leave) }}">@csrf @method('PATCH')<input type="hidden" name="decision" value="rejected"><button class="rounded-lg border border-[#F0C9C9] px-3 py-2 text-xs font-semibold text-[#9B3A3A]">Tolak</button></form></div>
-                    </div>
-                @empty <p class="text-sm text-[#8A94A6]">Tidak ada pengajuan yang menunggu persetujuan.</p> @endforelse
-            </div>
-        </x-admin.card>
-        @endif
-
         <div id="qr-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-[#081A30]/70 p-4" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
             <div class="relative w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-2xl">
                 <button id="qr-modal-close" type="button" class="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full text-[#687386] hover:bg-[#F4F6FB]" aria-label="Tutup QR"><i class="ti ti-x text-lg"></i></button>
@@ -173,6 +136,15 @@
         <script>
             const locationButton = document.getElementById('use-current-location');
             const locationStatus = document.getElementById('location-status');
+            const recurringCheckbox = document.querySelector('input[name="is_recurring"]');
+            const attendanceDate = document.getElementById('attendance-date');
+            const syncRecurringDate = () => {
+                if (!recurringCheckbox || !attendanceDate) return;
+                attendanceDate.disabled = recurringCheckbox.checked;
+                attendanceDate.required = !recurringCheckbox.checked;
+            };
+            recurringCheckbox?.addEventListener('change', syncRecurringDate);
+            syncRecurringDate();
             if (locationButton) locationButton.addEventListener('click', () => {
                 if (!navigator.geolocation) { locationStatus.textContent = 'Browser tidak mendukung GPS.'; return; }
                 locationButton.disabled = true;

@@ -10,12 +10,13 @@ class AttendanceSession extends Model
     use HasFactory;
 
     protected $fillable = [
-        'created_by', 'type', 'attendance_date', 'token', 'expires_at',
+        'created_by', 'type', 'attendance_date', 'is_recurring', 'token', 'expires_at',
         'latitude', 'longitude', 'radius_meters', 'is_active',
     ];
 
     protected $casts = [
         'attendance_date' => 'date',
+        'is_recurring' => 'boolean',
         'expires_at' => 'datetime',
         'is_active' => 'boolean',
     ];
@@ -26,8 +27,11 @@ class AttendanceSession extends Model
 
     public function isAvailable(): bool
     {
+        $isWorkingDay = now()->isWeekday()
+            && ! in_array(now()->toDateString(), config('attendance.holidays', []), true);
+
         return $this->is_active
-            && $this->attendance_date->isToday()
+            && ($this->is_recurring ? $isWorkingDay : $this->attendance_date?->isToday())
             && ($this->expires_at === null || $this->expires_at->isFuture());
     }
 }

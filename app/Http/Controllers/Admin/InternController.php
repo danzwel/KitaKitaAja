@@ -25,8 +25,7 @@ class InternController extends Controller
             ->search($request->input('q'))
             ->status($request->input('status'))
             ->latest()
-            ->paginate(10)
-            ->withQueryString();
+            ->get();
 
         return view('admin.interns.index', compact('interns'));
     }

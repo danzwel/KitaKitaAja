@@ -5,18 +5,21 @@ namespace App\Http\Controllers\Intern\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
-    public function create(): View|RedirectResponse
+    public function create(): View|Response|RedirectResponse
     {
         if (Auth::guard('intern')->check()) {
             return redirect()->route('intern.dashboard');
         }
 
-        return view('intern.auth.login');
+        return response()->view('intern.auth.login')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache');
     }
 
     public function store(Request $request): RedirectResponse

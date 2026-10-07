@@ -40,22 +40,8 @@ class ApplicationController extends Controller
 
         $applications = InternshipApplication::query()
             ->with(['bidang', 'document'])
-            ->when($request->filled('q'), function ($query) use ($request): void {
-                $keyword = $request->string('q')->toString();
-
-                $query->where(function ($query) use ($keyword): void {
-                    $query->where('nama', 'like', "%{$keyword}%")
-                        ->orWhere('nim', 'like', "%{$keyword}%")
-                        ->orWhere('universitas', 'like', "%{$keyword}%")
-                        ->orWhere('application_code', 'like', "%{$keyword}%");
-                });
-            })
-            ->when(in_array($request->input('status'), $statuses, true), function ($query) use ($request): void {
-                $query->where('status', $request->input('status'));
-            })
             ->orderBy($sort, $direction)
-            ->paginate(10)
-            ->withQueryString();
+            ->get();
 
         return view('admin.applications.index', compact('applications'));
     }
@@ -100,4 +86,5 @@ class ApplicationController extends Controller
 
         return back()->with('success', 'Pengajuan berhasil ditolak.');
     }
+
 }

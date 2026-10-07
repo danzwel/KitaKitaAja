@@ -174,8 +174,9 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">
                         Pas Foto <span class="text-red-500 font-normal">*wajib, JPG/PNG max 1MB</span>
                     </label>
-                    <input type="file" name="foto" accept="image/*"
+                    <input id="foto-input" type="file" name="foto" accept="image/jpeg,image/png"
                            class="w-full border border-gray-200 rounded-lg px-3.5 py-2 text-sm file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-navy file:text-white file:text-xs file:font-medium hover:file:bg-navy-light">
+                    <p id="foto-crop-status" class="mt-2 text-xs text-gray-500">Setelah memilih foto, atur potongan dengan rasio 3:4.</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">
@@ -213,6 +214,21 @@
 </form>
 </div>
 </div>
+
+<div id="foto-crop-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-navy/70 p-4" role="dialog" aria-modal="true" aria-labelledby="foto-crop-title">
+    <div class="w-full max-w-lg rounded-2xl bg-white p-5 shadow-2xl">
+        <div class="flex items-center justify-between gap-3">
+            <div><h2 id="foto-crop-title" class="font-display text-lg font-bold text-navy">Potong Pas Foto</h2><p class="text-xs text-gray-500">Geser foto dan atur zoom sampai wajah berada di area 3:4.</p></div>
+            <button id="foto-crop-cancel" type="button" class="rounded-lg px-3 py-2 text-sm text-gray-500 hover:bg-gray-100">Batal</button>
+        </div>
+        <div id="foto-crop-viewport" class="relative mx-auto mt-5 overflow-hidden bg-gray-900 select-none touch-none" style="width: min(75vw, 300px); height: min(70vh, 400px); aspect-ratio: 3 / 4;">
+            <img id="foto-crop-image" alt="Pratinjau crop pas foto" class="absolute max-w-none cursor-move select-none" draggable="false">
+            <div class="pointer-events-none absolute inset-0 ring-2 ring-white/90"></div>
+        </div>
+        <label class="mt-4 block text-xs font-medium text-gray-600">Zoom <input id="foto-crop-zoom" type="range" min="1" max="3" step="0.01" value="1" class="mt-2 w-full accent-[#0C2340]"></label>
+        <div class="mt-5 flex justify-end gap-2"><button id="foto-crop-confirm" type="button" class="rounded-lg bg-navy px-4 py-2.5 text-sm font-semibold text-white hover:bg-navy-light">Gunakan Foto Ini</button></div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -228,5 +244,127 @@
 
     bidangSelect.addEventListener('change', togglePortofolio);
     togglePortofolio();
+
+    const fotoInput = document.getElementById('foto-input');
+    const cropModal = document.getElementById('foto-crop-modal');
+    const cropViewport = document.getElementById('foto-crop-viewport');
+    const cropImage = document.getElementById('foto-crop-image');
+    const cropZoom = document.getElementById('foto-crop-zoom');
+    const cropStatus = document.getElementById('foto-crop-status');
+    const cropCancel = document.getElementById('foto-crop-cancel');
+    const cropConfirm = document.getElementById('foto-crop-confirm');
+    let sourceImage = null;
+    let cropState = { scale: 1, baseScale: 1, x: 0, y: 0, startX: 0, startY: 0, pointerId: null };
+
+    function limitCropPosition() {
+        const width = cropImage.offsetWidth;
+        const height = cropImage.offsetHeight;
+        const viewportWidth = cropViewport.clientWidth;
+        const viewportHeight = cropViewport.clientHeight;
+        cropState.x = Math.min(0, Math.max(viewportWidth - width, cropState.x));
+        cropState.y = Math.min(0, Math.max(viewportHeight - height, cropState.y));
+    }
+
+    function renderCropImage() {
+        const width = sourceImage.naturalWidth * cropState.baseScale * cropState.scale;
+        const height = sourceImage.naturalHeight * cropState.baseScale * cropState.scale;
+        cropImage.style.width = width + 'px';
+        cropImage.style.height = height + 'px';
+        limitCropPosition();
+        cropImage.style.transform = `translate(${cropState.x}px, ${cropState.y}px)`;
+    }
+
+    function openCropper(file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            sourceImage = new Image();
+            sourceImage.onload = () => {
+                cropModal.classList.remove('hidden');
+                cropModal.classList.add('flex');
+                const viewportWidth = cropViewport.clientWidth;
+                const viewportHeight = cropViewport.clientHeight;
+                cropState.baseScale = Math.max(viewportWidth / sourceImage.naturalWidth, viewportHeight / sourceImage.naturalHeight);
+                cropState.scale = 1;
+                cropState.x = (viewportWidth - sourceImage.naturalWidth * cropState.baseScale) / 2;
+                cropState.y = (viewportHeight - sourceImage.naturalHeight * cropState.baseScale) / 2;
+                cropImage.src = sourceImage.src;
+                cropZoom.value = '1';
+                renderCropImage();
+            };
+            sourceImage.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function closeCropper() {
+        cropModal.classList.add('hidden');
+        cropModal.classList.remove('flex');
+        cropImage.removeAttribute('src');
+        sourceImage = null;
+    }
+
+    fotoInput.addEventListener('change', () => {
+        const file = fotoInput.files?.[0];
+        if (file) {
+            cropStatus.textContent = 'Foto belum dipotong. Selesaikan crop 3:4 sebelum mengirim.';
+            openCropper(file);
+        }
+    });
+
+    cropZoom.addEventListener('input', () => {
+        const oldWidth = cropImage.offsetWidth;
+        const oldHeight = cropImage.offsetHeight;
+        const centerX = cropViewport.clientWidth / 2;
+        const centerY = cropViewport.clientHeight / 2;
+        cropState.scale = Number(cropZoom.value);
+        const newWidth = sourceImage.naturalWidth * cropState.baseScale * cropState.scale;
+        const newHeight = sourceImage.naturalHeight * cropState.baseScale * cropState.scale;
+        cropState.x = centerX - ((centerX - cropState.x) * newWidth / oldWidth);
+        cropState.y = centerY - ((centerY - cropState.y) * newHeight / oldHeight);
+        renderCropImage();
+    });
+
+    cropImage.addEventListener('pointerdown', (event) => {
+        cropState.pointerId = event.pointerId;
+        cropState.startX = event.clientX - cropState.x;
+        cropState.startY = event.clientY - cropState.y;
+        cropImage.setPointerCapture(event.pointerId);
+    });
+    cropImage.addEventListener('pointermove', (event) => {
+        if (cropState.pointerId !== event.pointerId) return;
+        cropState.x = event.clientX - cropState.startX;
+        cropState.y = event.clientY - cropState.startY;
+        renderCropImage();
+    });
+    cropImage.addEventListener('pointerup', () => { cropState.pointerId = null; });
+    cropImage.addEventListener('pointercancel', () => { cropState.pointerId = null; });
+    cropCancel.addEventListener('click', () => { fotoInput.value = ''; closeCropper(); cropStatus.textContent = 'Pilih pas foto lalu potong dengan rasio 3:4.'; });
+
+    cropConfirm.addEventListener('click', () => {
+        const canvas = document.createElement('canvas');
+        const outputWidth = 450;
+        const outputHeight = 600;
+        const viewportWidth = cropViewport.clientWidth;
+        const viewportHeight = cropViewport.clientHeight;
+        const displayedWidth = sourceImage.naturalWidth * cropState.baseScale * cropState.scale;
+        const displayedHeight = sourceImage.naturalHeight * cropState.baseScale * cropState.scale;
+        const sx = Math.max(0, -cropState.x) / displayedWidth * sourceImage.naturalWidth;
+        const sy = Math.max(0, -cropState.y) / displayedHeight * sourceImage.naturalHeight;
+        const sw = viewportWidth / displayedWidth * sourceImage.naturalWidth;
+        const sh = viewportHeight / displayedHeight * sourceImage.naturalHeight;
+        canvas.width = outputWidth;
+        canvas.height = outputHeight;
+        canvas.getContext('2d').drawImage(sourceImage, sx, sy, sw, sh, 0, 0, outputWidth, outputHeight);
+        canvas.toBlob((blob) => {
+            if (!blob) return;
+            const croppedFile = new File([blob], 'pas-foto-3x4.jpg', { type: 'image/jpeg' });
+            const transfer = new DataTransfer();
+            transfer.items.add(croppedFile);
+            fotoInput.files = transfer.files;
+            cropStatus.textContent = 'Pas foto sudah dipotong dengan rasio 3:4 dan siap dikirim.';
+            cropStatus.className = 'mt-2 text-xs text-emerald-600';
+            closeCropper();
+        }, 'image/jpeg', 0.82);
+    });
 </script>
 @endpush
