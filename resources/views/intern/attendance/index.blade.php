@@ -6,20 +6,19 @@
         </div>
 
         <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            @foreach ([['label'=>'Total Hadir','value'=>$stats['hadir'],'border'=>'border-emerald-500'],['label'=>'Terlambat','value'=>$stats['terlambat'],'border'=>'border-rose-500'],['label'=>'Izin','value'=>$stats['izin'],'border'=>'border-blue-500'],['label'=>'Sakit','value'=>$stats['sakit'],'border'=>'border-amber-500']] as $stat)
+            @foreach ([['label'=>'Total Hadir','value'=>$stats['hadir'],'border'=>'border-emerald-500'],['label'=>'Total Alpa','value'=>$stats['alpa'],'border'=>'border-rose-500'],['label'=>'Izin','value'=>$stats['izin'],'border'=>'border-blue-500'],['label'=>'Sakit','value'=>$stats['sakit'],'border'=>'border-amber-500']] as $stat)
                 <div class="rounded-xl border-l-4 {{ $stat['border'] }} bg-white p-4 shadow-sm"><p class="text-2xl font-bold text-gray-900">{{ $stat['value'] }}</p><p class="mt-1 text-xs font-medium text-gray-400">{{ $stat['label'] }}</p></div>
             @endforeach
         </div>
 
-        <div class="grid gap-6 lg:grid-cols-2">
+        <div>
             <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
                 <h3 class="font-heading text-lg font-bold text-gray-900">Status Hari Ini</h3>
                 @if ($todayRecord)
-                    <div class="mt-5 grid grid-cols-2 gap-3 text-sm"><div class="rounded-xl bg-emerald-50 p-4"><p class="text-xs text-emerald-600">Datang</p><p class="mt-1 font-bold text-emerald-900">{{ $todayRecord->check_in_at?->format('H:i') ?? '-' }}</p><p class="text-xs text-emerald-700">{{ $todayRecord->check_in_status ? ucwords(str_replace('_', ' ', $todayRecord->check_in_status)) : '-' }}</p></div><div class="rounded-xl bg-blue-50 p-4"><p class="text-xs text-blue-600">Pulang</p><p class="mt-1 font-bold text-blue-900">{{ $todayRecord->check_out_at?->format('H:i') ?? '-' }}</p><p class="text-xs text-blue-700">{{ $todayRecord->check_out_status ? ucwords(str_replace('_', ' ', $todayRecord->check_out_status)) : 'Belum absen' }}</p></div></div>
+                    <div class="mt-5 grid grid-cols-2 gap-3 text-sm"><div class="rounded-xl bg-emerald-50 p-4"><p class="text-xs text-emerald-600">Datang</p><p class="mt-1 font-bold text-emerald-900">{{ $todayRecord->check_in_at?->format('H:i') ?? '-' }}</p><p class="text-xs text-emerald-700"><x-status-badge :status="$todayRecord->check_in_status ?? '-'" /></p></div><div class="rounded-xl bg-blue-50 p-4"><p class="text-xs text-blue-600">Pulang</p><p class="mt-1 font-bold text-blue-900">{{ $todayRecord->check_out_at?->format('H:i') ?? '-' }}</p><p class="text-xs text-blue-700"><x-status-badge :status="$todayRecord->check_out_status ?? 'belum ada absensi'" /></p></div></div>
                 @else <p class="mt-5 rounded-xl bg-gray-50 p-4 text-sm text-gray-500">Belum ada absensi hari ini. Scan QR yang ditampilkan admin.</p> @endif
                 <div class="mt-5 flex flex-wrap gap-3"><a href="{{ route('intern.attendance.leave') }}" class="rounded-lg border border-[#0C2340] px-4 py-2.5 text-sm font-semibold text-[#0C2340]">Ajukan Izin / Sakit</a><a href="{{ route('intern.attendance.history') }}" class="rounded-lg bg-[#0C2340] px-4 py-2.5 text-sm font-semibold text-white">Lihat Riwayat</a></div>
             </div>
-            <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100"><h3 class="font-heading text-lg font-bold text-gray-900">Riwayat Terbaru</h3><div class="mt-4 divide-y divide-gray-100">@forelse ($recentRecords->take(5) as $record)<div class="flex items-center justify-between gap-3 py-3"><div><p class="text-sm font-medium text-gray-800">{{ $record->attendance_date->format('d M Y') }}</p><p class="text-xs text-gray-400">Datang {{ $record->check_in_at?->format('H:i') ?? '-' }} · Pulang {{ $record->check_out_at?->format('H:i') ?? '-' }}</p></div><span class="rounded-full bg-gray-100 px-2 py-1 text-[10px] font-semibold text-gray-600">{{ $record->check_in_status ? ucwords(str_replace('_', ' ', $record->check_in_status)) : '-' }}</span></div>@empty<p class="py-5 text-sm text-gray-400">Belum ada riwayat.</p>@endforelse</div></div>
         </div>
 
         <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 sm:p-8">
@@ -30,8 +29,6 @@
                 </div>
                 <div class="flex flex-wrap gap-2">
                     <button id="start-qr-scanner" type="button" class="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-[#0C2340] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#081A30]"><i class="ti ti-camera"></i> Buka Kamera</button>
-                    <label for="qr-image-input" class="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg border border-[#0C2340] px-4 py-2.5 text-sm font-semibold text-[#0C2340] hover:bg-gray-50"><i class="ti ti-photo"></i> Foto QR</label>
-                    <input id="qr-image-input" type="file" accept="image/*" capture="environment" class="hidden">
                 </div>
             </div>
             <div id="qr-scanner-panel" class="mt-5 hidden max-w-md">
@@ -48,7 +45,6 @@
             (() => {
                 const startButton = document.getElementById('start-qr-scanner');
                 const stopButton = document.getElementById('stop-qr-scanner');
-                const imageInput = document.getElementById('qr-image-input');
                 const panel = document.getElementById('qr-scanner-panel');
                 const status = document.getElementById('qr-reader-status');
                 let scanner = null;
@@ -114,34 +110,10 @@
                     }
                 });
 
-                imageInput.addEventListener('change', async (event) => {
-                    const file = event.target.files?.[0];
-                    event.target.value = '';
-                    if (!file) return;
-                    if (typeof Html5Qrcode === 'undefined') {
-                        alert('Pembaca QR belum tersedia. Pastikan HP terhubung ke internet.');
-                        return;
-                    }
-
-                    panel.classList.remove('hidden');
-                    startButton.classList.add('hidden');
-                    status.textContent = 'Membaca foto QR...';
-                    scanner = new Html5Qrcode('qr-reader');
-                    try {
-                        const decodedText = await scanner.scanFile(file, true);
-                        await openScannedUrl(decodedText);
-                    } catch (error) {
-                        status.textContent = 'QR tidak terbaca. Foto QR lebih dekat dan pastikan tidak buram.';
-                        startButton.classList.remove('hidden');
-                        if (scanner) {
-                            scanner.clear();
-                            scanner = null;
-                        }
-                    }
-                });
-
                 stopButton.addEventListener('click', stopScanner);
             })();
         </script>
     @endpush
 </x-intern.layouts.app>
+
+

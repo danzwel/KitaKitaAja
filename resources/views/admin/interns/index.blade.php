@@ -1,27 +1,24 @@
 <x-admin.layouts.app title="Mahasiswa Magang">
 
     <x-admin.card>
-        <form method="GET" class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <form method="GET" data-filter-target="interns-table" class="js-auto-filter mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
             <div class="relative flex-1">
                 <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-[#8B958A]"></i>
-                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama atau universitas..."
+                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama atau universitas..." data-filter-search
                        class="w-full rounded-lg border border-[#E3E5DE] py-2.5 pl-10 pr-3 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">
             </div>
 
-            <select name="status" onchange="this.form.submit()"
+            <select name="status"
                     class="rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">
                 <option value="">Semua Status</option>
                 <option value="aktif" @selected(request('status') === 'aktif')>Aktif</option>
                 <option value="selesai" @selected(request('status') === 'selesai')>Selesai</option>
             </select>
 
-            <button type="submit" class="rounded-lg bg-[#0C2340] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#081A30]">
-                Terapkan
-            </button>
         </form>
 
         <div class="responsive-table">
-            <table class="w-full text-left text-sm">
+            <table id="interns-table" class="w-full text-left text-sm">
                 <thead>
                     <tr class="border-b border-[#E3E5DE] text-xs uppercase tracking-wide text-[#64705F]">
                         <th class="whitespace-nowrap py-3 pr-4">Nama</th>
@@ -34,7 +31,7 @@
                 </thead>
                 <tbody class="divide-y divide-[#EFF1EC]">
                     @forelse ($interns as $intern)
-                        <tr class="hover:bg-[#F6F7F4]">
+                        <tr data-filter-row data-status="{{ $intern->status }}" data-search="{{ strtolower($intern->name.' '.$intern->university.' '.$intern->username) }}" class="hover:bg-[#F6F7F4]">
                             <td class="py-3 pr-4 font-medium text-[#1E2A24]">{{ $intern->name }}</td>
                             <td class="py-3 pr-4 text-[#4B564B]">{{ $intern->university }}</td>
                             <td class="py-3 pr-4 text-[#4B564B]">{{ $intern->internshipApplication?->bidang?->nama_bidang ?? $intern->department?->name ?? '-' }}</td>
@@ -59,7 +56,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr>
+                        <tr data-filter-empty>
                             <td colspan="6" class="py-10 text-center text-sm text-[#8B958A]">Belum ada mahasiswa magang.</td>
                         </tr>
                     @endforelse
@@ -67,9 +64,7 @@
             </table>
         </div>
 
-        <div class="mt-5">
-            {{ $interns->links() }}
-        </div>
     </x-admin.card>
 </x-admin.layouts.app>
+
 

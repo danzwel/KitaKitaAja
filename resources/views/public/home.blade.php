@@ -4,7 +4,7 @@
 
   {{-- HERO --}}
     <section class="relative bg-white overflow-hidden">
-       <div class="absolute inset-0 bg-cover bg-center opacity-[0.35]" style="background-image: url('{{ asset('images/uptd2.jpg') }}');"></div>
+       <div class="absolute inset-0 bg-cover bg-center opacity-[0.35]" style="background-image: url('/images/uptd2.jpg');"></div>
        <div class="absolute inset-0 bg-navy/80 mix-blend-multiply"></div>
        <div class="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white"></div>
 
@@ -43,13 +43,13 @@
         {{-- BANNER FOTO --}}
         <div class="relative z-10 max-w-5xl mx-auto px-6 pb-14">
             <div class="relative rounded-2xl overflow-hidden shadow-lg">
-                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ asset('images/uptd.jpg') }}');"></div>
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/images/uptd.jpg');"></div>
                 <div class="absolute inset-0 bg-navy/30 mix-blend-multiply"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-navy via-navy/40 to-transparent"></div>
 
                 <div class="relative px-6 md:px-10 py-12 md:py-16">
                     <div class="flex items-center gap-3 mb-8">
-                        <img src="{{ asset('images/logo.jpg') }}" alt="Logo UPTD" class="w-10 h-10 rounded-full object-cover ring-2 ring-gold-light/60">
+                        <img src="/images/logo.jpg" alt="Logo UPTD" class="w-10 h-10 rounded-full object-cover ring-2 ring-gold-light/60">
                         <span class="font-display font-bold text-white tracking-wide">UPELKES</span>
                     </div>
 
@@ -59,11 +59,11 @@
                     </h2>
 
                     <div class="mt-8 flex flex-wrap gap-3">
-                        <a href="{{ route('pengajuan.create') }}"
+                        <a href="{{ route('pengajuan.create', [], false) }}"
                            class="bg-health hover:bg-health-dark transition text-white font-semibold px-6 py-3 rounded-md text-sm">
                             Ajukan Magang Sekarang
                         </a>
-                        <a href="{{ route('cek-status') }}"
+                        <a href="{{ route('cek-status', [], false) }}"
                            class="border border-white/40 hover:bg-white/10 transition font-semibold px-6 py-3 rounded-md text-sm text-white">
                             Cek Status Pengajuan
                         </a>
@@ -185,7 +185,7 @@
         </div>
 
         <div class="text-center mt-8">
-            <a href="{{ route('persyaratan') }}" class="text-sm font-medium text-navy hover:text-health underline underline-offset-4">
+            <a href="{{ route('persyaratan', [], false) }}" class="text-sm font-medium text-navy hover:text-health underline underline-offset-4">
                 Lihat Persyaratan Lengkap →
             </a>
         </div>

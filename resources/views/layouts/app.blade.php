@@ -24,8 +24,8 @@
     <header class="fixed inset-x-0 top-0 z-50 isolate bg-navy text-white shadow-md">
         <div class="mx-auto max-w-6xl px-4 py-3 sm:px-6 sm:py-4">
           <div class="flex justify-between items-center gap-3">
-            <a href="{{ route('home') }}" class="flex items-center gap-3">
-    <img src="{{ asset('images/logo.jpg') }}" alt="Logo UPTD Pelatihan Kesehatan" class="w-9 h-9 rounded-full object-cover ring-2 ring-gold/50">
+            <a href="{{ route('home', [], false) }}" class="flex items-center gap-3">
+    <img src="/images/logo.jpg" alt="Logo UPTD Pelatihan Kesehatan" class="w-9 h-9 rounded-full object-cover ring-2 ring-gold/50">
     <div class="leading-tight">
                     <p class="font-display font-semibold text-sm">UPTD Pelatihan Kesehatan</p>
                     <p class="text-[11px] text-gray-300">Dinas Kesehatan Provinsi Jawa Barat</p>
@@ -34,7 +34,7 @@
            <nav class="hidden items-center gap-4 text-sm font-medium md:flex lg:gap-6" aria-label="Navigasi utama">
                 @foreach ($publicNavItems as $item)
                     @php $active = request()->routeIs($item['active'] ?? $item['route']); @endphp
-                    <a href="{{ route($item['route']) }}"
+                    <a href="{{ route($item['route'], [], false) }}"
                        class="border-b-2 py-2 transition {{ $active ? 'border-gold text-gold' : 'border-transparent text-white hover:border-gold-light hover:text-gold-light' }}">
                         {{ $item['label'] }}
                     </a>
@@ -48,7 +48,7 @@
             <div class="grid gap-1 text-sm font-medium">
                 @foreach ($publicNavItems as $item)
                     @php $active = request()->routeIs($item['active'] ?? $item['route']); @endphp
-                    <a @click="mobileMenuOpen = false" href="{{ route($item['route']) }}"
+                    <a @click="mobileMenuOpen = false" href="{{ route($item['route'], [], false) }}"
                        class="rounded-lg px-3 py-2 transition {{ $active ? 'bg-white/10 font-semibold text-gold' : 'text-white hover:bg-white/10 hover:text-gold-light' }}">
                         {{ $item['label'] }}
                     </a>
@@ -78,11 +78,11 @@
             <div>
                 <p class="font-display font-semibold text-white mb-2">Tautan</p>
                <ul class="space-y-1">
-    <li><a href="{{ route('persyaratan') }}" class="hover:text-gold-light">Persyaratan Magang</a></li>
-    <li><a href="{{ route('pengajuan.create') }}" class="hover:text-gold-light">Ajukan Magang</a></li>
-    <li><a href="{{ route('cek-status') }}" class="hover:text-gold-light">Cek Status Pengajuan</a></li>
-    <li><a href="{{ route('faq') }}" class="hover:text-gold-light">FAQ</a></li>
-    <li><a href="{{ route('kontak') }}" class="hover:text-gold-light">Kontak</a></li>
+    <li><a href="{{ route('persyaratan', [], false) }}" class="hover:text-gold-light">Persyaratan Magang</a></li>
+    <li><a href="{{ route('pengajuan.create', [], false) }}" class="hover:text-gold-light">Ajukan Magang</a></li>
+    <li><a href="{{ route('cek-status', [], false) }}" class="hover:text-gold-light">Cek Status Pengajuan</a></li>
+    <li><a href="{{ route('faq', [], false) }}" class="hover:text-gold-light">FAQ</a></li>
+    <li><a href="{{ route('kontak', [], false) }}" class="hover:text-gold-light">Kontak</a></li>
 </ul>
             </div>
         </div>

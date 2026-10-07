@@ -12,7 +12,7 @@ class LeaveRequestController extends Controller
     public function index(Request $request): View
     {
         return view('intern.attendance.leave', [
-            'leaveRequests' => $request->user('intern')->leaveRequests()->latest()->paginate(10),
+            'leaveRequests' => $request->user('intern')->leaveRequests()->latest()->get(),
         ]);
     }
 

@@ -10,8 +10,8 @@
             <div class="flex items-center gap-4">
                 {{-- Avatar --}}
                 <div class="h-16 w-16 shrink-0 overflow-hidden rounded-2xl ring-2 ring-white/20 sm:h-20 sm:w-20">
-                    @if(auth('intern')->user()->photo)
-                        <img src="{{ Storage::url(auth('intern')->user()->photo) }}" alt="Foto" class="h-full w-full object-cover">
+                    @if(auth('intern')->user()->profile_photo_path)
+                        <img src="{{ Storage::url(auth('intern')->user()->profile_photo_path) }}" alt="Foto" class="h-full w-full object-cover">
                     @else
                         <div class="flex h-full w-full items-center justify-center bg-white/10 text-2xl font-bold text-white/80 sm:text-3xl">
                             {{ Str::upper(Str::substr(auth('intern')->user()->name, 0, 1)) }}
@@ -46,7 +46,7 @@
                 ['label' => 'Total Hadir', 'value' => $attendanceStats['hadir'], 'icon' => 'ti-circle-check', 'iconBg' => 'bg-emerald-100 text-emerald-600', 'border' => 'border-l-emerald-500'],
                 ['label' => 'Total Izin', 'value' => $attendanceStats['izin'], 'icon' => 'ti-mail-forward', 'iconBg' => 'bg-blue-100 text-blue-600', 'border' => 'border-l-blue-500'],
                 ['label' => 'Total Sakit', 'value' => $attendanceStats['sakit'], 'icon' => 'ti-heart-rate-monitor', 'iconBg' => 'bg-amber-100 text-amber-600', 'border' => 'border-l-amber-500'],
-                ['label' => 'Total Terlambat', 'value' => $attendanceStats['terlambat'], 'icon' => 'ti-alarm', 'iconBg' => 'bg-rose-100 text-rose-600', 'border' => 'border-l-rose-500'],
+                ['label' => 'Total Alpa', 'value' => $attendanceStats['alpa'], 'icon' => 'ti-calendar-off', 'iconBg' => 'bg-rose-100 text-rose-600', 'border' => 'border-l-rose-500'],
             ];
         @endphp
 

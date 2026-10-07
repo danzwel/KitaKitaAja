@@ -11,8 +11,8 @@
                 <div class="-mt-12 flex flex-col items-center px-6 pb-6">
                     <div class="relative">
                         <div class="h-24 w-24 overflow-hidden rounded-2xl border-4 border-white bg-gray-100 shadow-lg">
-                            @if($intern->photo)
-                                <img src="{{ Storage::url($intern->photo) }}" alt="Foto" class="h-full w-full object-cover">
+                            @if($intern->profile_photo_path)
+                                <img src="{{ Storage::url($intern->profile_photo_path) }}" alt="Foto" class="h-full w-full object-cover">
                             @else
                                 <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 text-3xl font-bold text-gray-400">
                                     {{ Str::upper(Str::substr($intern->name, 0, 1)) }}
@@ -20,9 +20,9 @@
                             @endif
                         </div>
                         {{-- Upload button overlay --}}
-                        <form method="POST" action="{{ route('intern.profile.photo') }}" enctype="multipart/form-data">
+                        <form id="photo-upload-form" method="POST" action="{{ route('intern.profile.photo') }}" enctype="multipart/form-data">
                             @csrf
-                            <input type="file" name="photo" id="photo" class="hidden" accept="image/*" onchange="this.form.submit()">
+                            <input type="file" name="photo" id="photo" class="hidden" accept="image/jpeg,image/png">
                             <label for="photo" class="absolute -bottom-1 -right-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-navy text-white shadow-md transition hover:bg-navy/80">
                                 <i class="ti ti-camera text-sm"></i>
                             </label>
@@ -31,6 +31,7 @@
                     <h3 class="mt-4 font-heading text-lg font-bold text-gray-900">{{ $intern->name }}</h3>
                     <p class="text-sm text-gray-500">{{ $intern->username }}</p>
                     @error('photo')<p class="mt-2 text-xs text-red-500">{{ $message }}</p>@enderror
+                    @if (session('status') === 'photo-updated')<p class="mt-2 text-xs text-emerald-600">Foto berhasil diperbarui.</p>@endif
                     <p class="mt-1 text-[11px] text-gray-400">JPG, PNG &middot; Maks. 2MB</p>
                 </div>
             </div>
@@ -157,5 +158,36 @@
             </div>
         </div>
     </div>
+
+    <div id="profile-photo-crop-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-[#0B1F3D]/70 p-4" role="dialog" aria-modal="true">
+        <div class="w-full max-w-lg rounded-2xl bg-white p-5 shadow-2xl">
+            <div class="flex items-center justify-between gap-3"><div><h2 class="font-heading text-lg font-bold text-gray-900">Potong Foto Profil</h2><p class="text-xs text-gray-500">Atur foto dengan rasio 3:4.</p></div><button id="profile-photo-crop-cancel" type="button" class="rounded-lg px-3 py-2 text-sm text-gray-500 hover:bg-gray-100">Batal</button></div>
+            <div id="profile-photo-crop-viewport" class="relative mx-auto mt-5 overflow-hidden bg-gray-900 select-none touch-none" style="width:min(75vw,300px);height:min(70vh,400px);aspect-ratio:3/4"><img id="profile-photo-crop-image" alt="Pratinjau foto profil" class="absolute max-w-none cursor-move select-none" draggable="false"></div>
+            <label class="mt-4 block text-xs font-medium text-gray-600">Zoom <input id="profile-photo-crop-zoom" type="range" min="1" max="3" step="0.01" value="1" class="mt-2 w-full accent-[#0B1F3D]"></label>
+            <div class="mt-5 flex justify-end"><button id="profile-photo-crop-confirm" type="button" class="rounded-lg bg-[#0B1F3D] px-4 py-2.5 text-sm font-semibold text-white">Gunakan Foto Ini</button></div>
+        </div>
+    </div>
+
+@push('scripts')
+<script>
+(() => {
+    const input = document.getElementById('photo'), form = document.getElementById('photo-upload-form');
+    const modal = document.getElementById('profile-photo-crop-modal'), viewport = document.getElementById('profile-photo-crop-viewport');
+    const image = document.getElementById('profile-photo-crop-image'), zoom = document.getElementById('profile-photo-crop-zoom');
+    const cancel = document.getElementById('profile-photo-crop-cancel'), confirm = document.getElementById('profile-photo-crop-confirm');
+    let source = null, state = { base: 1, scale: 1, x: 0, y: 0, pointer: null, offsetX: 0, offsetY: 0 };
+    const clamp = () => { const w=image.offsetWidth,h=image.offsetHeight,vw=viewport.clientWidth,vh=viewport.clientHeight; state.x=Math.min(0,Math.max(vw-w,state.x)); state.y=Math.min(0,Math.max(vh-h,state.y)); };
+    const render = () => { image.style.width=(source.naturalWidth*state.base*state.scale)+'px'; image.style.height=(source.naturalHeight*state.base*state.scale)+'px'; clamp(); image.style.transform=`translate(${state.x}px,${state.y}px)`; };
+    const close = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); image.removeAttribute('src'); source=null; };
+    input.addEventListener('change', () => { const file=input.files?.[0]; if(!file)return; const reader=new FileReader(); reader.onload=()=>{ source=new Image(); source.onload=()=>{ modal.classList.remove('hidden'); modal.classList.add('flex'); state.base=Math.max(viewport.clientWidth/source.naturalWidth,viewport.clientHeight/source.naturalHeight); state.scale=1; state.x=(viewport.clientWidth-source.naturalWidth*state.base)/2; state.y=(viewport.clientHeight-source.naturalHeight*state.base)/2; image.src=source.src; zoom.value='1'; render(); }; source.src=reader.result; }; reader.readAsDataURL(file); });
+    zoom.addEventListener('input',()=>{ const oldW=image.offsetWidth,oldH=image.offsetHeight,cx=viewport.clientWidth/2,cy=viewport.clientHeight/2; state.scale=Number(zoom.value); const nw=source.naturalWidth*state.base*state.scale,nh=source.naturalHeight*state.base*state.scale; state.x=cx-(cx-state.x)*nw/oldW; state.y=cy-(cy-state.y)*nh/oldH; render(); });
+    image.addEventListener('pointerdown',e=>{state.pointer=e.pointerId;state.offsetX=e.clientX-state.x;state.offsetY=e.clientY-state.y;image.setPointerCapture(e.pointerId);});
+    image.addEventListener('pointermove',e=>{if(state.pointer!==e.pointerId)return;state.x=e.clientX-state.offsetX;state.y=e.clientY-state.offsetY;render();});
+    image.addEventListener('pointerup',()=>state.pointer=null); image.addEventListener('pointercancel',()=>state.pointer=null);
+    cancel.addEventListener('click',()=>{input.value='';close();});
+    confirm.addEventListener('click',()=>{ const canvas=document.createElement('canvas'); canvas.width=450;canvas.height=600; const dw=source.naturalWidth*state.base*state.scale,dh=source.naturalHeight*state.base*state.scale; const sx=Math.max(0,-state.x)/dw*source.naturalWidth,sy=Math.max(0,-state.y)/dh*source.naturalHeight,sw=viewport.clientWidth/dw*source.naturalWidth,sh=viewport.clientHeight/dh*source.naturalHeight; canvas.getContext('2d').drawImage(source,sx,sy,sw,sh,0,0,450,600); canvas.toBlob(blob=>{if(!blob)return;const data=new DataTransfer();data.items.add(new File([blob],'foto-profil-3x4.jpg',{type:'image/jpeg'}));input.files=data.files;close();form.submit();},'image/jpeg',.82); });
+})();
+</script>
+@endpush
 
 </x-intern.layouts.app>

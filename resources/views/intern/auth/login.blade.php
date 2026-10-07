@@ -113,7 +113,7 @@
                     <p class="mt-1 text-sm text-gray-500">Gunakan kredensial dari Admin.</p>
                 </div>
 
-                <form method="POST" action="{{ route('intern.login') }}" class="space-y-5">
+                <form method="POST" action="{{ route('intern.login', [], false) }}" class="space-y-5">
                     @csrf
                     {{-- Username --}}
                     <div>

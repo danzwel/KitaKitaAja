@@ -21,13 +21,12 @@ class AttendanceController extends Controller
 
         return view('intern.attendance.index', [
             'todayRecord' => $intern->attendanceRecords()->whereDate('attendance_date', $today)->first(),
-            'recentRecords' => $intern->attendanceRecords()->latest('attendance_date')->limit(10)->get(),
             'leaveRequests' => $intern->leaveRequests()->latest()->limit(5)->get(),
             'stats' => [
-                'hadir' => $intern->attendanceRecords()->whereIn('check_in_status', ['hadir', 'tepat_waktu'])->count(),
-                'terlambat' => $intern->attendanceRecords()->where('check_in_status', 'terlambat')->count(),
-                'izin' => $intern->leaveRequests()->where('type', 'izin')->where('status', 'approved')->count(),
-                'sakit' => $intern->leaveRequests()->where('type', 'sakit')->where('status', 'approved')->count(),
+                'hadir' => $intern->attendanceRecords()->whereIn('check_in_status', ['hadir', 'tepat_waktu', 'terlambat'])->count(),
+                'alpa' => $intern->alphaDays(),
+                'izin' => $intern->approvedLeaveDays('izin'),
+                'sakit' => $intern->approvedLeaveDays('sakit'),
             ],
         ]);
     }
@@ -36,6 +35,10 @@ class AttendanceController extends Controller
     {
         if (! $session->isAvailable()) {
             return redirect()->route('intern.attendance.index')->with('error', 'Sesi QR absensi sudah tidak aktif atau sudah kedaluwarsa.');
+        }
+
+        if ($session->type === 'pulang' && now()->format('H:i') < config('attendance.check_out_time', '16:00')) {
+            return redirect()->route('intern.attendance.index')->with('error', 'Absen pulang baru dapat dilakukan mulai pukul '.config('attendance.check_out_time', '16:00').'.');
         }
 
         return view('intern.attendance.scan', compact('session'));
@@ -47,15 +50,31 @@ class AttendanceController extends Controller
             return back()->with('error', 'Sesi QR absensi sudah tidak aktif atau sudah kedaluwarsa.');
         }
 
+        if ($session->type === 'pulang' && now()->format('H:i') < config('attendance.check_out_time', '16:00')) {
+            return back()->with('error', 'Absen pulang baru dapat dilakukan mulai pukul '.config('attendance.check_out_time', '16:00').'.');
+        }
+
         $validated = $request->validate([
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
         ]);
 
         $intern = $request->user('intern');
-        $record = $intern->attendanceRecords()->firstOrCreate([
-            'attendance_date' => $session->attendance_date->toDateString(),
-        ]);
+        $attendanceDate = now()->toDateString();
+        $application = $intern->internshipApplication;
+        if ($application && ($attendanceDate < $application->periode_mulai->toDateString() || $attendanceDate > $application->periode_selesai->toDateString())) {
+            return back()->with('error', 'Anda hanya dapat melakukan absensi selama periode magang.');
+        }
+
+        $approvedLeave = $intern->leaveRequests()
+            ->where('status', 'approved')
+            ->whereDate('start_date', '<=', $attendanceDate)
+            ->whereDate('end_date', '>=', $attendanceDate)
+            ->first();
+
+        if ($approvedLeave) {
+            return back()->with('error', 'Anda tidak perlu absen pada tanggal yang sudah disetujui sebagai '.($approvedLeave->type === 'sakit' ? 'sakit' : 'izin').'.');
+        }
 
         $now = now();
         $distance = $this->attendanceService->distanceMeters(
@@ -65,10 +84,20 @@ class AttendanceController extends Controller
             $session->longitude !== null ? (float) $session->longitude : null,
         );
         $locationStatus = $this->attendanceService->locationStatus($session, $distance);
+        if ($locationStatus === 'di_luar_radius') {
+            return back()->with('error', 'Absensi ditolak. Jarak Anda '.number_format($distance).' meter dari lokasi, sedangkan radius maksimal adalah '.$session->radius_meters.' meter.');
+        }
+
+        if ($locationStatus === 'menunggu_verifikasi') {
+            return back()->with('error', 'Absensi ditolak karena lokasi perangkat tidak dapat diverifikasi. Aktifkan GPS dan coba lagi.');
+        }
+
+        $record = $intern->attendanceRecords()->firstOrCreate([
+            'attendance_date' => $attendanceDate,
+        ]);
+
         $timeStatus = $this->attendanceService->timeStatus($session->type, $now);
-        $status = in_array($locationStatus, ['valid', 'gps_tidak_dikonfigurasi'], true)
-            ? ($session->type === 'datang' ? $timeStatus : 'tepat_waktu')
-            : AttendanceRecord::STATUS_PENDING;
+        $status = $session->type === 'datang' ? $timeStatus : 'tepat_waktu';
 
         if ($session->type === 'datang') {
             if ($record->check_in_at) {
@@ -101,11 +130,7 @@ class AttendanceController extends Controller
             ]);
         }
 
-        $message = $status === AttendanceRecord::STATUS_PENDING
-            ? 'Absensi tercatat dan menunggu verifikasi admin karena lokasi berada di luar radius.'
-            : 'Absensi berhasil dicatat.';
-
-        return redirect()->route('intern.attendance.index')->with('success', $message);
+        return redirect()->route('intern.attendance.index')->with('success', 'Absensi berhasil dicatat.');
     }
 
     public function history(Request $request): View
