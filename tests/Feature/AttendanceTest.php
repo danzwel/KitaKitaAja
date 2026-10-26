@@ -6,7 +6,12 @@ use App\Models\Admin;
 use App\Models\AttendanceRecord;
 use App\Models\AttendanceSession;
 use App\Models\Intern;
+use App\Models\InternshipApplication;
+use App\Models\LeaveRequest;
+use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -90,5 +95,81 @@ class AttendanceTest extends TestCase
             'type' => 'sakit',
             'status' => 'pending',
         ]);
+    }
+
+    public function test_recap_only_counts_days_that_have_a_schedule_or_attendance_status(): void
+    {
+        Carbon::setTestNow('2026-10-26 09:00:00');
+
+        try {
+            $application = InternshipApplication::factory()->create([
+                'periode_mulai' => '2026-07-13',
+                'periode_selesai' => '2026-10-16',
+            ]);
+            $intern = Intern::factory()->create([
+                'internship_application_id' => $application->id,
+                'created_at' => '2026-09-24 08:39:28',
+                'updated_at' => '2026-09-24 08:39:28',
+            ]);
+            $admin = Admin::factory()->create();
+
+            AttendanceSession::create([
+                'created_by' => $admin->id,
+                'type' => 'datang',
+                'attendance_date' => '2026-09-28',
+                'token' => Str::random(48),
+                'radius_meters' => 200,
+                'is_active' => true,
+            ]);
+            $recurringSession = AttendanceSession::create([
+                'created_by' => $admin->id,
+                'type' => 'datang',
+                'is_recurring' => true,
+                'token' => Str::random(48),
+                'radius_meters' => 200,
+                'is_active' => true,
+            ]);
+            $recurringSession->forceFill([
+                'created_at' => '2026-10-06 14:22:18',
+                'updated_at' => '2026-10-06 14:22:18',
+            ])->saveQuietly();
+
+            foreach (['2026-09-28', '2026-10-06', '2026-10-07'] as $date) {
+                AttendanceRecord::create([
+                    'intern_id' => $intern->id,
+                    'attendance_date' => $date,
+                    'check_in_status' => 'terlambat',
+                ]);
+            }
+            LeaveRequest::create([
+                'intern_id' => $intern->id,
+                'type' => 'sakit',
+                'start_date' => '2026-10-08',
+                'end_date' => '2026-10-13',
+                'reason' => 'Sakit.',
+                'status' => 'approved',
+            ]);
+            LeaveRequest::create([
+                'intern_id' => $intern->id,
+                'type' => 'izin',
+                'start_date' => '2026-10-15',
+                'end_date' => '2026-10-15',
+                'reason' => 'Izin.',
+                'status' => 'approved',
+            ]);
+
+            $view = app(AdminAttendanceController::class)->recap(new Request());
+            $row = $view->getData()['summaryRows']->first();
+
+            $this->assertSame(10, $row['working_days']);
+            $this->assertSame(3, $row['present']);
+            $this->assertSame(3, $row['late']);
+            $this->assertSame(4, $row['sakit']);
+            $this->assertSame(1, $row['izin']);
+            $this->assertSame(2, $row['alpha']);
+            $this->assertSame(2, $intern->alphaDays());
+        } finally {
+            Carbon::setTestNow();
+        }
     }
 }
