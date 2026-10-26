@@ -83,8 +83,12 @@ class AttendanceController extends Controller
                 ? collect()
                 : AttendanceRecord::where('intern_id', $intern->id)->whereBetween('attendance_date', [$start->toDateString(), $countEnd->toDateString()])->get();
             $attendanceSessionDates = collect();
-            // Hari berjalan belum dianggap alpa; alpa baru diputuskan mulai hari berikutnya.
-            $alphaEnd = $countEnd->copy()->subDay()->endOfDay();
+            // Hari yang sedang berjalan belum dianggap alpa. Namun, apabila
+            // periode magang sudah berlalu, hari terakhir periode tetap harus
+            // mendapat status agar jumlah rekap dapat dipertanggungjawabkan.
+            $alphaEnd = $countEnd->isToday()
+                ? $countEnd->copy()->subDay()->endOfDay()
+                : $countEnd->copy()->endOfDay();
             if ($start->lte($alphaEnd)) {
                 $sessionQuery = AttendanceSession::where('type', 'datang')->where(function ($query) use ($start, $countEnd): void {
                     $query->where('is_recurring', true)
@@ -125,21 +129,34 @@ class AttendanceController extends Controller
                 }
             });
 
-            $workingDays = 0;
-            $cursor = $start->copy()->startOfDay();
-            while ($cursor->lte($countEnd)) {
-                if (! $cursor->isWeekend() && ! in_array($cursor->toDateString(), $holidays, true)) $workingDays++;
-                $cursor->addDay();
-            }
-
             $present = $presentDates->count();
             $izin = count($leaveDays['izin']);
             $sakit = count($leaveDays['sakit']);
-            $scheduledWorkingDays = $attendanceSessionDates->filter(function (string $date) use ($holidays): bool {
+            $pendingDates = $records->where('check_in_status', 'menunggu_verifikasi')
+                ->map(fn (AttendanceRecord $record): string => $record->attendance_date->toDateString())
+                ->unique()
+                ->values();
+            $scheduledWorkingDates = $attendanceSessionDates->filter(function (string $date) use ($holidays): bool {
                 $day = Carbon::parse($date);
 
                 return ! $day->isWeekend() && ! in_array($date, $holidays, true);
-            })->count();
+            })->unique()->values();
+            $resolvedDates = $presentDates
+                ->merge($pendingDates)
+                ->merge(array_keys($leaveDays['izin']))
+                ->merge(array_keys($leaveDays['sakit']))
+                ->unique()
+                ->flip();
+            $alpha = $scheduledWorkingDates
+                ->reject(fn (string $date): bool => $resolvedDates->has($date))
+                ->count();
+            // Hari tercatat adalah hari kerja yang telah memiliki sesi QR atau
+            // status kehadiran. Dengan dasar yang sama, jumlah kategori rekap
+            // tidak lagi meninggalkan hari tanpa status.
+            $workingDays = $scheduledWorkingDates
+                ->merge($resolvedDates->keys())
+                ->unique()
+                ->count();
 
             return [
                 'intern' => $intern,
@@ -151,7 +168,7 @@ class AttendanceController extends Controller
                 'izin' => $izin,
                 'sakit' => $sakit,
                 'pending' => $pending,
-                'alpha' => max(0, $scheduledWorkingDays - $present - $izin - $sakit),
+                'alpha' => $alpha,
             ];
         })->values();
 
@@ -178,7 +195,9 @@ class AttendanceController extends Controller
         $recordsByDate = $records->keyBy(fn (AttendanceRecord $record): string => $record->attendance_date->toDateString());
         $holidays = collect(config('attendance.holidays', []))->filter()->map(fn (string $date): string => Carbon::parse($date)->toDateString())->all();
         $scheduledDates = [];
-        $alphaEnd = $countEnd->copy()->subDay()->endOfDay();
+        $alphaEnd = $countEnd->isToday()
+            ? $countEnd->copy()->subDay()->endOfDay()
+            : $countEnd->copy()->endOfDay();
         if ($start->lte($alphaEnd)) {
             AttendanceSession::where('type', 'datang')->where(function ($query) use ($start, $countEnd): void {
                 $query->where('is_recurring', true)->orWhereBetween('attendance_date', [$start->toDateString(), $countEnd->toDateString()]);

@@ -91,7 +91,11 @@ class Intern extends Authenticatable
         $start = $periodStart->max($accountStart);
         $end = $application?->periode_selesai?->copy()->endOfDay() ?? now()->endOfDay();
         $countEnd = $end->copy()->min(now()->endOfDay());
-        $alphaEnd = $countEnd->copy()->subDay()->endOfDay();
+        // Hari ini belum menjadi alpa. Hari terakhir magang yang sudah lewat
+        // tetap dihitung agar angka alpa konsisten dengan rekap admin.
+        $alphaEnd = $countEnd->isToday()
+            ? $countEnd->copy()->subDay()->endOfDay()
+            : $countEnd->copy()->endOfDay();
         if ($start->gt($alphaEnd)) return 0;
 
         $holidays = collect(config('attendance.holidays', []))->filter()->map(fn (string $date): string => Carbon::parse($date)->toDateString())->all();

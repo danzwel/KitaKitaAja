@@ -25,7 +25,7 @@
     <h1>Rekap Absensi Mahasiswa</h1>
     <div class="meta">Ringkasan kehadiran per orang &middot; Dicetak {{ now()->format('d M Y H:i') }}</div>
     <table>
-        <thead><tr><th>Mahasiswa</th><th>Periode Magang</th><th class="center">Hari Kerja</th><th class="center">Hadir</th><th class="center">Terlambat</th><th class="center">Izin</th><th class="center">Sakit</th><th class="center">Alpa</th><th class="center">Verifikasi</th></tr></thead>
+        <thead><tr><th>Mahasiswa</th><th>Periode Magang</th><th class="center">Hari Tercatat</th><th class="center">Hadir</th><th class="center">Terlambat<br>(bagian hadir)</th><th class="center">Izin</th><th class="center">Sakit</th><th class="center">Alpa</th><th class="center">Verifikasi</th></tr></thead>
         <tbody>
         @forelse ($summaryRows as $row)
             <tr>
@@ -44,6 +44,6 @@
         @endforelse
         </tbody>
     </table>
-    <div class="footer">Senin-Jumat dihitung sebagai hari kerja.</div>
+    <div class="footer">Hari tercatat mengikuti hari kerja yang memiliki sesi QR atau status kehadiran. Terlambat sudah termasuk hadir.</div>
 </body>
 </html>
