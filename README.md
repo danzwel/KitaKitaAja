@@ -134,9 +134,9 @@ php artisan test
 
 | Nama | Peran |
 | --- | --- |
-| Sofi Aura Fatimah | Frontend |
-| Daniel Desmanto Nugraha | Backend |
-| Raihan Pratama | Full-stack |
+| Sofia Risa Aulia | Frontend |
+| Daniel Desmanto Nugraha | Full-stack |
+| Raihan Maulana Fadly | Backend|
 
 ## Lisensi
 
