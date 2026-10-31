@@ -47,8 +47,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('accounts/{account}/password', [AdminAccountController::class, 'resetPassword'])->name('accounts.password');
         Route::get('reports', [InternshipReportController::class, 'index'])->name('reports.index');
         Route::get('documentation', [InternshipDocumentationController::class, 'index'])->name('documentation.index');
-        Route::post('documentation', [InternshipDocumentationController::class, 'store'])->name('documentation.store');
-        Route::delete('documentation/{documentation}', [InternshipDocumentationController::class, 'destroy'])->name('documentation.destroy');
 
         Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance.index');
         Route::get('attendance/recap', [AttendanceController::class, 'recap'])->name('attendance.recap');

@@ -59,6 +59,7 @@ class Intern extends Authenticatable
     public function replyLetters() { return $this->hasMany(ReplyLetter::class); }
     public function attendanceRecords() { return $this->hasMany(AttendanceRecord::class); }
     public function leaveRequests() { return $this->hasMany(LeaveRequest::class); }
+    public function documentationPhotos() { return $this->hasMany(InternshipDocumentationPhoto::class); }
 
     public function approvedLeaveDays(string $type): int
     {
