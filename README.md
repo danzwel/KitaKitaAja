@@ -1,195 +1,144 @@
-# SIM Magang — Sistem Informasi Manajemen Magang
+# SIM Magang UPTD Pelatihan Kesehatan
 
-Sistem Informasi Manajemen Magang untuk **UPTD Pelatihan Kesehatan Dinas Kesehatan Provinsi Jawa Barat**.
+Sistem Informasi Manajemen Magang untuk **UPTD Pelatihan Kesehatan Dinas Kesehatan Provinsi Jawa Barat**. Aplikasi ini menangani pengajuan magang, penerimaan dan penempatan peserta, QR absensi, rekap jam kerja, laporan akhir, serta pengelolaan akun oleh admin.
 
-Dibangun menggunakan framework **Laravel 12** dengan **Blade**, **Tailwind CSS**, dan **Vite**.
+> Repository ini tidak menyertakan data peserta, dokumen, foto, maupun data operasional. Instalasi baru dimulai dalam keadaan bersih.
 
----
+## Fitur
 
-## 👥 Tim Pengembang
+### Portal publik
 
-| Nama | Peran | Modul |
-|------|-------|-------|
-| **Sofi Aura Fatimah** | Frontend | Landing Page & Form Pendaftaran Mahasiswa |
-| **Daniel Desmanto Nugraha** | Backend | Super Admin (Manajemen Akun, Kelola Pengajuan, Auto-Approval) |
-| **Raihan Pratama** | Full-Stack | Login Mahasiswa, Dashboard Mahasiswa, Profil Mahasiswa |
+- Pengajuan magang untuk mahasiswa, siswa SMK/SMA sederajat, atau peserta lain.
+- Unggah foto, transkrip nilai, surat pengantar, dan CV sesuai kebutuhan.
+- Cek dan unduh status pengajuan menggunakan nomor pengajuan.
+- Informasi persyaratan, FAQ, kontak email, telepon, dan Instagram UPTD.
 
----
+### Admin
 
-## 📋 Fitur Utama
+- Meninjau, menerima, atau menolak pengajuan serta menentukan bidang magang peserta.
+- Mengelola peserta, bidang magang, akun admin, surat balasan, dan laporan hasil magang.
+- Membuat QR absensi datang/pulang dengan validasi lokasi GPS.
+- Memproses izin, sakit, dan izin tetap hadir untuk peserta yang memiliki kelas atau keperluan lain.
+- Konfirmasi kehadiran manual untuk kasus lupa scan datang, pulang, atau keduanya.
+- Rekap absensi per peserta, jam kerja tercatat, dan unduhan PDF/Excel.
+- Melihat riwayat scan pada tanggal tertentu serta mengunduh PDF/Excel harian.
+- Unggah maksimal 10 foto dokumentasi magang setiap tahun.
 
-### 🌐 Landing Page (Sofi)
-- Halaman utama dengan informasi magang
-- Formulir pendaftaran / pengajuan magang online
-- Cek status pengajuan dengan kode aplikasi
-- Halaman persyaratan, FAQ, dan kontak
+### Portal peserta
 
-### 🔐 Super Admin (Daniel)
-- Login admin terpisah dengan guard `admin`
-- Dashboard admin dengan statistik dan grafik pengajuan
-- Kelola pengajuan magang (verifikasi, terima, tolak)
-- Manajemen mahasiswa magang aktif
-- Manajemen bidang/departemen magang
-- Auto-create akun mahasiswa saat pengajuan disetujui
+- Login terpisah dan wajib mengganti kata sandi awal.
+- Scan QR kehadiran, riwayat absensi, jam kerja, izin/sakit, dan izin tetap hadir.
+- Unggah laporan hasil magang yang dapat dilihat admin.
+- Setelah periode magang selesai, akun otomatis masuk mode **Magang Selesai**: absensi dan izin/sakit dinonaktifkan, sedangkan rekap, laporan, dan profil tetap dapat diakses.
 
-### 🎓 Portal Mahasiswa (Raihan)
-- **Login Mahasiswa** — Autentikasi menggunakan NIM/username & password
-- **Force Change Password** — Wajib ganti password saat login pertama kali
-- **Dashboard** — Menampilkan profil singkat, statistik absensi (dummy), dan menu cepat
-- **Profil Mahasiswa** — Edit informasi kontak, upload foto profil, ganti password
-- Middleware `EnsureInternHasChangedPassword` untuk keamanan
-- Guard terpisah (`intern`) dari admin dan user default
-
----
-
-## 🛠️ Teknologi
+## Teknologi
 
 | Komponen | Teknologi |
-|----------|-----------|
-| Framework | Laravel 12 |
-| Frontend | Blade Templates, Tailwind CSS |
-| Build Tool | Vite |
-| Database | MySQL (`kitakitaaja`) |
-| Authentication | Laravel Breeze + Custom Guards |
-| Icons | Tabler Icons (CDN) |
-| Fonts | Inter, Plus Jakarta Sans, Poppins |
+| --- | --- |
+| Backend | Laravel 12, PHP 8.2+ |
+| Frontend | Blade, Tailwind CSS, Vite |
+| Database | MySQL 8+ / MariaDB |
+| Spreadsheet | PhpSpreadsheet |
+| PDF | Dompdf |
+| Ikon | Tabler Icons |
 
----
-
-## ⚙️ Instalasi & Setup
+## Instalasi lokal
 
 ### Prasyarat
-- PHP >= 8.2
-- Composer
-- Node.js >= 18 & npm
-- MySQL 8+ atau MariaDB yang berjalan pada `127.0.0.1:3306`
 
-### Langkah Instalasi
+- PHP 8.2 atau lebih baru
+- Composer
+- Node.js 18 atau lebih baru dan npm
+- MySQL 8+ atau MariaDB
+
+### Langkah
 
 ```bash
-# 1. Clone repository
 git clone https://github.com/danzwel/KitaKitaAja.git
 cd KitaKitaAja
 
-# 2. Install dependensi PHP
 composer install
-
-# 3. Install dependensi Node.js
 npm install
 
-# 4. Salin file environment
+# Linux/macOS
 cp .env.example .env
 
-# 5. Generate application key
+# Windows PowerShell
+# Copy-Item .env.example .env
+
 php artisan key:generate
+```
 
-# 6. Buat database MySQL bernama kitakitaaja jika belum ada
-#    CREATE DATABASE kitakitaaja CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+Buat database MySQL, lalu sesuaikan koneksinya pada `.env`.
 
-# 7. Jalankan migrasi & seeder
+```sql
+CREATE DATABASE kitakitaaja CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+```bash
 php artisan migrate --seed
-
-# 8. Buat symlink storage (untuk upload foto)
 php artisan storage:link
 
-# 9. Jalankan development server
-php artisan serve       # Terminal 1
-npm run dev             # Terminal 2
+# Terminal 1
+php artisan serve
+
+# Terminal 2
+npm run dev
 ```
 
-Akses aplikasi di **http://localhost:8000**
+Aplikasi tersedia pada [http://localhost:8000](http://localhost:8000).
 
----
+Untuk membuat aset produksi, jalankan:
 
-## 🔑 Akun Default (Seeder)
-
-### Admin
-| Nama | Email | Password |
-|------|-------|----------|
-| Drg. Hj. Rini Kartikawati | `rini.kartikawati@uptdpelatihankesehatan.go.id` | `password123` |
-| Asep Sutisna, S.Kep. | `asep.sutisna@uptdpelatihankesehatan.go.id` | `password123` |
-| Dra. Nengsih Haryati | `nengsih.haryati@uptdpelatihankesehatan.go.id` | `password123` |
-
-Akses: **http://localhost:8000/admin/login**
-
-### Mahasiswa Magang
-| Nama | NIM (Username) | Password | Bidang |
-|------|----------------|----------|--------|
-| Raihan Maulana Fadly | `2211102441` | `password123` | Teknologi Informasi |
-| Sofia Risa Aulia | `2211102358` | `password123` | Teknologi Informasi |
-| Daniel Desmanto Nugraha | `2211102390` | `password123` | Teknologi Informasi |
-| Aisyah Nurhaliza | `2311101045` | `password123` | Rekam Medis |
-| Muhammad Rizky Fauzan | `2111201078` | `password123` | Farmasi |
-| Putri Wulandari | `2211303112` | `password123` | Keperawatan |
-| Ahmad Fadilah | `2011104090` | `password123` | Kesehatan Masyarakat |
-
-Akses: **http://localhost:8000/mahasiswa/login**
-
-> ⚠️ Semua akun mahasiswa akan diminta **wajib ganti password** saat login pertama kali.
-
----
-
-## 📁 Struktur Proyek (Modul Mahasiswa)
-
-```
-app/
-├── Http/
-│   ├── Controllers/
-│   │   └── Intern/
-│   │       ├── Auth/
-│   │       │   └── AuthenticatedSessionController.php  # Login & Logout
-│   │       ├── DashboardController.php                 # Dashboard
-│   │       ├── ForceChangePasswordController.php       # Ganti password pertama
-│   │       └── ProfileController.php                   # Edit profil & password
-│   └── Middleware/
-│       └── EnsureInternHasChangedPassword.php          # Cek password sementara
-├── Models/
-│   └── Intern.php                                      # Model mahasiswa magang
-│
-resources/views/
-├── components/
-│   └── intern/layouts/
-│       └── app.blade.php                               # Layout dashboard mahasiswa
-├── intern/
-│   ├── auth/
-│   │   ├── login.blade.php                             # Halaman login
-│   │   └── force-change-password.blade.php             # Halaman ganti password
-│   ├── dashboard.blade.php                             # Dashboard mahasiswa
-│   └── profile/
-│       └── edit.blade.php                              # Halaman edit profil
-│
-routes/
-└── web.php                                             # Route mahasiswa (prefix /mahasiswa)
+```bash
+npm run build
 ```
 
----
+## Akun awal instalasi baru
 
-## 🔒 Alur Autentikasi Mahasiswa
+Seeder hanya membuat **satu akun admin** dan tidak membuat peserta, bidang, pengajuan, absensi, atau dokumen contoh.
 
-```
-Admin menyetujui pengajuan
-        │
-        ▼
-Akun intern otomatis dibuat (username = NIM, password acak)
-        │
-        ▼
-Mahasiswa login di /mahasiswa/login
-        │
-        ▼
-Middleware cek: temporary_initial_password masih ada?
-        │
-   ┌────┴────┐
-   Ya       Tidak
-   │         │
-   ▼         ▼
-Redirect   Akses
-ke ganti   Dashboard
-password   & Profil
+| Peran | Email | Kata sandi awal |
+| --- | --- | --- |
+| Administrator UPTD Pelatihan Kesehatan | `admin@upelkes.local` | `password` |
+
+Masuk melalui [http://localhost:8000/admin/login](http://localhost:8000/admin/login), lalu segera ganti kata sandi dan buat bidang magang melalui menu admin.
+
+## Penjadwalan status magang
+
+Status peserta otomatis berubah menjadi **Selesai** sehari setelah tanggal akhir magang. Pada server produksi, jalankan Laravel scheduler setiap menit:
+
+```bash
+* * * * * cd /path/to/KitaKitaAja && php artisan schedule:run >> /dev/null 2>&1
 ```
 
----
+Untuk pengembangan lokal, jalankan:
 
-## 📄 Lisensi
+```bash
+php artisan schedule:work
+```
+
+## Pengujian
+
+```bash
+php artisan test
+```
+
+## Keamanan data
+
+- Jangan commit `.env`, database lokal, atau folder upload `storage`.
+- Berkas peserta dan data operasional tersimpan pada database/storage lokal atau server, bukan di repository.
+- Ubah kata sandi admin awal sebelum aplikasi digunakan.
+
+## Tim Pengembang
+
+| Nama | Peran |
+| --- | --- |
+| Sofi Aura Fatimah | Frontend |
+| Daniel Desmanto Nugraha | Backend |
+| Raihan Pratama | Full-stack |
+
+## Lisensi
 
 Proyek ini dibuat untuk keperluan akademik.
 
