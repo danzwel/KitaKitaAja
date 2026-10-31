@@ -48,6 +48,7 @@
                         ...($internshipCompleted ? [] : [['route' => 'intern.attendance.index', 'icon' => 'ti-fingerprint', 'label' => 'Absensi']]),
                         ['route' => 'intern.attendance.history', 'icon' => 'ti-history', 'label' => $internshipCompleted ? 'Rekap Magang' : 'Riwayat Absensi'],
                         ['route' => 'intern.reports.index', 'icon' => 'ti-file-description', 'label' => 'Laporan Magang'],
+                        ...($internshipCompleted ? [['route' => 'intern.documentation.index', 'icon' => 'ti-photo', 'label' => 'Dokumentasi Magang']] : []),
                     ];
                 @endphp
 

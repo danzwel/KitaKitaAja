@@ -10,6 +10,7 @@ use App\Http\Controllers\Intern\ProfileController as InternProfileController;
 use App\Http\Controllers\Intern\AttendanceController as InternAttendanceController;
 use App\Http\Controllers\Intern\LeaveRequestController;
 use App\Http\Controllers\Intern\InternshipReportController;
+use App\Http\Controllers\Intern\InternshipDocumentationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
@@ -46,6 +47,8 @@ Route::middleware('auth:intern')->group(function () {
         Route::post('/mahasiswa/profil/foto', [InternProfileController::class, 'uploadPhoto'])->name('intern.profile.photo');
         Route::get('/mahasiswa/laporan-magang', [InternshipReportController::class, 'index'])->name('intern.reports.index');
         Route::post('/mahasiswa/laporan-magang', [InternshipReportController::class, 'store'])->name('intern.reports.store');
+        Route::get('/mahasiswa/dokumentasi-magang', [InternshipDocumentationController::class, 'index'])->name('intern.documentation.index');
+        Route::post('/mahasiswa/dokumentasi-magang', [InternshipDocumentationController::class, 'store'])->name('intern.documentation.store');
         Route::get('/mahasiswa/absensi/riwayat', [InternAttendanceController::class, 'history'])->name('intern.attendance.history');
         Route::middleware('intern.active')->group(function () {
             Route::get('/mahasiswa/absensi', [InternAttendanceController::class, 'index'])->name('intern.attendance.index');
