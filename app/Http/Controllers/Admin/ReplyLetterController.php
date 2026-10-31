@@ -17,9 +17,9 @@ class ReplyLetterController extends Controller
     ) {}
 
     /**
-     * Upload surat balasan (PDF) untuk mahasiswa yang sudah diterima.
+     * Upload surat balasan (PDF) untuk peserta yang sudah diterima.
      * Disimpan di disk 'public' folder reply-letters, bisa diunduh
-     * mahasiswa lewat dashboard mereka (modul Raihan).
+     * peserta lewat dashboard mereka (modul Raihan).
      */
     public function store(UploadReplyLetterRequest $request, Intern $intern): RedirectResponse
     {

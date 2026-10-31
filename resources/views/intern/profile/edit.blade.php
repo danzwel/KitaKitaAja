@@ -45,7 +45,7 @@
                     @php
                         $fields = [
                             ['label' => 'Nama Lengkap', 'value' => $intern->name],
-                            ['label' => 'NIM', 'value' => $intern->username],
+                            ['label' => 'NIS/NIM', 'value' => $intern->username],
                             ['label' => 'Perguruan Tinggi', 'value' => $intern->university],
                             ['label' => 'Program Studi', 'value' => $intern->internshipApplication?->program_studi ?? '-'],
                             ['label' => 'Semester', 'value' => $intern->internshipApplication?->semester ?? '-'],

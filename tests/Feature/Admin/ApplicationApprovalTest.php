@@ -49,6 +49,7 @@ class ApplicationApprovalTest extends TestCase
 
         $response = $this->actingAs($admin, 'admin')
             ->patch(route('admin.applications.approve', $application), [
+                'bidang_id' => $application->bidang_id,
                 'approval_note' => 'Diterima sesuai kebutuhan dan periode magang.',
             ]);
 
@@ -58,6 +59,7 @@ class ApplicationApprovalTest extends TestCase
         $this->assertDatabaseHas('internship_applications', [
             'id' => $application->id,
             'status' => 'diterima',
+            'bidang_id' => $application->bidang_id,
             'catatan_admin' => 'Diterima sesuai kebutuhan dan periode magang.',
         ]);
 
@@ -68,7 +70,7 @@ class ApplicationApprovalTest extends TestCase
         $this->assertTrue(Hash::check($intern->temporary_initial_password, $intern->password));
     }
 
-    public function test_approving_application_twice_does_not_create_duplicate_intern(): void
+    public function test_approving_application_requires_admin_to_select_a_placement_field(): void
     {
         $admin = Admin::factory()->create();
         $application = InternshipApplication::factory()->create();
@@ -77,10 +79,29 @@ class ApplicationApprovalTest extends TestCase
             ->patch(route('admin.applications.approve', $application), [
                 'approval_note' => 'Diterima sesuai kebutuhan dan periode magang.',
             ])
+            ->assertSessionHasErrors('bidang_id');
+
+        $this->assertDatabaseHas('internship_applications', [
+            'id' => $application->id,
+            'status' => 'menunggu_verifikasi',
+        ]);
+    }
+
+    public function test_approving_application_twice_does_not_create_duplicate_intern(): void
+    {
+        $admin = Admin::factory()->create();
+        $application = InternshipApplication::factory()->create();
+
+        $this->actingAs($admin, 'admin')
+            ->patch(route('admin.applications.approve', $application), [
+                'bidang_id' => $application->bidang_id,
+                'approval_note' => 'Diterima sesuai kebutuhan dan periode magang.',
+            ])
             ->assertRedirect();
 
         $this->actingAs($admin, 'admin')
             ->patch(route('admin.applications.approve', $application), [
+                'bidang_id' => $application->bidang_id,
                 'approval_note' => 'Diterima sesuai kebutuhan dan periode magang.',
             ])
             ->assertRedirect()
@@ -97,6 +118,7 @@ class ApplicationApprovalTest extends TestCase
 
         $this->actingAs($admin, 'admin')
             ->patch(route('admin.applications.approve', $application), [
+                'bidang_id' => $application->bidang_id,
                 'approval_note' => 'Diterima sesuai kebutuhan dan periode magang.',
             ])
             ->assertRedirect();
@@ -142,6 +164,7 @@ class ApplicationApprovalTest extends TestCase
 
         $this->actingAs($admin, 'admin')
             ->patch(route('admin.applications.approve', $application), [
+                'bidang_id' => $application->bidang_id,
                 'approval_note' => 'Pengajuan ini sudah pernah diproses sebelumnya.',
             ])
             ->assertRedirect()

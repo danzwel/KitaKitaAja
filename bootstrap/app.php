@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.auth' => EnsureAdminIsAuthenticated::class,
             'admin.guest' => RedirectIfAdminAuthenticated::class,
             'intern.password.change' => \App\Http\Middleware\EnsureInternHasChangedPassword::class,
+            'intern.active' => \App\Http\Middleware\EnsureInternshipIsActive::class,
         ]);
 
         $middleware->redirectGuestsTo(function (Request $request): string {

@@ -18,7 +18,6 @@
                 <thead>
                     <tr class="border-b border-[#E3E5DE] text-xs uppercase tracking-wide text-[#64705F]">
                         <th class="whitespace-nowrap py-3 pr-4">Nama Bidang</th>
-                        <th class="whitespace-nowrap py-3 pr-4">Portofolio</th>
                         <th class="whitespace-nowrap py-3 pr-4">Status</th>
                         <th class="whitespace-nowrap py-3 pr-4 text-right">Aksi</th>
                     </tr>
@@ -27,7 +26,6 @@
                     @forelse ($bidangs as $bidang)
                         <tr class="hover:bg-[#F6F7F4]">
                             <td class="py-3 pr-4 font-medium text-[#1E2A24]">{{ $bidang->nama_bidang }}</td>
-                            <td class="py-3 pr-4 text-[#4B564B]">{{ $bidang->requires_portfolio ? 'Diperlukan' : 'Tidak diperlukan' }}</td>
                             <td class="py-3 pr-4">
                                 @if ($bidang->is_active)
                                     <span class="inline-flex items-center gap-1.5 rounded-full bg-[#E8EEF5] px-2.5 py-1 text-xs font-medium text-[#081A30]">
@@ -56,7 +54,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="py-10 text-center text-sm text-[#8B958A]">Belum ada data bidang magang.</td>
+                            <td colspan="3" class="py-10 text-center text-sm text-[#8B958A]">Belum ada data bidang magang.</td>
                         </tr>
                     @endforelse
                 </tbody>

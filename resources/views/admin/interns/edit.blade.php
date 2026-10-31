@@ -1,10 +1,10 @@
-<x-admin.layouts.app title="Edit Mahasiswa">
+<x-admin.layouts.app title="Edit Peserta">
 
     <a href="{{ route('admin.interns.index') }}" class="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-[#4B564B] hover:text-[#1E2A24]">
-        <i class="ti ti-arrow-left"></i> Kembali ke daftar mahasiswa magang
+        <i class="ti ti-arrow-left"></i> Kembali ke daftar peserta magang
     </a>
 
-    <x-admin.card title="Edit Data Mahasiswa" class="max-w-2xl">
+    <x-admin.card title="Edit Data Peserta" class="max-w-2xl">
         <form method="POST" action="{{ route('admin.interns.update', $intern) }}" class="space-y-4">
             @csrf
             @method('PUT')
@@ -37,14 +37,7 @@
                        class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">
             </div>
 
-            <div>
-                <label class="mb-1.5 block text-sm font-medium text-[#1E2A24]">Status</label>
-                <select name="status" required
-                        class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">
-                    <option value="aktif" @selected(old('status', $intern->status) === 'aktif')>Aktif</option>
-                    <option value="selesai" @selected(old('status', $intern->status) === 'selesai')>Selesai</option>
-                </select>
-            </div>
+            <div class="rounded-lg bg-[#F4F6FB] p-4 text-sm text-[#687386]"><p class="font-semibold text-[#0C2340]">Status magang: {{ ucfirst($intern->status) }}</p><p class="mt-1 text-xs">Status berubah otomatis menjadi selesai setelah tanggal akhir periode magang berlalu.</p></div>
 
             <div class="flex justify-end gap-2 pt-2">
                 <a href="{{ route('admin.interns.index') }}" class="rounded-lg border border-[#E3E5DE] px-4 py-2.5 text-sm font-medium text-[#4B564B]">Batal</a>

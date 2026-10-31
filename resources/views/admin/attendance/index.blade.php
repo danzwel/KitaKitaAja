@@ -1,7 +1,7 @@
 <x-admin.layouts.app title="Sesi QR Absensi">
     <div class="space-y-6">
         <div>
-            <p class="text-sm font-medium text-[#8A94A6]">Kehadiran mahasiswa</p>
+            <p class="text-sm font-medium text-[#8A94A6]">Kehadiran peserta</p>
             <h2 class="mt-1 font-heading text-2xl font-bold text-[#0C2340]">Sesi QR Absensi</h2>
         </div>
 
@@ -54,7 +54,7 @@
                     <div>
                         <label class="mb-1.5 block text-sm font-medium text-[#1E2A24]">Jenis Absensi</label>
                         <select name="type" required class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">
-                            <option value="datang">Absen Datang (07:45)</option>
+                            <option value="datang">Absen Datang (07:30)</option>
                             <option value="pulang">Absen Pulang (16:00)</option>
                         </select>
                     </div>
@@ -87,7 +87,7 @@
                 <p class="mt-4 rounded-lg bg-[#F4F6FB] p-3 text-xs leading-relaxed text-[#687386]">Isi koordinat instansi agar sistem dapat memvalidasi jarak GPS. Jika kosong, lokasi tetap dicatat tetapi tidak dibandingkan.</p>
             </x-admin.card>
 
-            <x-admin.card title="Sesi QR Aktif" subtitle="Tampilkan QR ini agar mahasiswa dapat melakukan scan.">
+            <x-admin.card title="Sesi QR Aktif" subtitle="Tampilkan QR ini agar peserta dapat melakukan scan.">
                 <div class="grid gap-4 sm:grid-cols-2">
                     @forelse ($sessions as $session)
                         <div class="rounded-xl border border-[#E7EAF1] p-4 {{ $session->isAvailable() ? 'bg-[#F8FAFD]' : 'bg-[#FAFAFB] opacity-70' }}">
@@ -103,7 +103,7 @@
                                     <div id="qr-{{ $session->id }}"></div>
                                 </button>
                                 <div class="min-w-0 text-xs text-[#687386]">
-                                    <p>Scan melalui kamera HP mahasiswa.</p>
+                                    <p>Scan melalui kamera HP peserta.</p>
                                     @if ($session->isAvailable())
                                         <form method="POST" action="{{ route('admin.attendance.sessions.close', $session) }}" class="mt-3">
                                             @csrf @method('PATCH')
@@ -125,7 +125,7 @@
             <div class="relative w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-2xl">
                 <button id="qr-modal-close" type="button" class="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full text-[#687386] hover:bg-[#F4F6FB]" aria-label="Tutup QR"><i class="ti ti-x text-lg"></i></button>
                 <p id="qr-modal-title" class="pr-8 text-left font-heading text-lg font-bold text-[#0C2340]">QR Absensi</p>
-                <p class="mt-1 text-left text-sm text-[#8A94A6]">Arahkan kamera mahasiswa ke QR ini.</p>
+                <p class="mt-1 text-left text-sm text-[#8A94A6]">Arahkan kamera peserta ke QR ini.</p>
                 <div id="qr-modal-code" class="mx-auto mt-6 flex min-h-[310px] w-[310px] items-center justify-center rounded-xl bg-white p-2"></div>
             </div>
         </div>

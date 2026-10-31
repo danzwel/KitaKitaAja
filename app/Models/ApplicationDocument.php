@@ -12,6 +12,7 @@ class ApplicationDocument extends Model
     'surat_pengantar',
     'foto',
     'cv',
+    'transkrip_nilai',
     'proposal',
     'portofolio',
 ];

@@ -28,8 +28,7 @@ public function kontak()
 
    public function create()
 {
-    $bidangs = \App\Models\Bidang::where('is_active', true)->get();
-    return view('application.create', compact('bidangs'));
+    return view('application.create');
 }
 
 public function store(StorePengajuanRequest $request)
@@ -48,23 +47,19 @@ public function store(StorePengajuanRequest $request)
         'alamat' => $validated['alamat'],
         'periode_mulai' => $validated['periode_mulai'],
         'periode_selesai' => $validated['periode_selesai'],
-        'bidang_id' => $validated['bidang_id'],
-        'tujuan_magang' => $validated['tujuan_magang'],
     ]);
 
-    $suratPath = $request->file('surat_pengantar')->store('documents', 'public');
+    $suratPath = $request->hasFile('surat_pengantar') ? $request->file('surat_pengantar')->store('documents', 'public') : null;
     $fotoPath = $request->file('foto')->store('documents/foto', 'public');
     $cvPath = $request->hasFile('cv') ? $request->file('cv')->store('documents', 'public') : null;
-    $proposalPath = $request->hasFile('proposal') ? $request->file('proposal')->store('documents', 'public') : null;
-    $portofolioPath = $request->hasFile('portofolio') ? $request->file('portofolio')->store('documents/portofolio', 'public') : null;
+    $transkripPath = $request->file('transkrip_nilai')->store('documents/transkrip-nilai', 'public');
 
     ApplicationDocument::create([
         'internship_application_id' => $application->id,
         'surat_pengantar' => $suratPath,
         'foto' => $fotoPath,
         'cv' => $cvPath,
-        'proposal' => $proposalPath,
-        'portofolio' => $portofolioPath,
+        'transkrip_nilai' => $transkripPath,
     ]);
 
     return redirect()
@@ -93,7 +88,7 @@ public function checkStatus(Request $request)
     $applicationCode = trim($request->application_code);
     $email = trim($request->email);
 
-    $application = InternshipApplication::with('intern')
+    $application = InternshipApplication::with(['intern', 'bidang'])
         ->whereRaw('UPPER(application_code) = ?', [strtoupper($applicationCode)])
         ->whereRaw('LOWER(email) = ?', [strtolower($email)])
         ->first();
@@ -104,6 +99,20 @@ public function checkStatus(Request $request)
         ])->withInput();
     }
 
+    $request->session()->put('checked_application_id', $application->id);
+
     return view('application.cek-status-result', compact('application'));
 }
+
+    public function downloadStatus(Request $request, string $application_code)
+    {
+        $application = InternshipApplication::where('application_code', $application_code)->firstOrFail();
+
+        abort_unless($request->session()->get('checked_application_id') === $application->id, 403);
+
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView('application.pdf.status', compact('application'));
+
+        return $pdf->download('status-pengajuan-'.$application->application_code.'.pdf');
+    }
 }

@@ -18,7 +18,6 @@ class UpdateInternRequest extends FormRequest
             'university' => ['required', 'string', 'max:255'],
             'department_id' => ['required', 'exists:departments,id'],
             'period' => ['required', 'string', 'max:255'],
-            'status' => ['required', 'in:aktif,selesai'],
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware\Admin;
 
 use Closure;
+use App\Services\InternshipStatusService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,6 +27,7 @@ class EnsureAdminIsAuthenticated
         // bukan guard web default. Tanpa ini authorize() akan menerima
         // user null dan seluruh halaman Admin berakhir 403.
         Auth::shouldUse('admin');
+        app(InternshipStatusService::class)->syncExpired();
 
         return $next($request);
     }

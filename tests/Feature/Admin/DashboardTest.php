@@ -23,7 +23,7 @@ class DashboardTest extends TestCase
             ->get(route('admin.dashboard'))
             ->assertOk()
             ->assertSee('Total Pengajuan')
-            ->assertSee('Mahasiswa Aktif')
+            ->assertSee('Peserta Aktif')
             ->assertSee('Grafik Pengajuan');
     }
 }

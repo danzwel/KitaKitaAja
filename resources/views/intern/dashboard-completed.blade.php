@@ -1,0 +1,20 @@
+<x-intern.layouts.app title="Magang Selesai">
+    <div class="mx-auto max-w-5xl space-y-6">
+        <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0B1F3D] via-[#12305C] to-[#1F7A4D] px-6 py-10 text-white shadow-xl sm:px-10 sm:py-12">
+            <div class="pointer-events-none absolute -right-12 -top-12 h-56 w-56 rounded-full border-[28px] border-white/10"></div><div class="pointer-events-none absolute -bottom-20 left-1/3 h-40 w-40 rounded-full bg-gold/15 blur-2xl"></div>
+            <div class="relative max-w-2xl"><span class="inline-flex items-center gap-2 rounded-full bg-emerald-300/15 px-3 py-1 text-xs font-semibold text-emerald-100 ring-1 ring-emerald-100/20"><i class="ti ti-circle-check text-base"></i> Program telah selesai</span><h2 class="mt-5 font-heading text-3xl font-extrabold sm:text-4xl">Terima kasih, {{ $intern->name }}.</h2><p class="mt-3 text-sm leading-relaxed text-blue-100/85 sm:text-base">Masa magang Anda berakhir pada {{ $intern->internshipApplication?->periode_selesai?->translatedFormat('d F Y') ?? '-' }}. Menu absensi serta pengajuan izin/sakit telah dinonaktifkan.</p></div>
+        </section>
+
+        <section class="grid gap-4 sm:grid-cols-3">
+            <div class="rounded-2xl border border-emerald-100 bg-emerald-50 p-5"><p class="text-xs font-semibold uppercase tracking-wide text-emerald-700">Status Program</p><p class="mt-2 text-xl font-bold text-emerald-950">Selesai</p></div>
+            <div class="rounded-2xl border border-blue-100 bg-blue-50 p-5"><p class="text-xs font-semibold uppercase tracking-wide text-blue-700">Periode Magang</p><p class="mt-2 font-bold text-blue-950">{{ $intern->period }}</p></div>
+            <div class="rounded-2xl border border-violet-100 bg-violet-50 p-5"><p class="text-xs font-semibold uppercase tracking-wide text-violet-700">Jam Kerja Tercatat</p><p class="mt-2 text-xl font-bold text-violet-950">{{ $workingDuration }}</p></div>
+        </section>
+
+        <section class="grid gap-4 md:grid-cols-3">
+            <a href="{{ route('intern.reports.index') }}" class="group rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 transition hover:-translate-y-0.5 hover:shadow-lg"><span class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700"><i class="ti ti-file-description text-xl"></i></span><h3 class="mt-4 font-heading font-bold text-gray-900">Laporan Magang</h3><p class="mt-1 text-sm leading-relaxed text-gray-500">{{ $intern->final_report_path ? 'Lihat atau perbarui laporan hasil magang.' : 'Unggah laporan hasil magang Anda.' }}</p><span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-emerald-700">Buka laporan <i class="ti ti-arrow-right"></i></span></a>
+            <a href="{{ route('intern.attendance.history') }}" class="group rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 transition hover:-translate-y-0.5 hover:shadow-lg"><span class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-blue-700"><i class="ti ti-history text-xl"></i></span><h3 class="mt-4 font-heading font-bold text-gray-900">Rekap Kehadiran</h3><p class="mt-1 text-sm leading-relaxed text-gray-500">Lihat riwayat absensi dan total jam kerja yang tercatat.</p><span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-700">Lihat rekap <i class="ti ti-arrow-right"></i></span></a>
+            <a href="{{ route('intern.profile.edit') }}" class="group rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 transition hover:-translate-y-0.5 hover:shadow-lg"><span class="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-100 text-violet-700"><i class="ti ti-user-circle text-xl"></i></span><h3 class="mt-4 font-heading font-bold text-gray-900">Profil Saya</h3><p class="mt-1 text-sm leading-relaxed text-gray-500">Perbarui data profil dan kata sandi akun Anda.</p><span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-violet-700">Buka profil <i class="ti ti-arrow-right"></i></span></a>
+        </section>
+    </div>
+</x-intern.layouts.app>

@@ -5,8 +5,8 @@
             <div class="relative"><p class="text-xs uppercase tracking-[0.2em] text-blue-200/60">Kehadiran Magang</p><h2 class="mt-2 font-heading text-2xl font-bold">Catat kehadiranmu dengan QR Code</h2><p class="mt-2 max-w-xl text-sm text-blue-100/75">Lokasi GPS akan dicatat hanya saat kamu melakukan scan.</p></div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            @foreach ([['label'=>'Total Hadir','value'=>$stats['hadir'],'border'=>'border-emerald-500'],['label'=>'Total Alpa','value'=>$stats['alpa'],'border'=>'border-rose-500'],['label'=>'Izin','value'=>$stats['izin'],'border'=>'border-blue-500'],['label'=>'Sakit','value'=>$stats['sakit'],'border'=>'border-amber-500']] as $stat)
+        <div class="grid grid-cols-2 gap-4 lg:grid-cols-5">
+            @foreach ([['label'=>'Total Hadir','value'=>$stats['hadir'],'border'=>'border-emerald-500'],['label'=>'Jam Kerja','value'=>$stats['working_duration'],'border'=>'border-[#0C2340]'],['label'=>'Total Alpa','value'=>$stats['alpa'],'border'=>'border-rose-500'],['label'=>'Izin','value'=>$stats['izin'],'border'=>'border-blue-500'],['label'=>'Sakit','value'=>$stats['sakit'],'border'=>'border-amber-500']] as $stat)
                 <div class="rounded-xl border-l-4 {{ $stat['border'] }} bg-white p-4 shadow-sm"><p class="text-2xl font-bold text-gray-900">{{ $stat['value'] }}</p><p class="mt-1 text-xs font-medium text-gray-400">{{ $stat['label'] }}</p></div>
             @endforeach
         </div>
@@ -15,7 +15,7 @@
             <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
                 <h3 class="font-heading text-lg font-bold text-gray-900">Status Hari Ini</h3>
                 @if ($todayRecord)
-                    <div class="mt-5 grid grid-cols-2 gap-3 text-sm"><div class="rounded-xl bg-emerald-50 p-4"><p class="text-xs text-emerald-600">Datang</p><p class="mt-1 font-bold text-emerald-900">{{ $todayRecord->check_in_at?->format('H:i') ?? '-' }}</p><p class="text-xs text-emerald-700"><x-status-badge :status="$todayRecord->check_in_status ?? '-'" /></p></div><div class="rounded-xl bg-blue-50 p-4"><p class="text-xs text-blue-600">Pulang</p><p class="mt-1 font-bold text-blue-900">{{ $todayRecord->check_out_at?->format('H:i') ?? '-' }}</p><p class="text-xs text-blue-700"><x-status-badge :status="$todayRecord->check_out_status ?? 'belum ada absensi'" /></p></div></div>
+                    <div class="mt-5 grid grid-cols-2 gap-3 text-sm"><div class="rounded-xl bg-emerald-50 p-4"><p class="text-xs text-emerald-600">Datang</p><p class="mt-1 font-bold text-emerald-900">{{ $todayRecord->check_in_at?->format('H:i') ?? '-' }}</p><p class="text-xs text-emerald-700"><x-status-badge :status="$todayRecord->check_in_status ?? '-'" /></p></div><div class="rounded-xl bg-blue-50 p-4"><p class="text-xs text-blue-600">Pulang</p><p class="mt-1 font-bold text-blue-900">{{ $todayRecord->check_out_at?->format('H:i') ?? '-' }}</p><p class="text-xs text-blue-700"><x-status-badge :status="$todayRecord->check_out_status ?? 'belum ada absensi'" /></p></div></div><p class="mt-3 text-sm font-medium text-[#0C2340]">Jam kerja hari ini: {{ $todayRecord->working_duration }}</p>
                 @else <p class="mt-5 rounded-xl bg-gray-50 p-4 text-sm text-gray-500">Belum ada absensi hari ini. Scan QR yang ditampilkan admin.</p> @endif
                 <div class="mt-5 flex flex-wrap gap-3"><a href="{{ route('intern.attendance.leave') }}" class="rounded-lg border border-[#0C2340] px-4 py-2.5 text-sm font-semibold text-[#0C2340]">Ajukan Izin / Sakit</a><a href="{{ route('intern.attendance.history') }}" class="rounded-lg bg-[#0C2340] px-4 py-2.5 text-sm font-semibold text-white">Lihat Riwayat</a></div>
             </div>

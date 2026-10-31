@@ -1,0 +1,25 @@
+<x-admin.layouts.app title="Dokumentasi Magang">
+    <div class="space-y-6">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><div><p class="text-sm font-medium text-[#8A94A6]">Album kenangan internal</p><h2 class="mt-1 font-heading text-2xl font-bold text-[#0C2340]">Dokumentasi Magang</h2><p class="mt-2 max-w-2xl text-sm text-[#687386]">Foto dokumentasi diunggah langsung oleh admin. Kuota setiap tahun kalender maksimal 10 foto.</p></div><div class="rounded-xl bg-[#E8EEF5] px-4 py-3 text-sm text-[#0C2340]"><span class="font-heading text-xl font-bold">{{ $selectedYear === $currentYear ? $currentYearPhotoCount : $photos->count() }}</span><span class="ml-1 text-xs font-medium text-[#687386]">/ {{ $maximumPhotos }} foto · {{ $selectedYear }}</span></div></div>
+
+        @if ($selectedYear === $currentYear)
+            <x-admin.card title="Unggah Foto Dokumentasi" subtitle="Foto akan tercatat pada tahun {{ $currentYear }} dan nama admin pengunggahnya.">
+                @if ($currentYearPhotoCount < $maximumPhotos)
+                    <form method="POST" action="{{ route('admin.documentation.store') }}" enctype="multipart/form-data" class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_auto] lg:items-end">@csrf
+                        <div><label for="photo" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[#8A94A6]">Foto</label><input id="photo" type="file" name="photo" accept="image/jpeg,image/png,image/webp" required class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-[#E8EEF5] file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-[#0C2340]">@error('photo')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror</div>
+                        <div><label for="caption" class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[#8A94A6]">Keterangan <span class="normal-case font-normal">(opsional)</span></label><input id="caption" name="caption" value="{{ old('caption') }}" maxlength="255" placeholder="Contoh: Penutupan magang tahun {{ $currentYear }}" class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">@error('caption')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror</div>
+                        <button class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0C2340] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#081A30]"><i class="ti ti-upload"></i> Unggah Foto</button>
+                    </form>
+                    <p class="mt-3 text-xs text-[#8A94A6]">JPG, PNG, atau WEBP · Maks. 5 MB · Sisa kuota tahun ini: {{ $maximumPhotos - $currentYearPhotoCount }} foto.</p>
+                @else
+                    <div class="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800"><i class="ti ti-info-circle mr-1"></i> Kuota dokumentasi tahun {{ $currentYear }} sudah mencapai 10 foto. Hapus foto jika ingin menggantinya.</div>
+                @endif
+            </x-admin.card>
+        @endif
+
+        <x-admin.card title="Album Dokumentasi" subtitle="Pilih tahun untuk melihat foto dokumentasi yang tersimpan.">
+            <form method="GET" class="mb-5 flex flex-wrap items-center gap-2"><label for="year" class="text-sm font-medium text-[#1E2A24]">Tahun</label><select id="year" name="year" onchange="this.form.submit()" class="rounded-lg border border-[#E3E5DE] px-3 py-2 text-sm focus:border-[#0C2340] focus:outline-none">@foreach($years as $year)<option value="{{ $year }}" @selected((int) $year === $selectedYear)>{{ $year }}</option>@endforeach</select></form>
+            <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">@forelse($photos as $photo)<article class="overflow-hidden rounded-xl border border-[#E7EAF1] bg-white"><a href="{{ Storage::url($photo->image_path) }}" target="_blank" rel="noopener" class="block aspect-[4/3] bg-[#F4F6FB]"><img src="{{ Storage::url($photo->image_path) }}" alt="{{ $photo->caption ?: 'Dokumentasi magang '.$photo->year }}" class="h-full w-full object-cover transition duration-200 hover:scale-[1.02]"></a><div class="p-4"><p class="min-h-10 text-sm font-medium text-[#1E2A24]">{{ $photo->caption ?: 'Dokumentasi magang '.$photo->year }}</p><div class="mt-3 flex items-center justify-between gap-3"><p class="text-xs text-[#8A94A6]">Oleh {{ $photo->uploadedBy?->name ?? 'Admin' }} · {{ $photo->created_at?->translatedFormat('d M Y') }}</p><form method="POST" action="{{ route('admin.documentation.destroy', $photo) }}" onsubmit="return confirm('Hapus foto dokumentasi ini?');">@csrf @method('DELETE')<button class="rounded-md p-1.5 text-[#9B3A3A] hover:bg-[#FBEAEA]" title="Hapus foto"><i class="ti ti-trash"></i></button></form></div></div></article>@empty<div class="sm:col-span-2 xl:col-span-3 rounded-xl bg-[#F8FAFD] py-12 text-center text-sm text-[#8A94A6]">Belum ada foto dokumentasi untuk tahun {{ $selectedYear }}.</div>@endforelse</div>
+        </x-admin.card>
+    </div>
+</x-admin.layouts.app>

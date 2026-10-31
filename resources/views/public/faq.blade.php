@@ -34,15 +34,15 @@
                     ],
                     [
                         'q' => 'Apakah bisa mengajukan magang secara berkelompok?',
-                        'a' => 'Bisa, selama setiap anggota kelompok tetap mengisi formulir pengajuan secara individu sesuai data masing-masing.',
+                        'a' => 'Bisa, selama setiap anggota kelompok tetap mengisi formulir pengajuan secara individu sesuai data masing-masing. Jumlah anggota kelompok akan disesuaikan dengan kebutuhan instansi.',
                     ],
                     [
                         'q' => 'Bagaimana cara mengetahui hasil pengajuan?',
                         'a' => 'Gunakan menu Cek Status dengan memasukkan Nomor Pengajuan dan email yang telah didaftarkan sebelumnya.',
                     ],
                     [
-                        'q' => 'Apakah portofolio wajib diunggah?',
-                        'a' => 'Portofolio hanya wajib untuk bidang tertentu seperti Desain/Editor. Sistem akan menampilkan kolom unggah portofolio secara otomatis apabila bidang yang dipilih membutuhkannya.',
+                        'q' => 'Apakah transkrip nilai wajib diunggah?',
+                        'a' => 'Ya. Transkrip nilai wajib diunggah dalam format PDF dan digunakan admin sebagai salah satu pertimbangan untuk menentukan bidang penempatan magang.',
                     ],
                 ];
             @endphp

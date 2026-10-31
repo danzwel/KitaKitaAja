@@ -45,8 +45,11 @@
                         ['route' => 'admin.applications.index', 'icon' => 'ti-file-description', 'label' => 'Kelola Pengajuan'],
                         ['route' => 'admin.attendance.index', 'icon' => 'ti-calendar-check', 'label' => 'Sesi QR Absensi'],
                         ['route' => 'admin.attendance.recap', 'icon' => 'ti-report-analytics', 'label' => 'Rekap Absensi'],
-                        ['route' => 'admin.interns.index', 'icon' => 'ti-users', 'label' => 'Mahasiswa Magang'],
+                        ['route' => 'admin.interns.index', 'icon' => 'ti-users', 'label' => 'Peserta Magang'],
+                        ['route' => 'admin.reports.index', 'icon' => 'ti-file-description', 'label' => 'Laporan Peserta'],
+                        ['route' => 'admin.documentation.index', 'icon' => 'ti-photo', 'label' => 'Dokumentasi Magang'],
                         ['route' => 'admin.departments.index', 'icon' => 'ti-building', 'label' => 'Bidang Magang'],
+                        ['route' => 'admin.accounts.index', 'icon' => 'ti-users', 'label' => 'Akun Admin'],
                     ];
                 @endphp
 
@@ -76,6 +79,9 @@
                                     @break
                                 @case('ti-building')
                                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M2 21h20M8 7h2M8 11h2M8 15h2M12 7h2M12 11h2M19 21v-7a2 2 0 0 0-2-2h-1"/></svg>
+                                    @break
+                                @case('ti-photo')
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path stroke-linecap="round" stroke-linejoin="round" d="m21 15-4.5-4.5L8 19"/></svg>
                                     @break
                             @endswitch
                         </span>
@@ -113,7 +119,8 @@
                 @php
                     $pendingApplicationNotifications = \App\Models\InternshipApplication::whereIn('status', ['menunggu_verifikasi', 'diproses'])->count();
                     $pendingLeaveNotifications = \App\Models\LeaveRequest::where('status', 'pending')->count();
-                    $notificationCount = $pendingApplicationNotifications + $pendingLeaveNotifications;
+                    $pendingReportNotifications = \App\Models\Intern::whereNotNull('final_report_path')->whereNull('final_report_viewed_at')->count();
+                    $notificationCount = $pendingApplicationNotifications + $pendingLeaveNotifications + $pendingReportNotifications;
                 @endphp
                 <div class="flex items-center gap-3">
                     <div class="relative hidden sm:block" x-data="{ open: false }">
@@ -137,6 +144,10 @@
                                     <span class="mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600"><i class="ti ti-calendar-event"></i></span>
                                     <span><span class="block text-sm font-medium text-[#1E2A24]">Pengajuan izin/sakit</span><span class="block text-xs text-[#8A94A6]">{{ $pendingLeaveNotifications }} pengajuan menunggu persetujuan</span></span>
                                 </a>
+                                <a href="{{ route('admin.reports.index') }}" class="flex items-start gap-3 rounded-lg px-2 py-2.5 hover:bg-[#F4F6FB]">
+                                    <span class="mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700"><i class="ti ti-file-check"></i></span>
+                                    <span><span class="block text-sm font-medium text-[#1E2A24]">Laporan hasil magang</span><span class="block text-xs text-[#8A94A6]">{{ $pendingReportNotifications }} laporan baru perlu ditinjau</span></span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -154,6 +165,9 @@
                          class="absolute right-0 mt-2 w-48 rounded-xl border border-[#E3E5DE] bg-white p-1.5 shadow-lg">
                         <a href="{{ route('admin.profile.edit') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[#1E2A24] hover:bg-[#F4F6FB]">
                             <i class="ti ti-user-circle"></i> Profil Saya
+                        </a>
+                        <a href="{{ route('admin.accounts.index') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[#1E2A24] hover:bg-[#F4F6FB]">
+                            <i class="ti ti-users"></i> Akun Admin
                         </a>
                         <hr class="my-1 border-[#EEF0F5]">
                         <form method="POST" action="{{ route('admin.logout') }}">

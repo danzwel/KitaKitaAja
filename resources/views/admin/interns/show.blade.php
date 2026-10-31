@@ -1,12 +1,12 @@
-<x-admin.layouts.app title="Detail Mahasiswa">
+<x-admin.layouts.app title="Detail Peserta">
 
     <a href="{{ route('admin.interns.index') }}" class="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-[#4B564B] hover:text-[#1E2A24]">
-        <i class="ti ti-arrow-left"></i> Kembali ke daftar mahasiswa magang
+        <i class="ti ti-arrow-left"></i> Kembali ke daftar peserta magang
     </a>
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div class="space-y-6 lg:col-span-2">
-            <x-admin.card title="Data Mahasiswa">
+            <x-admin.card title="Data Peserta">
                 <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     @foreach ([
                         'Nama' => $intern->name,
@@ -23,7 +23,7 @@
                 </dl>
             </x-admin.card>
 
-            <x-admin.card title="Surat Balasan" subtitle="Dapat diunduh mahasiswa melalui dashboard mereka">
+            <x-admin.card title="Surat Balasan" subtitle="Dapat diunduh peserta melalui dashboard mereka">
                 <div class="mb-4 space-y-2">
                     @forelse ($intern->replyLetters as $letter)
                         <div class="flex items-center justify-between rounded-lg border border-[#E3E5DE] px-4 py-3">
@@ -55,9 +55,10 @@
                         </button>
                     </form>
                 @else
-                    <p class="rounded-lg bg-[#F6F7F4] px-3 py-2 text-sm text-[#64705F]">Upload surat balasan tidak tersedia karena status mahasiswa sudah selesai.</p>
+                    <p class="rounded-lg bg-[#F6F7F4] px-3 py-2 text-sm text-[#64705F]">Upload surat balasan tidak tersedia karena status peserta sudah selesai.</p>
                 @endif
             </x-admin.card>
+
         </div>
 
         <div class="space-y-6">
@@ -65,9 +66,9 @@
                 <x-admin.badge :status="$intern->status" class="!text-sm" />
             </x-admin.card>
 
-            <x-admin.card title="Akun Mahasiswa">
+            <x-admin.card title="Akun Peserta">
                 <p class="mb-4 text-sm text-[#4B564B]">Reset password akan membuat password baru secara acak untuk akun ini.</p>
-                <form method="POST" action="{{ route('admin.interns.reset-password', $intern) }}" onsubmit="return confirm('Reset password mahasiswa ini?');">
+                <form method="POST" action="{{ route('admin.interns.reset-password', $intern) }}" onsubmit="return confirm('Reset password peserta ini?');">
                     @csrf
                     @method('PATCH')
                     <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-lg border border-[#E3E5DE] px-4 py-2.5 text-sm font-medium text-[#1E2A24] hover:bg-[#F6F7F4]">
