@@ -52,7 +52,7 @@
                            class="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-health/40 focus:border-health transition">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">NIM</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">NIS/NIM</label>
                     <input type="text" name="nim" value="{{ old('nim') }}"
                            class="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-health/40 focus:border-health transition">
                 </div>
@@ -62,9 +62,10 @@
                            class="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-health/40 focus:border-health transition">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nomor HP</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nomor HP/WhatsApp Aktif</label>
                     <input type="text" name="no_hp" value="{{ old('no_hp') }}"
                            class="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-health/40 focus:border-health transition">
+                    <p class="mt-1.5 text-xs text-gray-500">Gunakan nomor yang aktif dan dapat dihubungi melalui WhatsApp.</p>
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Alamat</label>
@@ -74,7 +75,7 @@
             </div>
         </div>
 
-        {{-- CARD 2: DATA AKADEMIK --}}
+        {{-- CARD 2: DATA PENDIDIKAN --}}
         <div class="relative bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition p-6 pt-8">
             <div class="absolute -top-3 -left-3 w-9 h-9 rounded-full bg-health text-white text-xs font-display font-bold flex items-center justify-center shadow-md shadow-health/30">2</div>
             <div class="h-1 w-12 bg-health rounded-full mb-5"></div>
@@ -84,27 +85,27 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.42A12.1 12.1 0 0112 20.5a12.1 12.1 0 01-6.16-9.92L12 14z" />
                     </svg>
                 </div>
-                <p class="font-display font-semibold text-navy text-lg">Data Akademik</p>
+                <p class="font-display font-semibold text-navy text-lg">Data Pendidikan</p>
             </div>
 
             <div class="grid md:grid-cols-2 gap-5">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Universitas</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Asal Institusi Pendidikan</label>
                     <input type="text" name="universitas" value="{{ old('universitas') }}"
                            class="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-health/40 focus:border-health transition">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Fakultas</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Fakultas <span class="text-gray-400 font-normal">(opsional)</span></label>
                     <input type="text" name="fakultas" value="{{ old('fakultas') }}"
                            class="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-health/40 focus:border-health transition">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Program Studi</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Program Studi/Jurusan</label>
                     <input type="text" name="program_studi" value="{{ old('program_studi') }}"
                            class="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-health/40 focus:border-health transition">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Semester</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Kelas/Semester</label>
                     <input type="text" name="semester" value="{{ old('semester') }}"
                            class="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-health/40 focus:border-health transition">
                 </div>
@@ -135,24 +136,7 @@
                     <input type="date" name="periode_selesai" value="{{ old('periode_selesai') }}"
                            class="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-health/40 focus:border-health transition">
                 </div>
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Bidang yang Diminati</label>
-                    <select name="bidang_id" id="bidang_id"
-                            class="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-health/40 focus:border-health transition">
-                        <option value="">-- Pilih Bidang --</option>
-                        @foreach ($bidangs as $bidang)
-                            <option value="{{ $bidang->id }}" data-portfolio="{{ $bidang->requires_portfolio ? '1' : '0' }}"
-                                {{ old('bidang_id') == $bidang->id ? 'selected' : '' }}>
-                                {{ $bidang->nama_bidang }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Tujuan Magang</label>
-                    <textarea name="tujuan_magang" rows="3"
-                              class="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-health/40 focus:border-health transition">{{ old('tujuan_magang') }}</textarea>
-                </div>
+                <p class="md:col-span-2 rounded-lg bg-[#F4F6FB] px-4 py-3 text-sm text-[#536176]">Bidang penempatan akan ditentukan oleh admin berdasarkan kelengkapan data dan transkrip nilai.</p>
             </div>
         </div>
 
@@ -180,7 +164,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                        Surat Pengantar Kampus <span class="text-red-500 font-normal">*wajib, PDF max 2MB</span>
+                        Surat Pengantar Institusi <span class="text-gray-400 font-normal">(opsional, PDF max 2MB)</span>
                     </label>
                     <input type="file" name="surat_pengantar"
                            class="w-full border border-gray-200 rounded-lg px-3.5 py-2 text-sm file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-navy file:text-white file:text-xs file:font-medium hover:file:bg-navy-light">
@@ -191,18 +175,12 @@
                            class="w-full border border-gray-200 rounded-lg px-3.5 py-2 text-sm file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-gray-200 file:text-gray-700 file:text-xs file:font-medium hover:file:bg-gray-300">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Proposal Magang <span class="text-gray-400 font-normal">(opsional, PDF)</span></label>
-                    <input type="file" name="proposal"
-                           class="w-full border border-gray-200 rounded-lg px-3.5 py-2 text-sm file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-gray-200 file:text-gray-700 file:text-xs file:font-medium hover:file:bg-gray-300">
-                </div>
-
-                {{-- Muncul otomatis hanya untuk bidang tertentu (misal Desain/Editor) --}}
-                <div id="portofolio-wrapper" class="hidden border-t border-dashed border-gray-200 pt-5">
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                        Portofolio <span class="text-gold font-normal">(wajib untuk bidang ini — PDF/JPG/PNG, max 5MB)</span>
+                        Transkrip Nilai <span class="text-red-500 font-normal">*wajib, PDF/JPG/PNG max 2MB</span>
                     </label>
-                    <input type="file" name="portofolio"
-                           class="w-full border border-gray-200 rounded-lg px-3.5 py-2 text-sm file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-gold file:text-navy file:text-xs file:font-medium hover:file:bg-gold-light">
+                    <input type="file" name="transkrip_nilai" accept="application/pdf,image/jpeg,image/png"
+                           class="w-full border border-gray-200 rounded-lg px-3.5 py-2 text-sm file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-navy file:text-white file:text-xs file:font-medium hover:file:bg-navy-light">
+                    <p class="mt-1.5 text-xs text-gray-500">Digunakan admin sebagai pertimbangan penempatan bidang magang.</p>
                 </div>
             </div>
         </div>
@@ -233,18 +211,6 @@
 
 @push('scripts')
 <script>
-    const bidangSelect = document.getElementById('bidang_id');
-    const portofolioWrapper = document.getElementById('portofolio-wrapper');
-
-    function togglePortofolio() {
-        const selected = bidangSelect.options[bidangSelect.selectedIndex];
-        const needsPortfolio = selected?.dataset.portfolio === '1';
-        portofolioWrapper.classList.toggle('hidden', !needsPortfolio);
-    }
-
-    bidangSelect.addEventListener('change', togglePortofolio);
-    togglePortofolio();
-
     const fotoInput = document.getElementById('foto-input');
     const cropModal = document.getElementById('foto-crop-modal');
     const cropViewport = document.getElementById('foto-crop-viewport');

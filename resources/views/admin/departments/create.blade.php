@@ -16,11 +16,6 @@
             </div>
 
             <label class="flex items-center gap-2 text-sm text-[#4B564B]">
-                <input type="checkbox" name="requires_portfolio" value="1" @checked(old('requires_portfolio')) class="rounded border-[#E3E5DE] text-[#0C2340] focus:ring-[#0C2340]">
-                Memerlukan portofolio
-            </label>
-
-            <label class="flex items-center gap-2 text-sm text-[#4B564B]">
                 <input type="checkbox" name="is_active" value="1" checked class="rounded border-[#E3E5DE] text-[#0C2340] focus:ring-[#0C2340]">
                 Aktifkan bidang ini
             </label>

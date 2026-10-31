@@ -37,7 +37,7 @@
                 ['label' => 'Diproses', 'value' => $stats['processed'], 'icon' => 'ti-loader-2', 'accent' => 'text-[#8A661E] bg-[#FBF3E1]'],
                 ['label' => 'Diterima', 'value' => $stats['accepted'], 'icon' => 'ti-circle-check', 'accent' => 'text-[#081A30] bg-[#E8EEF5]'],
                 ['label' => 'Ditolak', 'value' => $stats['rejected'], 'icon' => 'ti-circle-x', 'accent' => 'text-[#9B3A3A] bg-[#FBEAEA]'],
-                ['label' => 'Mahasiswa Aktif', 'value' => $stats['active_interns'], 'icon' => 'ti-users', 'accent' => 'text-[#0C2340] bg-[#E8EEF5]'],
+                ['label' => 'Peserta Aktif', 'value' => $stats['active_interns'], 'icon' => 'ti-users', 'accent' => 'text-[#0C2340] bg-[#E8EEF5]'],
             ];
         @endphp
 

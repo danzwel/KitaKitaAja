@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ApproveApplicationRequest;
 use App\Http\Requests\Admin\RejectApplicationRequest;
 use App\Models\InternshipApplication;
+use App\Models\Bidang;
 use App\Services\Admin\ApplicationApprovalService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -40,6 +41,17 @@ class ApplicationController extends Controller
 
         $applications = InternshipApplication::query()
             ->with(['bidang', 'document'])
+            ->when($request->filled('q'), function ($query) use ($request): void {
+                $keyword = trim($request->string('q')->toString());
+
+                $query->where(function ($query) use ($keyword): void {
+                    $query->where('nama', 'like', "%{$keyword}%")
+                        ->orWhere('nim', 'like', "%{$keyword}%")
+                        ->orWhere('universitas', 'like', "%{$keyword}%")
+                        ->orWhere('application_code', 'like', "%{$keyword}%");
+                });
+            })
+            ->when(in_array($request->input('status'), $statuses, true), fn ($query) => $query->where('status', $request->input('status')))
             ->orderBy($sort, $direction)
             ->get();
 
@@ -52,17 +64,22 @@ class ApplicationController extends Controller
     public function show(InternshipApplication $application): View
     {
         $application->load(['bidang', 'document']);
+        $bidangs = Bidang::where('is_active', true)->orderBy('nama_bidang')->get();
 
-        return view('admin.applications.show', compact('application'));
+        return view('admin.applications.show', compact('application', 'bidangs'));
     }
 
     /**
-     * Terima pengajuan -> generate akun mahasiswa otomatis -> simpan ke interns.
+     * Terima pengajuan -> generate akun peserta otomatis -> simpan ke interns.
      */
     public function approve(ApproveApplicationRequest $request, InternshipApplication $application): RedirectResponse
     {
         try {
-            $this->approvalService->approve($application, $request->validated('approval_note'));
+            $this->approvalService->approve(
+                $application,
+                (int) $request->validated('bidang_id'),
+                $request->validated('approval_note'),
+            );
         } catch (ApplicationAlreadyProcessedException $e) {
             return back()->with('error', $e->getMessage());
         }

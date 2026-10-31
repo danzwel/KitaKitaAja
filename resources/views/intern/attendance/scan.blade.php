@@ -5,6 +5,12 @@
             <p class="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-600">Absen {{ ucfirst($session->type) }}</p>
             <h1 class="mt-2 font-heading text-2xl font-bold text-gray-900">Konfirmasi Lokasi</h1>
             <p class="mt-3 text-sm leading-relaxed text-gray-500">Izinkan akses lokasi agar sistem dapat mencatat posisi saat absensi.</p>
+            @if ($leaveException)
+                <div class="mt-4 rounded-xl border border-blue-200 bg-blue-50 p-3 text-left text-xs leading-relaxed text-blue-900">
+                    <p class="font-semibold">Scan memakai izin tetap hadir</p>
+                    <p class="mt-1">@if ($leaveException->status === 'pending') Absensi ini dicatat sementara hingga admin menyetujui izin sebelum {{ $leaveException->approval_deadline_at?->format('d M Y H:i') }} WIB. @else Izin sudah disetujui; aturan jam scan normal tidak diterapkan. @endif</p>
+                </div>
+            @endif
             <div id="scan-status" class="mt-5 rounded-xl bg-gray-50 p-4 text-sm text-gray-600">Meminta lokasi perangkat...</div>
             <form id="attendance-form" method="POST" action="{{ route('intern.attendance.scan.store', $session) }}" class="hidden">@csrf<input name="latitude"><input name="longitude"><button type="submit" class="mt-4 rounded-lg bg-[#0C2340] px-4 py-2.5 text-sm font-semibold text-white">Kirim Absensi</button></form>
         </div>

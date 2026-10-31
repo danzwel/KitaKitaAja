@@ -30,12 +30,10 @@
 
             <div class="grid sm:grid-cols-2 gap-4">
                 @foreach ([
-                    'Mahasiswa aktif dibuktikan dengan Kartu Tanda Mahasiswa (KTM)',
-                    'Minimal telah menempuh semester 4',
-                    'Berasal dari perguruan tinggi negeri/swasta terakreditasi',
+                    'Mahasiswa/siswa aktif dari institusi pendidikan yang sesuai',
                     'Mengajukan secara berkelompok maupun individu sesuai ketentuan program studi',
-                    'Bersedia mengikuti tata tertib dan jam kerja instansi',
                     'Tidak sedang menjalani magang di instansi lain pada periode yang sama',
+                    'Bersedia mengikuti tata tertib dan jam kerja instansi',
                 ] as $item)
                     <div class="flex items-start gap-3">
                         <span class="w-5 h-5 shrink-0 rounded-full bg-health/10 text-health flex items-center justify-center mt-0.5">
@@ -64,7 +62,7 @@
                         </svg>
                     </div>
                     <p class="font-display font-semibold text-navy text-sm mb-1">Surat Pengantar</p>
-                    <p class="text-xs text-gray-500">Wajib, dari kampus, format PDF</p>
+                    <p class="text-xs text-gray-500">Opsional, dari institusi, format PDF</p>
                 </div>
                 <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 text-center">
                     <div class="w-11 h-11 rounded-lg bg-health/10 flex items-center justify-center text-health mx-auto mb-4">
@@ -81,8 +79,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                     </div>
-                    <p class="font-display font-semibold text-navy text-sm mb-1">CV</p>
-                    <p class="text-xs text-gray-500">Opsional, format PDF</p>
+                    <p class="font-display font-semibold text-navy text-sm mb-1">Transkrip Nilai</p>
+                    <p class="text-xs text-gray-500">Wajib, format PDF</p>
                 </div>
                 <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 text-center">
                     <div class="w-11 h-11 rounded-lg bg-navy/5 flex items-center justify-center text-navy mx-auto mb-4">
@@ -90,13 +88,11 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <p class="font-display font-semibold text-navy text-sm mb-1">Proposal</p>
-                    <p class="text-xs text-gray-500">Opsional, sesuai kampus</p>
+                    <p class="font-display font-semibold text-navy text-sm mb-1">CV</p>
+                    <p class="text-xs text-gray-500">Opsional, format PDF</p>
                 </div>
             </div>
-            <p class="text-center text-xs text-gray-400 mt-5">
-                * Portofolio tambahan diwajibkan untuk bidang tertentu seperti Desain/Editor, dan hanya muncul di formulir jika relevan.
-            </p>
+            <p class="text-center text-xs text-gray-400 mt-5">Transkrip nilai digunakan admin sebagai pertimbangan penempatan bidang magang.</p>
         </section>
 
         {{-- ALUR PENGAJUAN --}}
@@ -148,11 +144,11 @@
                 </li>
                 <li class="flex gap-3">
                     <span class="text-gold-light">•</span>
-                    Mahasiswa wajib mengikuti jadwal dan tata tertib yang berlaku di UPTD Pelatihan Kesehatan.
+                    Peserta wajib mengikuti jadwal dan tata tertib yang berlaku di UPTD Pelatihan Kesehatan.
                 </li>
                 <li class="flex gap-3">
                     <span class="text-gold-light">•</span>
-                    Penempatan bidang disesuaikan dengan kebutuhan instansi dan minat yang diajukan.
+                    Penempatan bidang ditentukan admin berdasarkan kebutuhan instansi dan transkrip nilai peserta.
                 </li>
                 <li class="flex gap-3">
                     <span class="text-gold-light">•</span>

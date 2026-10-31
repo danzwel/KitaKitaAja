@@ -18,7 +18,7 @@
             <span class="text-sm font-medium text-gray-800">{{ $application->nama }}</span>
         </div>
         <div class="flex justify-between items-center">
-            <span class="text-sm text-gray-500">Universitas</span>
+            <span class="text-sm text-gray-500">Institusi Pendidikan</span>
             <span class="text-sm font-medium text-gray-800">{{ $application->universitas }}</span>
         </div>
         <div class="flex justify-between items-center">
@@ -44,15 +44,19 @@
 
         @if ($application->status === 'diterima' && $application->intern)
             <div class="mt-6 rounded-lg bg-health/10 p-4 text-sm text-gray-700">
-                <p class="font-semibold text-health">Akun Dashboard Mahasiswa</p>
+                <p class="font-semibold text-health">Akun Dashboard Peserta</p>
                 <div class="mt-3 space-y-2">
                     <p><span class="text-gray-500">Username:</span> <strong>{{ $application->intern->username }}</strong></p>
                     <p><span class="text-gray-500">Password awal:</span> <strong>{{ $application->intern->temporary_initial_password }}</strong></p>
                 </div>
-                <p class="mt-3">Gunakan akun berikut untuk login ke Dashboard Mahasiswa. Setelah login pertama, segera ubah password.</p>
-                <a href="{{ route('intern.login') }}" class="mt-4 inline-block font-semibold text-health underline">Login Mahasiswa</a>
+                <p class="mt-3">Gunakan akun berikut untuk login ke Dashboard Peserta. Setelah login pertama, segera ubah password.</p>
+                <a href="{{ route('intern.login') }}" class="mt-4 inline-block font-semibold text-health underline">Login Peserta</a>
             </div>
         @endif
+
+        <a href="{{ route('cek-status.download', $application->application_code) }}" class="block rounded-lg bg-navy px-4 py-3 text-center text-sm font-semibold text-white hover:bg-navy-light">
+            Download Status Pengajuan
+        </a>
     </div>
 
     <div class="text-center mt-6">

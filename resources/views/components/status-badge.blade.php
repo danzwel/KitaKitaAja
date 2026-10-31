@@ -7,13 +7,14 @@
         'izin' => ['background-color' => '#DBEAFE', 'color' => '#1D4ED8'],
         'sakit' => ['background-color' => '#FEF3C7', 'color' => '#B45309'],
         'alpa', 'ditolak', 'rejected' => ['background-color' => '#FFE4E6', 'color' => '#BE123C'],
-        'menunggu_verifikasi', 'pending', 'diproses', 'menunggu' => ['background-color' => '#FEF3C7', 'color' => '#B45309'],
+        'menunggu_verifikasi', 'menunggu_persetujuan_izin', 'pending', 'diproses', 'menunggu' => ['background-color' => '#FEF3C7', 'color' => '#B45309'],
         'selesai' => ['background-color' => '#F1F5F9', 'color' => '#475569'],
         default => ['background-color' => '#F3F4F6', 'color' => '#4B5563'],
     };
     $label = match ($value) {
         'tepat_waktu' => 'Tepat Waktu',
         'menunggu_verifikasi' => 'Menunggu Verifikasi',
+        'menunggu_persetujuan_izin' => 'Menunggu Persetujuan Izin',
         'approved' => 'Disetujui',
         'rejected' => 'Ditolak',
         default => ucfirst(str_replace('_', ' ', (string) $status)),

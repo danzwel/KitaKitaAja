@@ -24,7 +24,7 @@ class ApplicationApprovalServiceTest extends TestCase
     {
         $application = InternshipApplication::factory()->create();
 
-        $result = $this->service->approve($application);
+        $result = $this->service->approve($application, $application->bidang_id);
 
         $this->assertSame('diterima', $result->status);
     }
@@ -35,7 +35,7 @@ class ApplicationApprovalServiceTest extends TestCase
 
         $this->expectException(ApplicationAlreadyProcessedException::class);
 
-        $this->service->approve($application);
+        $this->service->approve($application, $application->bidang_id);
     }
 
     public function test_reject_saves_reason_and_updates_status(): void

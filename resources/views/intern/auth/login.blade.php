@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login Mahasiswa — SIM Magang</title>
+    <title>Login Peserta — SIM Magang</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     @include('components.vite-assets')
@@ -58,7 +58,7 @@
                 <div class="max-w-md">
                     <h1 class="font-heading text-4xl font-extrabold leading-tight text-white">
                         Portal<br>
-                        <span class="bg-gradient-to-r from-gold to-gold-light bg-clip-text text-transparent">Mahasiswa Magang</span>
+                        <span class="bg-gradient-to-r from-gold to-gold-light bg-clip-text text-transparent">Peserta Magang</span>
                     </h1>
                     <p class="mt-4 text-base leading-relaxed text-blue-200/60">
                         Akses dashboard Anda untuk memantau status magang, mengelola absensi, dan memperbarui profil.
@@ -99,7 +99,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4" />
                         </svg>
                     </div>
-                    <h1 class="font-heading text-xl font-bold text-navy">Portal Mahasiswa</h1>
+                    <h1 class="font-heading text-xl font-bold text-navy">Portal Peserta</h1>
                     <p class="mt-1 text-xs text-gray-400">UPTD Pelatihan Kesehatan Jabar</p>
                 </div>
 
@@ -117,7 +117,7 @@
                     @csrf
                     {{-- Username --}}
                     <div>
-                        <label for="username" class="mb-1.5 block text-sm font-semibold text-gray-700">NIM / Username</label>
+                        <label for="username" class="mb-1.5 block text-sm font-semibold text-gray-700">NIS/NIM / Username</label>
                         <div class="relative">
                             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
                                 <svg class="h-[18px] w-[18px] text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>

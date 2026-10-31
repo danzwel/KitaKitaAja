@@ -55,7 +55,7 @@ class InternController extends Controller
         $intern->update($request->validated());
 
         return redirect()->route('admin.interns.index')
-            ->with('success', 'Data mahasiswa magang berhasil diperbarui.');
+            ->with('success', 'Data peserta magang berhasil diperbarui.');
     }
 
     public function destroy(Intern $intern): RedirectResponse
@@ -64,11 +64,11 @@ class InternController extends Controller
 
         $intern->delete();
 
-        return back()->with('success', 'Data mahasiswa magang berhasil dihapus.');
+        return back()->with('success', 'Data peserta magang berhasil dihapus.');
     }
 
     /**
-     * Reset password mahasiswa magang ke password random baru.
+     * Reset password peserta magang ke password random baru.
      */
     public function resetPassword(Intern $intern): RedirectResponse
     {
@@ -76,7 +76,7 @@ class InternController extends Controller
 
         $newPassword = $this->accountService->resetPassword($intern);
 
-        // TODO: kirim password baru via notifikasi ke mahasiswa, bukan session flash.
+        // TODO: kirim password baru via notifikasi ke peserta, bukan session flash.
         return back()->with('success', "Password berhasil direset. Password baru: {$newPassword}");
     }
 }

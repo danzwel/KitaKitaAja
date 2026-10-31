@@ -96,11 +96,11 @@
                 Tahapan Mengikuti Program Magang
             </h2>
             <p class="text-gray-500 text-sm">
-                Ikuti empat langkah berikut untuk menyelesaikan proses pengajuan magangmu.
+                Ikuti lima tahapan berikut untuk menyelesaikan proses pengajuan magang Anda.
             </p>
         </div>
 
-        <div class="relative grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="relative grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
             {{-- garis penghubung, cuma muncul di layar besar --}}
             <div class="hidden lg:block absolute top-9 left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-navy via-health to-gold"></div>
 
@@ -117,7 +117,7 @@
                     2
                 </div>
                 <p class="font-display font-semibold text-navy text-sm mb-2">Unggah Dokumen</p>
-                <p class="text-xs text-gray-500 leading-relaxed">Lampirkan surat pengantar kampus, pas foto, dan dokumen pendukung lain.</p>
+                <p class="text-xs text-gray-500 leading-relaxed">Lampirkan pas foto, transkrip nilai, dan dokumen pendukung lain.</p>
             </div>
 
             <div class="relative bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all p-6">
@@ -131,6 +131,14 @@
             <div class="relative bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all p-6">
                 <div class="w-11 h-11 rounded-xl bg-navy text-white font-display font-bold flex items-center justify-center mb-5 shadow-md shadow-navy/20 relative z-10">
                     4
+                </div>
+                <p class="font-display font-semibold text-navy text-sm mb-2">Wawancara</p>
+                <p class="text-xs text-gray-500 leading-relaxed">Ikuti wawancara apabila diperlukan oleh instansi.</p>
+            </div>
+
+            <div class="relative bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all p-6">
+                <div class="w-11 h-11 rounded-xl bg-navy text-white font-display font-bold flex items-center justify-center mb-5 shadow-md shadow-navy/20 relative z-10">
+                    5
                 </div>
                 <p class="font-display font-semibold text-navy text-sm mb-2">Cek Status</p>
                 <p class="text-xs text-gray-500 leading-relaxed">Pantau hasil pengajuan kapan saja lewat menu Cek Status.</p>
@@ -153,7 +161,7 @@
                     </svg>
                 </div>
                 <p class="font-display font-semibold text-navy text-sm mb-1">Surat Pengantar</p>
-                <p class="text-xs text-gray-500">Wajib, dari kampus, format PDF</p>
+                <p class="text-xs text-gray-500">Opsional, dari institusi, format PDF</p>
             </div>
             <div class="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition p-5 text-center">
                 <div class="w-11 h-11 rounded-lg bg-health/10 flex items-center justify-center text-health mx-auto mb-4">
@@ -170,8 +178,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                 </div>
-                <p class="font-display font-semibold text-navy text-sm mb-1">CV</p>
-                <p class="text-xs text-gray-500">Opsional, format PDF</p>
+                <p class="font-display font-semibold text-navy text-sm mb-1">Transkrip Nilai</p>
+                <p class="text-xs text-gray-500">Wajib, format PDF</p>
             </div>
             <div class="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition p-5 text-center">
                 <div class="w-11 h-11 rounded-lg bg-navy/5 flex items-center justify-center text-navy mx-auto mb-4">
@@ -179,8 +187,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
-                <p class="font-display font-semibold text-navy text-sm mb-1">Proposal</p>
-                <p class="text-xs text-gray-500">Opsional, sesuai kampus</p>
+                <p class="font-display font-semibold text-navy text-sm mb-1">CV</p>
+                <p class="text-xs text-gray-500">Opsional, format PDF</p>
             </div>
         </div>
 

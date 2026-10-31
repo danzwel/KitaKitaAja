@@ -7,6 +7,8 @@ use App\Models\AttendanceRecord;
 use App\Models\AttendanceSession;
 use App\Models\LeaveRequest;
 use App\Models\Intern;
+use App\Services\AttendanceLeaveExceptionService;
+use App\Services\AttendanceExcelExportService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,6 +21,7 @@ class AttendanceController extends Controller
 {
     public function index(Request $request): View
     {
+        app(AttendanceLeaveExceptionService::class)->expireOverdue();
         $interns = Intern::with('internshipApplication')->where('status', Intern::STATUS_AKTIF)->orderBy('name')->get();
         $selectedIntern = $request->filled('intern_id') ? $interns->firstWhere('id', (int) $request->input('intern_id')) : null;
         $application = $selectedIntern?->internshipApplication;
@@ -30,7 +33,9 @@ class AttendanceController extends Controller
 
         $recordQuery = AttendanceRecord::with('intern');
         if ($selectedIntern) {
-            $recordQuery->where('intern_id', $selectedIntern->id)->whereBetween('attendance_date', [$periodStart, $periodEnd]);
+            $recordQuery->where('intern_id', $selectedIntern->id)
+                ->whereDate('attendance_date', '>=', $periodStart)
+                ->whereDate('attendance_date', '<=', $periodEnd);
         } else {
             $recordQuery->whereDate('attendance_date', $date);
         }
@@ -60,7 +65,7 @@ class AttendanceController extends Controller
             'summary' => [
                 'total' => $summaryBase->count(),
                 'hadir' => (clone $summaryBase)->whereIn('check_in_status', ['hadir', 'tepat_waktu'])->count(),
-                'pending' => (clone $summaryBase)->where('check_in_status', 'menunggu_verifikasi')->count(),
+                'pending' => (clone $summaryBase)->whereIn('check_in_status', ['menunggu_verifikasi', AttendanceRecord::STATUS_LEAVE_PENDING])->count(),
                 'leave_pending' => $leaveRequests->count(),
             ],
         ]);
@@ -68,8 +73,11 @@ class AttendanceController extends Controller
 
     public function recap(Request $request): View
     {
+        app(AttendanceLeaveExceptionService::class)->expireOverdue();
+        $request->validate(['date' => ['nullable', 'date']]);
+        $attendanceDate = Carbon::parse($request->input('date', now()->toDateString()))->startOfDay();
         $interns = Intern::with('internshipApplication')->where('status', Intern::STATUS_AKTIF)->orderBy('name')->get();
-        $todayRecordsQuery = AttendanceRecord::with('intern')->whereDate('attendance_date', now()->toDateString());
+        $todayRecordsQuery = AttendanceRecord::with('intern')->whereDate('attendance_date', $attendanceDate->toDateString());
 
         $summaryRows = $interns->map(function (Intern $intern): array {
             $application = $intern->internshipApplication;
@@ -81,7 +89,10 @@ class AttendanceController extends Controller
             $countEnd = $end->copy()->min(now()->endOfDay());
             $records = $start->gt($countEnd)
                 ? collect()
-                : AttendanceRecord::where('intern_id', $intern->id)->whereBetween('attendance_date', [$start->toDateString(), $countEnd->toDateString()])->get();
+                : AttendanceRecord::where('intern_id', $intern->id)
+                    ->whereDate('attendance_date', '>=', $start->toDateString())
+                    ->whereDate('attendance_date', '<=', $countEnd->toDateString())
+                    ->get();
             $attendanceSessionDates = collect();
             // Hari yang sedang berjalan belum dianggap alpa. Namun, apabila
             // periode magang sudah berlalu, hari terakhir periode tetap harus
@@ -92,7 +103,10 @@ class AttendanceController extends Controller
             if ($start->lte($alphaEnd)) {
                 $sessionQuery = AttendanceSession::where('type', 'datang')->where(function ($query) use ($start, $countEnd): void {
                     $query->where('is_recurring', true)
-                        ->orWhereBetween('attendance_date', [$start->toDateString(), $countEnd->toDateString()]);
+                        ->orWhere(function ($dateQuery) use ($start, $countEnd): void {
+                            $dateQuery->whereDate('attendance_date', '>=', $start->toDateString())
+                                ->whereDate('attendance_date', '<=', $countEnd->toDateString());
+                        });
                 });
 
                 $sessionQuery->get()->each(function (AttendanceSession $session) use (&$attendanceSessionDates, $start, $alphaEnd): void {
@@ -111,14 +125,14 @@ class AttendanceController extends Controller
                 $attendanceSessionDates = $attendanceSessionDates->unique()->values();
             }
             $presentDates = $records->filter(fn (AttendanceRecord $record) => in_array($record->check_in_status, ['hadir', 'tepat_waktu', 'terlambat'], true))->map(fn (AttendanceRecord $record) => $record->attendance_date->toDateString())->unique();
-            $pending = $records->where('check_in_status', 'menunggu_verifikasi')->count();
+            $pending = $records->whereIn('check_in_status', ['menunggu_verifikasi', AttendanceRecord::STATUS_LEAVE_PENDING])->count();
             $leaveDays = ['izin' => [], 'sakit' => []];
 
             $holidays = collect(config('attendance.holidays', []))->filter()->map(fn (string $date): string => Carbon::parse($date)->toDateString())->all();
 
             // Hanya hitung izin/sakit yang tanggalnya sudah berjalan agar rekap
             // mengikuti kondisi real-time sampai hari ini.
-            if ($start->lte($countEnd)) LeaveRequest::where('intern_id', $intern->id)->where('status', 'approved')->whereDate('start_date', '<=', $countEnd->toDateString())->whereDate('end_date', '>=', $start->toDateString())->get()->each(function (LeaveRequest $leave) use (&$leaveDays, $start, $countEnd, $holidays): void {
+            if ($start->lte($countEnd)) LeaveRequest::where('intern_id', $intern->id)->where('status', 'approved')->where('attendance_exception', false)->whereDate('start_date', '<=', $countEnd->toDateString())->whereDate('end_date', '>=', $start->toDateString())->get()->each(function (LeaveRequest $leave) use (&$leaveDays, $start, $countEnd, $holidays): void {
                 $cursor = $leave->start_date->copy()->max($start->copy()->startOfDay());
                 $last = $leave->end_date->copy()->min($countEnd->copy()->startOfDay());
                 while ($cursor->lte($last)) {
@@ -132,7 +146,7 @@ class AttendanceController extends Controller
             $present = $presentDates->count();
             $izin = count($leaveDays['izin']);
             $sakit = count($leaveDays['sakit']);
-            $pendingDates = $records->where('check_in_status', 'menunggu_verifikasi')
+            $pendingDates = $records->whereIn('check_in_status', ['menunggu_verifikasi', AttendanceRecord::STATUS_LEAVE_PENDING])
                 ->map(fn (AttendanceRecord $record): string => $record->attendance_date->toDateString())
                 ->unique()
                 ->values();
@@ -157,6 +171,7 @@ class AttendanceController extends Controller
                 ->merge($resolvedDates->keys())
                 ->unique()
                 ->count();
+            $workingMinutes = $records->sum(fn (AttendanceRecord $record): int => $record->working_minutes);
 
             return [
                 'intern' => $intern,
@@ -169,12 +184,15 @@ class AttendanceController extends Controller
                 'sakit' => $sakit,
                 'pending' => $pending,
                 'alpha' => $alpha,
+                'working_minutes' => $workingMinutes,
+                'working_duration' => $this->formatWorkingMinutes($workingMinutes),
             ];
         })->values();
 
         return view('admin.attendance.recap', [
             'interns' => $interns,
             'summaryRows' => $summaryRows,
+            'attendanceDate' => $attendanceDate,
             'todayRecords' => $todayRecordsQuery->latest('check_in_at')->get(),
             'leaveRequests' => LeaveRequest::with('intern')->where('status', 'pending')->latest()->get(),
         ]);
@@ -182,6 +200,7 @@ class AttendanceController extends Controller
 
     public function internRecap(Intern $intern): View
     {
+        app(AttendanceLeaveExceptionService::class)->expireOverdue();
         $application = $intern->internshipApplication;
         $periodStart = $application?->periode_mulai?->copy()->startOfDay() ?? now()->startOfDay();
         $accountStart = $intern->created_at?->copy()->startOfDay() ?? $periodStart;
@@ -190,8 +209,13 @@ class AttendanceController extends Controller
         $countEnd = $end->copy()->min(now()->endOfDay());
 
         $records = $start->lte($countEnd)
-            ? $intern->attendanceRecords()->whereBetween('attendance_date', [$start->toDateString(), $countEnd->toDateString()])->latest('attendance_date')->get()
+            ? $intern->attendanceRecords()
+                ->whereDate('attendance_date', '>=', $start->toDateString())
+                ->whereDate('attendance_date', '<=', $countEnd->toDateString())
+                ->latest('attendance_date')
+                ->get()
             : collect();
+        $workingMinutes = $records->sum(fn (AttendanceRecord $record): int => $record->working_minutes);
         $recordsByDate = $records->keyBy(fn (AttendanceRecord $record): string => $record->attendance_date->toDateString());
         $holidays = collect(config('attendance.holidays', []))->filter()->map(fn (string $date): string => Carbon::parse($date)->toDateString())->all();
         $scheduledDates = [];
@@ -200,7 +224,11 @@ class AttendanceController extends Controller
             : $countEnd->copy()->endOfDay();
         if ($start->lte($alphaEnd)) {
             AttendanceSession::where('type', 'datang')->where(function ($query) use ($start, $countEnd): void {
-                $query->where('is_recurring', true)->orWhereBetween('attendance_date', [$start->toDateString(), $countEnd->toDateString()]);
+                $query->where('is_recurring', true)
+                    ->orWhere(function ($dateQuery) use ($start, $countEnd): void {
+                        $dateQuery->whereDate('attendance_date', '>=', $start->toDateString())
+                            ->whereDate('attendance_date', '<=', $countEnd->toDateString());
+                    });
             })->get()->each(function (AttendanceSession $session) use (&$scheduledDates, $start, $alphaEnd, $holidays): void {
                 if ($session->is_recurring) {
                     $cursor = $start->copy()->max($session->created_at?->copy()->startOfDay() ?? $start->copy())->startOfDay();
@@ -213,7 +241,7 @@ class AttendanceController extends Controller
                 }
             });
         }
-        $approvedLeaves = $intern->leaveRequests()->where('status', 'approved')->whereDate('start_date', '<=', $countEnd->toDateString())->whereDate('end_date', '>=', $start->toDateString())->get();
+        $approvedLeaves = $intern->leaveRequests()->where('status', 'approved')->where('attendance_exception', false)->whereDate('start_date', '<=', $countEnd->toDateString())->whereDate('end_date', '>=', $start->toDateString())->get();
         $attendanceHistory = collect();
         if ($start->lte($countEnd)) {
             $cursor = $start->copy()->startOfDay();
@@ -238,6 +266,8 @@ class AttendanceController extends Controller
             'records' => $records,
             'attendanceHistory' => $attendanceHistory,
             'leaveRequests' => $intern->leaveRequests()->latest()->get(),
+            'workingMinutes' => $workingMinutes,
+            'workingDuration' => $this->formatWorkingMinutes($workingMinutes),
         ]);
     }
 
@@ -247,8 +277,33 @@ class AttendanceController extends Controller
 
         return $this->downloadPdf(
             view('admin.attendance.pdf.recap', $data)->render(),
-            'rekap-absensi-semua-mahasiswa.pdf'
+            'rekap-absensi-semua-peserta.pdf'
         );
+    }
+
+    public function recapExcel(Request $request, AttendanceExcelExportService $excel)
+    {
+        $data = $this->recap($request)->getData();
+
+        return $excel->summary($data['summaryRows']);
+    }
+
+    public function dailyAttendancePdf(Request $request)
+    {
+        $data = $this->recap($request)->getData();
+        $date = $data['attendanceDate'];
+
+        return $this->downloadPdf(
+            view('admin.attendance.pdf.daily', $data)->render(),
+            'absensi-harian-'.$date->format('Y-m-d').'.pdf'
+        );
+    }
+
+    public function dailyAttendanceExcel(Request $request, AttendanceExcelExportService $excel)
+    {
+        $data = $this->recap($request)->getData();
+
+        return $excel->daily($data['todayRecords'], $data['attendanceDate']);
     }
 
     public function internRecapPdf(Intern $intern)
@@ -258,6 +313,19 @@ class AttendanceController extends Controller
         return $this->downloadPdf(
             view('admin.attendance.pdf.intern', $data)->render(),
             'rekap-absensi-'.$intern->username.'.pdf'
+        );
+    }
+
+    public function internRecapExcel(Intern $intern, AttendanceExcelExportService $excel)
+    {
+        $data = $this->internRecap($intern)->getData();
+
+        return $excel->intern(
+            $intern,
+            $data['attendanceHistory'],
+            $data['leaveRequests'],
+            $data['start'],
+            $data['end'],
         );
     }
 
@@ -332,12 +400,124 @@ class AttendanceController extends Controller
         return back()->with('success', 'Status absensi berhasil diperbarui.');
     }
 
+    public function confirmAttendanceManually(Request $request, Intern $intern): RedirectResponse
+    {
+        $validated = $request->validate([
+            'attendance_date' => ['required', 'date', 'before_or_equal:'.now()->toDateString()],
+            'confirmation_type' => ['required', 'in:missed_check_in,correct_late_check_in,missed_check_out,missed_check_in_and_out'],
+            'admin_note' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $date = Carbon::parse($validated['attendance_date'])->startOfDay();
+        $application = $intern->internshipApplication;
+        if ($application && ($date->lt($application->periode_mulai->copy()->startOfDay()) || $date->gt($application->periode_selesai->copy()->endOfDay()))) {
+            return back()->with('error', 'Tanggal konfirmasi harus berada dalam periode magang peserta.');
+        }
+
+        $record = $intern->attendanceRecords()->whereDate('attendance_date', $date->toDateString())->first();
+        $adminId = $request->user('admin')->id;
+        $type = $validated['confirmation_type'];
+
+        if (in_array($type, ['missed_check_in', 'missed_check_in_and_out'], true)) {
+            if ($record?->check_in_at) {
+                return back()->with('error', $type === 'missed_check_in_and_out'
+                    ? 'Konfirmasi lupa scan datang dan pulang hanya dapat digunakan jika belum ada scan datang.'
+                    : 'Absen datang sudah tercatat. Gunakan opsi koreksi jika scan datang tercatat terlambat.');
+            }
+
+            $record ??= $intern->attendanceRecords()->create(['attendance_date' => $date->toDateString()]);
+            $record->update([
+                'check_in_session_id' => null,
+                'check_in_leave_request_id' => null,
+                'check_in_at' => Carbon::parse($date->toDateString().' '.config('attendance.check_in_time', '07:30')),
+                'check_in_latitude' => null,
+                'check_in_longitude' => null,
+                'check_in_distance_meters' => null,
+                'check_in_status' => AttendanceRecord::STATUS_ON_TIME,
+                'check_in_confirmed_by' => $adminId,
+                'check_in_confirmed_at' => now(),
+            ]);
+        }
+
+        if ($type === 'correct_late_check_in') {
+            if (! $record?->check_in_at) {
+                return back()->with('error', 'Belum ada scan datang untuk dikoreksi. Gunakan opsi lupa scan datang.');
+            }
+            if ($record->check_in_status !== AttendanceRecord::STATUS_LATE) {
+                return back()->with('error', 'Koreksi ini hanya digunakan untuk scan datang yang tercatat terlambat.');
+            }
+
+            $record->update([
+                'check_in_session_id' => null,
+                'check_in_leave_request_id' => null,
+                'check_in_at' => Carbon::parse($date->toDateString().' '.config('attendance.check_in_time', '07:30')),
+                'check_in_latitude' => null,
+                'check_in_longitude' => null,
+                'check_in_distance_meters' => null,
+                'check_in_status' => AttendanceRecord::STATUS_ON_TIME,
+                'check_in_confirmed_by' => $adminId,
+                'check_in_confirmed_at' => now(),
+            ]);
+        }
+
+        if (in_array($type, ['missed_check_out', 'missed_check_in_and_out'], true)) {
+            if (! $record?->check_in_at) {
+                return back()->with('error', 'Konfirmasi pulang hanya dapat dilakukan setelah kehadiran datang tercatat.');
+            }
+            if ($record->check_out_at) {
+                return back()->with('error', 'Absen pulang sudah tercatat pada hari tersebut.');
+            }
+
+            $record->update([
+                'check_out_session_id' => null,
+                'check_out_leave_request_id' => null,
+                'check_out_at' => Carbon::parse($date->toDateString().' '.config('attendance.check_out_time', '16:00')),
+                'check_out_latitude' => null,
+                'check_out_longitude' => null,
+                'check_out_distance_meters' => null,
+                'check_out_status' => AttendanceRecord::STATUS_ON_TIME,
+                'check_out_confirmed_by' => $adminId,
+                'check_out_confirmed_at' => now(),
+            ]);
+        }
+
+        $labels = [
+            'missed_check_in' => 'lupa scan datang',
+            'correct_late_check_in' => 'koreksi scan datang terlambat',
+            'missed_check_out' => 'lupa scan pulang',
+            'missed_check_in_and_out' => 'lupa scan datang dan pulang',
+        ];
+        $note = 'Konfirmasi manual admin: '.$labels[$type].' pada '.now()->format('d M Y H:i').' WIB.';
+        if (filled($validated['admin_note'] ?? null)) {
+            $note .= ' '.$validated['admin_note'];
+        }
+        $record->update(['admin_note' => trim(collect([$record->admin_note, $note])->filter()->implode("\n"))]);
+
+        return back()->with('success', 'Kehadiran manual berhasil dikonfirmasi.');
+    }
+
+    private function formatWorkingMinutes(int $minutes): string
+    {
+        $hours = intdiv($minutes, 60);
+        $remainingMinutes = $minutes % 60;
+
+        return $remainingMinutes > 0 ? $hours.' jam '.$remainingMinutes.' menit' : $hours.' jam';
+    }
+
     public function reviewLeave(Request $request, LeaveRequest $leaveRequest): RedirectResponse
     {
         $validated = $request->validate([
             'decision' => ['required', 'in:approved,rejected'],
             'review_note' => ['nullable', 'string', 'max:1000'],
         ]);
+
+        $exceptionService = app(AttendanceLeaveExceptionService::class);
+        $exceptionService->expireOverdue();
+        $leaveRequest->refresh();
+
+        if ($leaveRequest->attendance_exception && $leaveRequest->status !== 'pending') {
+            return back()->with('error', 'Pengajuan izin tetap hadir ini sudah tidak dapat diproses.');
+        }
 
         $leaveRequest->update([
             'status' => $validated['decision'],
@@ -346,6 +526,14 @@ class AttendanceController extends Controller
             'review_note' => $validated['review_note'] ?? null,
         ]);
 
-        return back()->with('success', 'Pengajuan ketidakhadiran berhasil diproses.');
+        if ($leaveRequest->attendance_exception) {
+            if ($validated['decision'] === 'approved') {
+                $exceptionService->approve($leaveRequest);
+            } else {
+                $exceptionService->reject($leaveRequest, $validated['review_note'] ?? null);
+            }
+        }
+
+        return back()->with('success', $leaveRequest->attendance_exception ? 'Izin tetap hadir dan status scan terkait berhasil diperbarui.' : 'Pengajuan ketidakhadiran berhasil diproses.');
     }
 }

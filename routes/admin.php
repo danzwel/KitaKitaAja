@@ -8,6 +8,9 @@ use App\Http\Controllers\Admin\InternController;
 use App\Http\Controllers\Admin\ReplyLetterController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\AttendanceController;
+use App\Http\Controllers\Admin\AdminAccountController;
+use App\Http\Controllers\Admin\InternshipReportController;
+use App\Http\Controllers\Admin\InternshipDocumentationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,14 +39,30 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
+        Route::get('accounts', [AdminAccountController::class, 'index'])->name('accounts.index');
+        Route::get('accounts/create', [AdminAccountController::class, 'create'])->name('accounts.create');
+        Route::post('accounts', [AdminAccountController::class, 'store'])->name('accounts.store');
+        Route::get('accounts/{account}/edit', [AdminAccountController::class, 'edit'])->name('accounts.edit');
+        Route::put('accounts/{account}', [AdminAccountController::class, 'update'])->name('accounts.update');
+        Route::patch('accounts/{account}/password', [AdminAccountController::class, 'resetPassword'])->name('accounts.password');
+        Route::get('reports', [InternshipReportController::class, 'index'])->name('reports.index');
+        Route::get('documentation', [InternshipDocumentationController::class, 'index'])->name('documentation.index');
+        Route::post('documentation', [InternshipDocumentationController::class, 'store'])->name('documentation.store');
+        Route::delete('documentation/{documentation}', [InternshipDocumentationController::class, 'destroy'])->name('documentation.destroy');
+
         Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance.index');
         Route::get('attendance/recap', [AttendanceController::class, 'recap'])->name('attendance.recap');
         Route::get('attendance/recap/pdf', [AttendanceController::class, 'recapPdf'])->name('attendance.recap.pdf');
+        Route::get('attendance/recap/excel', [AttendanceController::class, 'recapExcel'])->name('attendance.recap.excel');
+        Route::get('attendance/recap/daily/pdf', [AttendanceController::class, 'dailyAttendancePdf'])->name('attendance.daily.pdf');
+        Route::get('attendance/recap/daily/excel', [AttendanceController::class, 'dailyAttendanceExcel'])->name('attendance.daily.excel');
         Route::get('attendance/recap/{intern}', [AttendanceController::class, 'internRecap'])->name('attendance.intern-recap');
         Route::get('attendance/recap/{intern}/pdf', [AttendanceController::class, 'internRecapPdf'])->name('attendance.intern-recap.pdf');
+        Route::get('attendance/recap/{intern}/excel', [AttendanceController::class, 'internRecapExcel'])->name('attendance.intern-recap.excel');
         Route::post('attendance/sessions', [AttendanceController::class, 'storeSession'])->name('attendance.sessions.store');
         Route::patch('attendance/sessions/{session}/close', [AttendanceController::class, 'closeSession'])->name('attendance.sessions.close');
         Route::patch('attendance/records/{record}/review', [AttendanceController::class, 'reviewAttendance'])->name('attendance.records.review');
+        Route::patch('attendance/interns/{intern}/manual-confirmation', [AttendanceController::class, 'confirmAttendanceManually'])->name('attendance.manual-confirmation');
         Route::patch('attendance/leave/{leaveRequest}/review', [AttendanceController::class, 'reviewLeave'])->name('attendance.leave.review');
 
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');

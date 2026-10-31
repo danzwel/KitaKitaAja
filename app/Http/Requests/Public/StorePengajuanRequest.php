@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Public;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StorePengajuanRequest extends FormRequest
 {
@@ -18,7 +17,7 @@ class StorePengajuanRequest extends FormRequest
         'nama' => ['required', 'string', 'max:255'],
         'nim' => ['required', 'string', 'max:30'],
         'universitas' => ['required', 'string', 'max:255'],
-        'fakultas' => ['required', 'string', 'max:255'],
+        'fakultas' => ['nullable', 'string', 'max:255'],
         'program_studi' => ['required', 'string', 'max:255'],
         'semester' => ['required', 'string', 'max:5'],
         'email' => ['required', 'email', 'max:255'],
@@ -26,46 +25,37 @@ class StorePengajuanRequest extends FormRequest
         'alamat' => ['required', 'string'],
         'periode_mulai' => ['required', 'date'],
         'periode_selesai' => ['required', 'date', 'after_or_equal:periode_mulai'],
-        'bidang_id' => ['required', Rule::exists('bidangs', 'id')->where('is_active', true)],
-        'tujuan_magang' => ['required', 'string'],
-
-        'surat_pengantar' => ['required', 'file', 'mimes:pdf', 'max:2048'],
+        'surat_pengantar' => ['nullable', 'file', 'mimes:pdf', 'max:2048'],
         'foto' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:1024'],
         'cv' => ['nullable', 'file', 'mimes:pdf', 'max:2048'],
-        'proposal' => ['nullable', 'file', 'mimes:pdf', 'max:2048'],
-        'portofolio' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
+        'transkrip_nilai' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:2048'],
     ];
 }
     public function messages(): array
     {
         return [
-            'surat_pengantar.required' => 'Surat pengantar kampus wajib diupload.',
             'surat_pengantar.mimes' => 'Surat pengantar harus berformat PDF.',
             'surat_pengantar.max' => 'Ukuran surat pengantar maksimal 2MB.',
             'periode_selesai.after_or_equal' => 'Tanggal selesai tidak boleh sebelum tanggal mulai.',
             'foto.required' => 'Pas foto wajib diupload.',
             'foto.image' => 'Foto harus berformat JPG atau PNG.',
-            'bidang_id.required' => 'Silakan pilih bidang yang diminati.',
+            'transkrip_nilai.required' => 'Transkrip nilai wajib diunggah.',
+            'transkrip_nilai.mimes' => 'Transkrip nilai harus berformat PDF, JPG, atau PNG.',
         ];
     }
 
     public function withValidator($validator)
 {
     $validator->after(function ($validator) {
-        $this->validateFileContent($validator, 'surat_pengantar', ['application/pdf']);
         $this->validateFileContent($validator, 'foto', ['image/jpeg', 'image/png']);
 
+        if ($this->hasFile('surat_pengantar')) {
+            $this->validateFileContent($validator, 'surat_pengantar', ['application/pdf']);
+        }
         if ($this->hasFile('cv')) {
             $this->validateFileContent($validator, 'cv', ['application/pdf']);
         }
-        if ($this->hasFile('proposal')) {
-            $this->validateFileContent($validator, 'proposal', ['application/pdf']);
-        }
-        if ($this->hasFile('portofolio')) {
-            $this->validateFileContent($validator, 'portofolio', [
-                'application/pdf', 'image/jpeg', 'image/png',
-            ]);
-        }
+        $this->validateFileContent($validator, 'transkrip_nilai', ['application/pdf', 'image/jpeg', 'image/png']);
     });
 }
 

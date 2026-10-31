@@ -36,7 +36,7 @@ class AttendanceService
     public function timeStatus(string $type, Carbon $now): string
     {
         $configured = $type === 'datang'
-            ? config('attendance.check_in_time', '07:45')
+            ? config('attendance.check_in_time', '07:30')
             : config('attendance.check_out_time', '16:00');
 
         return $type === 'datang' && $now->format('H:i') > $configured

@@ -72,8 +72,27 @@
             </div>
             <div>
                 <p class="font-display font-semibold text-white mb-2">Kontak</p>
-                <p>upelkes@jabarprov.go.id</p>
-                <p>0224238422</p>
+                <p><a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=upelkes@jabarprov.go.id&amp;su=Email%20Upelkes" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 hover:text-gold-light" aria-label="Kirim email ke Upelkes Jabar melalui Gmail">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <rect x="3" y="5" width="18" height="14" rx="2" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m3 7 9 6 9-6" />
+                    </svg>
+                    upelkes@jabarprov.go.id
+                </a></p>
+                <p class="mt-1"><a href="tel:0224238422" class="inline-flex items-center gap-1.5 hover:text-gold-light" aria-label="Hubungi Upelkes Jabar melalui telepon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 3.75h3l1.5 4.5-2.25 1.5a12.07 12.07 0 0 0 7.5 7.5l1.5-2.25 4.5 1.5v3A1.5 1.5 0 0 1 18.75 21C10.603 21 4 14.397 4 6.25A1.5 1.5 0 0 1 4.5 3.75Z" />
+                    </svg>
+                    0224238422
+                </a></p>
+                <p class="mt-1"><a href="https://www.instagram.com/upelkes_jabar/" target="_blank" rel="noopener" class="inline-flex items-center gap-1 hover:text-gold-light" aria-label="Kunjungi Instagram Upelkes Jabar">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <rect x="3" y="3" width="18" height="18" rx="5" />
+                        <circle cx="12" cy="12" r="4" />
+                        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                    </svg>
+                    @upelkes_jabar
+                </a></p>
             </div>
             <div>
                 <p class="font-display font-semibold text-white mb-2">Tautan</p>

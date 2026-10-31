@@ -6,17 +6,17 @@
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div class="space-y-6 lg:col-span-2">
-            <x-admin.card title="Identitas Mahasiswa">
+            <x-admin.card title="Identitas Peserta">
                 <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     @foreach ([
                         'Kode Pengajuan' => $application->application_code,
                         'Nama' => $application->nama,
-                        'NIM' => $application->nim,
-                        'Universitas' => $application->universitas,
+                        'NIS/NIM' => $application->nim,
+                        'Institusi Pendidikan' => $application->universitas,
                         'Fakultas' => $application->fakultas,
-                        'Program Studi' => $application->program_studi,
-                        'Semester' => $application->semester,
-                        'Bidang Magang' => $application->bidang->nama_bidang ?? '-',
+                        'Program Studi/Jurusan' => $application->program_studi,
+                        'Kelas/Semester' => $application->semester,
+                        'Bidang Penempatan' => $application->bidang?->nama_bidang ?? 'Belum ditentukan',
                         'Periode' => $application->periode_mulai?->translatedFormat('d F Y').' – '.$application->periode_selesai?->translatedFormat('d F Y'),
                         'Email' => $application->email,
                         'No. HP' => $application->no_hp,
@@ -36,8 +36,7 @@
                         'Surat Pengantar' => $application->document?->surat_pengantar,
                         'Foto' => $application->document?->foto,
                         'CV' => $application->document?->cv,
-                        'Proposal' => $application->document?->proposal,
-                        'Portofolio' => $application->document?->portofolio,
+                        'Transkrip Nilai' => $application->document?->transkrip_nilai,
                     ] as $label => $path)
                         <div class="flex items-center justify-between rounded-lg border border-[#E3E5DE] px-4 py-3">
                             <div class="flex items-center gap-2 text-sm text-[#1E2A24]">
@@ -53,11 +52,8 @@
                 </div>
             </x-admin.card>
 
-            @if ($application->tujuan_magang || $application->catatan_admin || $application->alamat)
+            @if ($application->catatan_admin || $application->alamat)
                 <x-admin.card title="Catatan">
-                    @if ($application->tujuan_magang)
-                        <p class="text-sm text-[#4B564B]"><span class="font-medium">Tujuan magang:</span> {{ $application->tujuan_magang }}</p>
-                    @endif
                     @if ($application->catatan_admin)
                         <p class="mt-2 text-sm text-[#4B564B]"><span class="font-medium">Catatan Admin:</span> {{ $application->catatan_admin }}</p>
                     @endif
@@ -73,7 +69,7 @@
                 <div class="mb-4"><x-admin.badge :status="$application->status === 'menunggu_verifikasi' ? 'menunggu' : $application->status" class="!text-sm" /></div>
 
                 @if (in_array($application->status, ['menunggu_verifikasi', 'diproses'], true))
-                    <div class="space-y-2" x-data="{ approveOpen: @json($errors->has('approval_note')), rejectOpen: false }">
+                    <div class="space-y-2" x-data="{ approveOpen: @json($errors->has('approval_note') || $errors->has('bidang_id')), rejectOpen: false }">
                         <button @click="approveOpen = true" type="button"
                                 class="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0C2340] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#081A30]">
                             <i class="ti ti-check"></i> Terima Pengajuan
@@ -85,6 +81,16 @@
                                 <form method="POST" action="{{ route('admin.applications.approve', $application) }}">
                                     @csrf
                                     @method('PATCH')
+                                    <label class="mb-1.5 block text-sm font-medium text-[#1E2A24]">Bidang penempatan</label>
+                                    <select name="bidang_id" required class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">
+                                        <option value="">Pilih bidang penempatan</option>
+                                        @foreach ($bidangs as $bidang)
+                                            <option value="{{ $bidang->id }}" @selected(old('bidang_id', $application->bidang_id) == $bidang->id)>{{ $bidang->nama_bidang }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('bidang_id')
+                                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                    @enderror
                                     <label class="mb-1.5 block text-sm font-medium text-[#1E2A24]">Catatan penerimaan</label>
                                     <textarea name="approval_note" rows="4" required minlength="10"
                                               class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]"

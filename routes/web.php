@@ -9,6 +9,7 @@ use App\Http\Controllers\Intern\ForceChangePasswordController;
 use App\Http\Controllers\Intern\ProfileController as InternProfileController;
 use App\Http\Controllers\Intern\AttendanceController as InternAttendanceController;
 use App\Http\Controllers\Intern\LeaveRequestController;
+use App\Http\Controllers\Intern\InternshipReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
@@ -24,6 +25,7 @@ Route::get('/pengajuan/sukses/{application_code}', [PengajuanController::class, 
 
 Route::get('/cek-status', [PengajuanController::class, 'checkStatusForm'])->name('cek-status');
 Route::post('/cek-status', [PengajuanController::class, 'checkStatus'])->name('cek-status.result');
+Route::get('/cek-status/{application_code}/download', [PengajuanController::class, 'downloadStatus'])->name('cek-status.download');
 
 // Login mahasiswa harus selalu menggunakan halaman login mahasiswa.
 // Pemeriksaan guard dilakukan di controller agar redirect umum Laravel
@@ -42,10 +44,16 @@ Route::middleware('auth:intern')->group(function () {
         Route::patch('/mahasiswa/profil', [InternProfileController::class, 'update'])->name('intern.profile.update');
         Route::put('/mahasiswa/profil/password', [InternProfileController::class, 'updatePassword'])->name('intern.profile.password');
         Route::post('/mahasiswa/profil/foto', [InternProfileController::class, 'uploadPhoto'])->name('intern.profile.photo');
-        Route::get('/mahasiswa/absensi', [InternAttendanceController::class, 'index'])->name('intern.attendance.index');
+        Route::get('/mahasiswa/laporan-magang', [InternshipReportController::class, 'index'])->name('intern.reports.index');
+        Route::post('/mahasiswa/laporan-magang', [InternshipReportController::class, 'store'])->name('intern.reports.store');
         Route::get('/mahasiswa/absensi/riwayat', [InternAttendanceController::class, 'history'])->name('intern.attendance.history');
-        Route::get('/mahasiswa/absensi/izin', [LeaveRequestController::class, 'index'])->name('intern.attendance.leave');
-        Route::post('/mahasiswa/absensi/izin', [LeaveRequestController::class, 'store'])->name('intern.attendance.leave.store');
+        Route::middleware('intern.active')->group(function () {
+            Route::get('/mahasiswa/absensi', [InternAttendanceController::class, 'index'])->name('intern.attendance.index');
+            Route::get('/mahasiswa/absensi/izin', [LeaveRequestController::class, 'index'])->name('intern.attendance.leave');
+            Route::post('/mahasiswa/absensi/izin', [LeaveRequestController::class, 'store'])->name('intern.attendance.leave.store');
+            Route::get('/mahasiswa/absensi/scan/{session:token}', [InternAttendanceController::class, 'scan'])->name('intern.attendance.scan');
+            Route::post('/mahasiswa/absensi/scan/{session:token}', [InternAttendanceController::class, 'store'])->name('intern.attendance.scan.store');
+        });
     });
 
     // Rute Force Change Password
@@ -53,8 +61,6 @@ Route::middleware('auth:intern')->group(function () {
     Route::post('/mahasiswa/ganti-password', [ForceChangePasswordController::class, 'store']);
 
     Route::post('/mahasiswa/logout', [InternAuthenticatedSessionController::class, 'destroy'])->name('intern.logout');
-    Route::get('/mahasiswa/absensi/scan/{session:token}', [InternAttendanceController::class, 'scan'])->name('intern.attendance.scan');
-    Route::post('/mahasiswa/absensi/scan/{session:token}', [InternAttendanceController::class, 'store'])->name('intern.attendance.scan.store');
 });
 
 Route::view('/dashboard', 'dashboard')

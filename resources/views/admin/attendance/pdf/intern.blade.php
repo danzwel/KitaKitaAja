@@ -22,12 +22,12 @@
     </style>
 </head>
 <body>
-    <h1>Rekap Absensi Mahasiswa</h1>
+    <h1>Rekap Absensi Peserta Magang</h1>
     <div class="muted">{{ $intern->name }} &middot; {{ $intern->username }} &middot; {{ $intern->university }}</div>
-    <table class="info"><tr><td><div class="label">Periode Magang</div>{{ $start->format('d M Y') }} s/d {{ $end->format('d M Y') }}</td><td><div class="label">Total Record</div>{{ $records->count() }} hari</td><td><div class="label">Status</div>{{ ucfirst($intern->status) }}</td></tr></table>
+    <table class="info"><tr><td><div class="label">Periode Magang</div>{{ $start->format('d M Y') }} s/d {{ $end->format('d M Y') }}</td><td><div class="label">Total Record</div>{{ $records->count() }} hari</td><td><div class="label">Jam Kerja Tercatat</div>{{ $workingDuration }}</td><td><div class="label">Status</div>{{ ucfirst($intern->status) }}</td></tr></table>
     <h2>Riwayat Absensi</h2>
     <table>
-        <thead><tr><th>Tanggal</th><th>Datang</th><th>Jarak Datang</th><th>Pulang</th><th>Jarak Pulang</th><th>Status</th></tr></thead>
+        <thead><tr><th>Tanggal</th><th>Datang</th><th>Jarak Datang</th><th>Pulang</th><th>Jarak Pulang</th><th>Jam Kerja</th><th>Status</th></tr></thead>
         <tbody>
         @forelse ($attendanceHistory as $item)
             @php
@@ -41,9 +41,9 @@
                     default => 'gray',
                 };
             @endphp
-            <tr><td>{{ $item['date']->format('d M Y') }}</td><td>{{ $item['record']?->check_in_at?->format('H:i') ?? '-' }}</td><td>{{ $item['record']?->check_in_distance_meters !== null ? $item['record']->check_in_distance_meters.' m' : '-' }}</td><td>{{ $item['record']?->check_out_at?->format('H:i') ?? '-' }}</td><td>{{ $item['record']?->check_out_distance_meters !== null ? $item['record']->check_out_distance_meters.' m' : '-' }}</td><td><span class="pill {{ $statusClass }}">{{ $item['status'] }}</span></td></tr>
+            <tr><td>{{ $item['date']->format('d M Y') }}</td><td>{{ $item['record']?->check_in_at?->format('H:i') ?? '-' }}</td><td>{{ $item['record']?->check_in_distance_meters !== null ? $item['record']->check_in_distance_meters.' m' : '-' }}</td><td>{{ $item['record']?->check_out_at?->format('H:i') ?? '-' }}</td><td>{{ $item['record']?->check_out_distance_meters !== null ? $item['record']->check_out_distance_meters.' m' : '-' }}</td><td>{{ $item['record']?->working_duration ?? '-' }}</td><td><span class="pill {{ $statusClass }}">{{ $item['status'] }}</span></td></tr>
         @empty
-            <tr><td colspan="6">Belum ada riwayat absensi.</td></tr>
+            <tr><td colspan="7">Belum ada riwayat absensi.</td></tr>
         @endforelse
         </tbody>
     </table>

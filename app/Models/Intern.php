@@ -27,6 +27,9 @@ class Intern extends Authenticatable
         'password',
         'temporary_initial_password',
         'photo',
+        'final_report_path',
+        'final_report_uploaded_at',
+        'final_report_viewed_at',
         'email',
         'phone',
         'address',
@@ -37,6 +40,8 @@ class Intern extends Authenticatable
     protected $casts = [
         'password' => 'hashed',
         'temporary_initial_password' => 'encrypted',
+        'final_report_uploaded_at' => 'datetime',
+        'final_report_viewed_at' => 'datetime',
     ];
 
     public function application() { return $this->belongsTo(Application::class); }
@@ -65,6 +70,7 @@ class Intern extends Authenticatable
         $this->leaveRequests()
             ->where('type', $type)
             ->where('status', 'approved')
+            ->where('attendance_exception', false)
             ->whereDate('start_date', '<=', $today->toDateString())
             ->get()
             ->each(function (LeaveRequest $leave) use (&$dates, $today, $holidays, $accountStart): void {
@@ -101,7 +107,11 @@ class Intern extends Authenticatable
         $holidays = collect(config('attendance.holidays', []))->filter()->map(fn (string $date): string => Carbon::parse($date)->toDateString())->all();
         $scheduled = [];
         AttendanceSession::where('type', 'datang')->where(function ($query) use ($start, $countEnd): void {
-            $query->where('is_recurring', true)->orWhereBetween('attendance_date', [$start->toDateString(), $countEnd->toDateString()]);
+            $query->where('is_recurring', true)
+                ->orWhere(function (Builder $dateQuery) use ($start, $countEnd): void {
+                    $dateQuery->whereDate('attendance_date', '>=', $start->toDateString())
+                        ->whereDate('attendance_date', '<=', $countEnd->toDateString());
+                });
         })->get()->each(function (AttendanceSession $session) use (&$scheduled, $start, $alphaEnd, $holidays): void {
             if ($session->is_recurring) {
                 $cursor = $start->copy()->max($session->created_at?->copy()->startOfDay() ?? $start->copy())->startOfDay();
@@ -114,9 +124,15 @@ class Intern extends Authenticatable
             }
         });
 
-        $present = $this->attendanceRecords()->whereBetween('attendance_date', [$start->toDateString(), $alphaEnd->toDateString()])->whereIn('check_in_status', ['hadir', 'tepat_waktu', 'terlambat'])->pluck('attendance_date')->map(fn ($date): string => Carbon::parse($date)->toDateString())->all();
+        $present = $this->attendanceRecords()
+            ->whereDate('attendance_date', '>=', $start->toDateString())
+            ->whereDate('attendance_date', '<=', $alphaEnd->toDateString())
+            ->whereIn('check_in_status', AttendanceRecord::PRESENT_STATUSES)
+            ->pluck('attendance_date')
+            ->map(fn ($date): string => Carbon::parse($date)->toDateString())
+            ->all();
         $leave = [];
-        $this->leaveRequests()->where('status', 'approved')->whereDate('start_date', '<=', $alphaEnd->toDateString())->whereDate('end_date', '>=', $start->toDateString())->get()->each(function (LeaveRequest $request) use (&$leave, $start, $alphaEnd, $holidays): void {
+        $this->leaveRequests()->where('status', 'approved')->where('attendance_exception', false)->whereDate('start_date', '<=', $alphaEnd->toDateString())->whereDate('end_date', '>=', $start->toDateString())->get()->each(function (LeaveRequest $request) use (&$leave, $start, $alphaEnd, $holidays): void {
             $cursor = $request->start_date->copy()->max($start);
             $last = $request->end_date->copy()->min($alphaEnd);
             while ($cursor->lte($last)) {

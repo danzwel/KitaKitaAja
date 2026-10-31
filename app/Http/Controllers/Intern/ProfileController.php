@@ -61,4 +61,5 @@ class ProfileController extends Controller
 
         return redirect()->route('intern.profile.edit')->with('status', 'photo-updated');
     }
+
 }

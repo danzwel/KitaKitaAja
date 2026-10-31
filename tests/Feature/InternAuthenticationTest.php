@@ -45,7 +45,12 @@ class InternAuthenticationTest extends TestCase
             ->assertOk()
             ->assertSee($application->nim)
             ->assertSee($password)
-            ->assertSee('Gunakan akun berikut untuk login ke Dashboard Mahasiswa.');
+            ->assertSee('Gunakan akun berikut untuk login ke Dashboard Peserta.')
+            ->assertSee('Download Status Pengajuan');
+
+        $this->get(route('cek-status.download', $application->application_code))
+            ->assertOk()
+            ->assertHeader('content-type', 'application/pdf');
     }
 
     public function test_non_accepted_application_does_not_show_intern_credentials(): void

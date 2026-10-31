@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 class InternAccountService
 {
     /**
-     * Reset password mahasiswa ke password random baru.
+     * Reset password peserta ke password random baru.
      *
      * @return string Password baru dalam bentuk plain text (untuk ditampilkan sekali ke admin).
      */

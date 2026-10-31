@@ -16,7 +16,7 @@
     </section>
 
     <div class="max-w-5xl mx-auto px-6 -mt-8 pb-24">
-        <div class="grid md:grid-cols-3 gap-5">
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
 
             <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 flex flex-col">
                 <div class="w-11 h-11 rounded-lg bg-navy/5 flex items-center justify-center text-navy mb-4">
@@ -40,15 +40,33 @@
             </div>
 
             <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 flex flex-col">
+                <div class="w-11 h-11 rounded-lg bg-pink-500/10 flex items-center justify-center text-pink-600 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <rect x="3" y="3" width="18" height="18" rx="5" />
+                        <circle cx="12" cy="12" r="4" />
+                        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                    </svg>
+                </div>
+                <p class="font-display font-semibold text-navy text-sm mb-1">Instagram</p>
+                <p class="text-sm text-gray-600 flex-1"><a href="https://www.instagram.com/upelkes_jabar/" target="_blank" rel="noopener" class="hover:text-health">@upelkes_jabar</a></p>
+                <a href="https://www.instagram.com/upelkes_jabar/" target="_blank" rel="noopener"
+                   class="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-navy hover:text-health transition">
+                    Kunjungi Instagram
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </a>
+            </div>
+
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 flex flex-col">
                 <div class="w-11 h-11 rounded-lg bg-health/10 flex items-center justify-center text-health mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                 </div>
                 <p class="font-display font-semibold text-navy text-sm mb-1">Email</p>
-                <p class="text-sm text-gray-600 flex-1">upelkes@jabarprov.go.id</p>
-                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=upelkes@jabarprov.go.id&su=Pertanyaan%20Seputar%20Magang"
-                   target="_blank" rel="noopener"
+                <p class="text-sm text-gray-600 flex-1"><a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=upelkes@jabarprov.go.id&amp;su=Email%20Upelkes" target="_blank" rel="noopener" class="hover:text-health">upelkes@jabarprov.go.id</a></p>
+                <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=upelkes@jabarprov.go.id&amp;su=Email%20Upelkes" target="_blank" rel="noopener"
                    class="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-navy hover:text-health transition">
                     Kirim Email
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

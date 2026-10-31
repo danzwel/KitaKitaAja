@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'Dashboard' }} — Portal Mahasiswa</title>
+    <title>{{ $title ?? 'Dashboard' }} — Portal Peserta</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -34,7 +34,7 @@
                     </svg>
                 </div>
                 <div class="leading-tight">
-                    <p class="font-heading text-sm font-bold text-white">Portal Mahasiswa</p>
+                    <p class="font-heading text-sm font-bold text-white">Portal Peserta</p>
                     <p class="text-[11px] text-blue-300/60">SIM Magang</p>
                 </div>
             </div>
@@ -42,10 +42,12 @@
             {{-- Navigation --}}
             <nav class="mt-2 flex-1 space-y-1 px-3">
                 @php
+                    $internshipCompleted = auth('intern')->user()?->status === \App\Models\Intern::STATUS_SELESAI;
                     $navItems = [
                         ['route' => 'intern.dashboard', 'icon' => 'ti-layout-dashboard', 'label' => 'Dashboard'],
-                        ['route' => 'intern.attendance.index', 'icon' => 'ti-fingerprint', 'label' => 'Absensi'],
-                        ['route' => 'intern.attendance.history', 'icon' => 'ti-history', 'label' => 'Riwayat Absensi'],
+                        ...($internshipCompleted ? [] : [['route' => 'intern.attendance.index', 'icon' => 'ti-fingerprint', 'label' => 'Absensi']]),
+                        ['route' => 'intern.attendance.history', 'icon' => 'ti-history', 'label' => $internshipCompleted ? 'Rekap Magang' : 'Riwayat Absensi'],
+                        ['route' => 'intern.reports.index', 'icon' => 'ti-file-description', 'label' => 'Laporan Magang'],
                     ];
                 @endphp
 
@@ -63,10 +65,12 @@
                     </a>
                 @endforeach
 
-                <p class="mt-6 mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-blue-300/40">Layanan</p>
-                <a href="{{ route('intern.attendance.leave') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-blue-200/60 transition-all hover:bg-white/5 hover:text-white">
-                    <i class="ti ti-notes text-lg"></i> Izin / Sakit
-                </a>
+                @unless ($internshipCompleted)
+                    <p class="mt-6 mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-blue-300/40">Layanan</p>
+                    <a href="{{ route('intern.attendance.leave') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-blue-200/60 transition-all hover:bg-white/5 hover:text-white">
+                        <i class="ti ti-notes text-lg"></i> Izin / Sakit
+                    </a>
+                @endunless
             </nav>
 
             {{-- Sidebar Footer --}}
@@ -106,7 +110,7 @@
                             </div>
                         @endif
                         <div class="hidden text-left sm:block">
-                            <p class="text-sm font-semibold text-gray-900 leading-tight">{{ auth('intern')->user()->name ?? 'Mahasiswa' }}</p>
+                            <p class="text-sm font-semibold text-gray-900 leading-tight">{{ auth('intern')->user()->name ?? 'Peserta' }}</p>
                             <p class="text-[11px] text-gray-400">{{ auth('intern')->user()->username }}</p>
                         </div>
                         <svg class="h-4 w-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></svg>
@@ -136,6 +140,12 @@
                         <svg class="h-5 w-5 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
                         <p class="flex-1 text-sm font-medium text-emerald-800">{{ session('status') }}</p>
                         <button @click="show = false" class="text-emerald-400 hover:text-emerald-600"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M18 6 6 18M6 6l12 12"/></svg></button>
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="mb-5 flex items-center gap-3 rounded-xl bg-rose-50 p-4 ring-1 ring-rose-200/60" x-data="{ show: true }" x-show="show" x-transition>
+                        <i class="ti ti-alert-circle text-lg text-rose-600"></i><p class="flex-1 text-sm font-medium text-rose-800">{{ session('error') }}</p>
+                        <button @click="show = false" class="text-rose-400 hover:text-rose-600"><i class="ti ti-x"></i></button>
                     </div>
                 @endif
                 {{ $slot }}

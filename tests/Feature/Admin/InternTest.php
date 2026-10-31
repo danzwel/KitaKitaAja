@@ -34,7 +34,6 @@ class InternTest extends TestCase
                 'university' => $intern->university,
                 'department_id' => $newDepartment->id,
                 'period' => $intern->period,
-                'status' => 'aktif',
             ]);
 
         $response->assertRedirect(route('admin.interns.index'));
