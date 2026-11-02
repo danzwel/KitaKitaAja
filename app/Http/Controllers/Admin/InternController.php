@@ -54,7 +54,7 @@ class InternController extends Controller
                 $query->where('is_active', true);
 
                 if ($selectedBidangId) {
-                    $query->orWhereKey($selectedBidangId);
+                    $query->orWhere('id', $selectedBidangId);
                 }
             })
             ->orderBy('nama_bidang')
