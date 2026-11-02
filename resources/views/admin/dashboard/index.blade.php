@@ -72,7 +72,7 @@
         </x-admin.card>
 
         {{-- Latest applications --}}
-        <x-admin.card title="Pengajuan Terbaru" subtitle="5 pengajuan terakhir masuk" class="xl:col-span-2">
+        <x-admin.card title="Pengajuan Terbaru" subtitle="{{ $latestApplications->count() }} pengajuan terbaru masuk" class="xl:col-span-2">
             <div class="divide-y divide-[#E3E5DE]">
                 @forelse ($latestApplications as $application)
                     <a href="{{ route('admin.applications.show', $application) }}" class="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0 hover:opacity-80">

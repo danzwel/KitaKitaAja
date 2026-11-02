@@ -22,13 +22,14 @@ class AttendanceExcelExportService
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Rekap Kehadiran');
 
-        $this->addTitle($sheet, 'Rekap Absensi Semua Peserta', 'M');
-        $sheet->fromArray([['Peserta', 'Username', 'Institusi', 'Periode Mulai', 'Periode Selesai', 'Hari Tercatat', 'Jam Kerja Tercatat', 'Hadir', 'Terlambat', 'Izin', 'Sakit', 'Alpa', 'Menunggu Verifikasi']], null, 'A4');
+        $this->addTitle($sheet, 'Rekap Absensi Semua Peserta', 'N');
+        $sheet->fromArray([['Peserta', 'Username', 'Institusi', 'Status', 'Periode Mulai', 'Periode Selesai', 'Hari Tercatat', 'Jam Kerja Tercatat', 'Hadir', 'Terlambat', 'Izin', 'Sakit', 'Alpa', 'Menunggu Verifikasi']], null, 'A4');
 
         $rows = $summaryRows->map(fn (array $row): array => [
             $row['intern']->name,
             $row['intern']->username,
             $row['intern']->university,
+            ucfirst($row['intern']->status),
             $row['period_start'],
             $row['period_end'],
             $row['working_days'],
@@ -45,7 +46,7 @@ class AttendanceExcelExportService
             $sheet->fromArray($rows, null, 'A5');
         }
 
-        $this->formatTable($sheet, 'A4:M'.max(5, 4 + count($rows)));
+        $this->formatTable($sheet, 'A4:N'.max(5, 4 + count($rows)));
 
         return $this->download($spreadsheet, 'rekap-absensi-semua-peserta.xlsx');
     }

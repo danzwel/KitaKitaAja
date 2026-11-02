@@ -24,6 +24,7 @@ class DashboardTest extends TestCase
             ->assertOk()
             ->assertSee('Total Pengajuan')
             ->assertSee('Peserta Aktif')
-            ->assertSee('Grafik Pengajuan');
+            ->assertSee('Grafik Pengajuan')
+            ->assertSee('4 pengajuan terbaru masuk');
     }
 }

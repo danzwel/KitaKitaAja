@@ -89,4 +89,18 @@ class InternshipDocumentationController extends Controller
         return redirect()->route('intern.documentation.index')
             ->with('status', count($paths).' foto dokumentasi berhasil diunggah.');
     }
+
+    public function destroy(Request $request, InternshipDocumentationPhoto $photo): RedirectResponse
+    {
+        /** @var Intern $intern */
+        $intern = $request->user('intern');
+
+        abort_unless($photo->intern_id === $intern->id, 403);
+
+        Storage::disk('public')->delete($photo->image_path);
+        $photo->delete();
+
+        return redirect()->route('intern.documentation.index')
+            ->with('status', 'Foto dokumentasi berhasil dihapus. Anda dapat mengunggah foto pengganti.');
+    }
 }

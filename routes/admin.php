@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\AdminAccountController;
 use App\Http\Controllers\Admin\InternshipReportController;
 use App\Http\Controllers\Admin\InternshipDocumentationController;
+use App\Http\Controllers\Admin\InternshipCertificateController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -82,6 +83,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Upload Surat Balasan
         Route::post('interns/{intern}/reply-letters', [ReplyLetterController::class, 'store'])->name('reply-letters.store');
         Route::delete('reply-letters/{replyLetter}', [ReplyLetterController::class, 'destroy'])->name('reply-letters.destroy');
+        Route::post('interns/{intern}/certificate', [InternshipCertificateController::class, 'issue'])->name('certificates.issue');
+        Route::get('certificates/{certificate}/download', [InternshipCertificateController::class, 'download'])->name('certificates.download');
 
         // CRUD Bidang Magang
         Route::resource('departments', DepartmentController::class)->except(['show']);

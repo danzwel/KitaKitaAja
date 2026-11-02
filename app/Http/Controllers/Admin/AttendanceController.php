@@ -74,9 +74,37 @@ class AttendanceController extends Controller
     public function recap(Request $request): View
     {
         app(AttendanceLeaveExceptionService::class)->expireOverdue();
-        $request->validate(['date' => ['nullable', 'date']]);
+        $request->validate([
+            'date' => ['nullable', 'date'],
+            'year' => ['nullable', 'integer', 'between:2000,2100'],
+        ]);
         $attendanceDate = Carbon::parse($request->input('date', now()->toDateString()))->startOfDay();
-        $interns = Intern::with('internshipApplication')->where('status', Intern::STATUS_AKTIF)->orderBy('name')->get();
+        $currentYear = (int) now()->year;
+        $selectedYear = (int) $request->integer('year', $currentYear);
+        $years = Intern::with('internshipApplication:id,periode_mulai')
+            ->get()
+            ->map(fn (Intern $intern): ?int => $intern->internshipApplication?->periode_mulai?->year ?? $intern->created_at?->year)
+            ->filter()
+            ->prepend($currentYear)
+            ->unique()
+            ->sortDesc()
+            ->values();
+        // Rekap adalah arsip kehadiran, sehingga peserta yang sudah selesai
+        // tetap harus tersedia untuk ditinjau dan diekspor. Peserta aktif
+        // ditampilkan lebih dahulu agar kebutuhan operasional harian tetap jelas.
+        $interns = Intern::with('internshipApplication')
+            ->where(function ($query) use ($selectedYear): void {
+                $query->whereHas('internshipApplication', fn ($applicationQuery) => $applicationQuery->whereYear('periode_mulai', $selectedYear))
+                    // Data peserta lama yang belum memiliki pengajuan versi baru
+                    // dikelompokkan berdasarkan tahun pembuatan akunnya.
+                    ->orWhere(function ($legacyQuery) use ($selectedYear): void {
+                        $legacyQuery->whereDoesntHave('internshipApplication')
+                            ->whereYear('created_at', $selectedYear);
+                    });
+            })
+            ->orderByRaw('CASE WHEN status = ? THEN 0 ELSE 1 END', [Intern::STATUS_AKTIF])
+            ->orderBy('name')
+            ->get();
         $todayRecordsQuery = AttendanceRecord::with('intern')->whereDate('attendance_date', $attendanceDate->toDateString());
 
         $summaryRows = $interns->map(function (Intern $intern): array {
@@ -192,6 +220,8 @@ class AttendanceController extends Controller
         return view('admin.attendance.recap', [
             'interns' => $interns,
             'summaryRows' => $summaryRows,
+            'years' => $years,
+            'selectedYear' => $selectedYear,
             'attendanceDate' => $attendanceDate,
             'todayRecords' => $todayRecordsQuery->latest('check_in_at')->get(),
             'leaveRequests' => LeaveRequest::with('intern')->where('status', 'pending')->latest()->get(),

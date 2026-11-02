@@ -22,13 +22,14 @@ Sistem Informasi Manajemen Magang untuk **UPTD Pelatihan Kesehatan Dinas Kesehat
 - Konfirmasi kehadiran manual untuk kasus lupa scan datang, pulang, atau keduanya.
 - Rekap absensi per peserta, jam kerja tercatat, dan unduhan PDF/Excel.
 - Melihat riwayat scan pada tanggal tertentu serta mengunduh PDF/Excel harian.
-- Unggah maksimal 10 foto dokumentasi magang setiap tahun.
+- Melihat dokumentasi yang diunggah mahasiswa setelah masa magangnya selesai.
 
 ### Portal peserta
 
 - Login terpisah dan wajib mengganti kata sandi awal.
 - Scan QR kehadiran, riwayat absensi, jam kerja, izin/sakit, dan izin tetap hadir.
 - Unggah laporan hasil magang yang dapat dilihat admin.
+- Setelah masa magang selesai, unggah dokumentasi kegiatan hingga 5 foto yang dapat dilihat admin.
 - Setelah periode magang selesai, akun otomatis masuk mode **Magang Selesai**: absensi dan izin/sakit dinonaktifkan, sedangkan rekap, laporan, dan profil tetap dapat diakses.
 
 ## Teknologi
@@ -93,6 +94,22 @@ Untuk membuat aset produksi, jalankan:
 ```bash
 npm run build
 ```
+
+## Deployment tanpa data peserta dummy
+
+Jika database lokal akan di-export ke hosting, jalankan perintah berikut **sekali di hosting** setelah migrasi atau import database:
+
+```bash
+php artisan app:purge-participant-data
+```
+
+Perintah ini menghapus pengajuan, akun peserta, absensi, izin, surat, dan file upload peserta. Akun admin serta data bidang magang (`bidangs`/`departments`) tetap dipertahankan. Gunakan `--force` hanya setelah memastikan database yang aktif adalah database hosting:
+
+```bash
+php artisan app:purge-participant-data --force
+```
+
+Untuk instalasi database baru, `InternSeeder` memang kosong sehingga akun peserta dummy tidak dibuat. Jangan menjalankan perintah purge pada database lokal jika masih ingin mempertahankan data pengujian.
 
 ## Akun awal instalasi baru
 

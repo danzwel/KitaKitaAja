@@ -59,6 +59,16 @@
                 @endif
             </x-admin.card>
 
+            <x-admin.card title="Sertifikat Magang" subtitle="Dibuat otomatis dari data peserta, bidang, dan periode magang.">
+                @if ($intern->certificate)
+                    <div class="flex flex-col gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4 sm:flex-row sm:items-center sm:justify-between"><div><p class="text-sm font-semibold text-emerald-900">Sertifikat sudah dikirim</p><p class="mt-1 text-xs text-emerald-700">No. {{ $intern->certificate->certificate_number }} · {{ $intern->certificate->issued_at?->translatedFormat('d M Y, H:i') }} WIB</p></div><a href="{{ route('admin.certificates.download', $intern->certificate) }}" class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold text-emerald-800 hover:bg-emerald-100"><i class="ti ti-download"></i> Unduh PDF</a></div>
+                @elseif ($intern->status === \App\Models\Intern::STATUS_SELESAI)
+                    <p class="mb-4 text-sm leading-relaxed text-[#64705F]">Sertifikat akan memakai nama peserta, bidang penempatan, serta periode magang yang tersimpan. Bagian tanda tangan dikosongkan untuk ditandatangani setelah dicetak.</p><form method="POST" action="{{ route('admin.certificates.issue', $intern) }}" onsubmit="return confirm('Kirim sertifikat magang kepada peserta ini?');">@csrf<button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-[#0C2340] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#081A30]"><i class="ti ti-certificate"></i> Kirim Sertifikat</button></form>
+                @else
+                    <p class="rounded-lg bg-[#F6F7F4] px-3 py-2 text-sm text-[#64705F]">Sertifikat dapat dikirim setelah status magang peserta selesai.</p>
+                @endif
+            </x-admin.card>
+
         </div>
 
         <div class="space-y-6">

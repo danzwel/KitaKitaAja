@@ -42,4 +42,9 @@ class InternPolicy
         return $intern->internshipApplication?->status === 'diterima'
             || $intern->application?->status === Application::STATUS_DITERIMA;
     }
+
+    public function issueCertificate(Admin $admin, Intern $intern): bool
+    {
+        return $intern->status === Intern::STATUS_SELESAI;
+    }
 }

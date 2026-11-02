@@ -13,6 +13,10 @@ class InternshipDocumentationPhoto extends Model
 
     protected $fillable = ['year', 'intern_id', 'image_path', 'caption'];
 
+    protected $casts = [
+        'viewed_at' => 'datetime',
+    ];
+
     public function intern()
     {
         return $this->belongsTo(Intern::class);

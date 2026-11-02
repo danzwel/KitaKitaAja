@@ -23,13 +23,14 @@
 </head>
 <body>
     <h1>Rekap Absensi Peserta Magang</h1>
-    <div class="meta">Ringkasan kehadiran per orang &middot; Dicetak {{ now()->format('d M Y H:i') }}</div>
+    <div class="meta">Ringkasan kehadiran per orang tahun mulai magang {{ $selectedYear }} &middot; Dicetak {{ now()->format('d M Y H:i') }}</div>
     <table>
-        <thead><tr><th>Peserta</th><th>Periode Magang</th><th class="center">Hari Tercatat</th><th class="center">Jam Kerja</th><th class="center">Hadir</th><th class="center">Terlambat<br>(bagian hadir)</th><th class="center">Izin</th><th class="center">Sakit</th><th class="center">Alpa</th><th class="center">Verifikasi</th></tr></thead>
+        <thead><tr><th>Peserta</th><th>Status</th><th>Periode Magang</th><th class="center">Hari Tercatat</th><th class="center">Jam Kerja</th><th class="center">Hadir</th><th class="center">Terlambat<br>(bagian hadir)</th><th class="center">Izin</th><th class="center">Sakit</th><th class="center">Alpa</th><th class="center">Verifikasi</th></tr></thead>
         <tbody>
         @forelse ($summaryRows as $row)
             <tr>
                 <td><div class="name">{{ $row['intern']->name }}</div><div class="muted">{{ $row['intern']->username }} &middot; {{ $row['intern']->university }}</div></td>
+                <td>{{ ucfirst($row['intern']->status) }}</td>
                 <td>{{ \Carbon\Carbon::parse($row['period_start'])->format('d M Y') }}<br>s/d {{ \Carbon\Carbon::parse($row['period_end'])->format('d M Y') }}</td>
                 <td class="center">{{ $row['working_days'] }}</td>
                 <td class="center">{{ $row['working_duration'] }}</td>
@@ -41,7 +42,7 @@
                 <td class="center">{{ $row['pending'] }}</td>
             </tr>
         @empty
-            <tr><td colspan="10" class="center">Belum ada peserta aktif.</td></tr>
+            <tr><td colspan="11" class="center">Belum ada data peserta untuk direkap.</td></tr>
         @endforelse
         </tbody>
     </table>
