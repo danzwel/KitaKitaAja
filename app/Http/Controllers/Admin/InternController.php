@@ -34,7 +34,7 @@ class InternController extends Controller
     {
         $this->authorize('view', $intern);
 
-        $intern->load('department', 'application', 'internshipApplication.bidang', 'replyLetters');
+        $intern->load('department', 'application', 'internshipApplication.bidang', 'replyLetters', 'certificate');
 
         return view('admin.interns.show', compact('intern'));
     }

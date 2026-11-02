@@ -120,7 +120,8 @@
                     $pendingApplicationNotifications = \App\Models\InternshipApplication::whereIn('status', ['menunggu_verifikasi', 'diproses'])->count();
                     $pendingLeaveNotifications = \App\Models\LeaveRequest::where('status', 'pending')->count();
                     $pendingReportNotifications = \App\Models\Intern::whereNotNull('final_report_path')->whereNull('final_report_viewed_at')->count();
-                    $notificationCount = $pendingApplicationNotifications + $pendingLeaveNotifications + $pendingReportNotifications;
+                    $pendingDocumentationNotifications = \App\Models\InternshipDocumentationPhoto::whereNull('viewed_at')->count();
+                    $notificationCount = $pendingApplicationNotifications + $pendingLeaveNotifications + $pendingReportNotifications + $pendingDocumentationNotifications;
                 @endphp
                 <div class="flex items-center gap-3">
                     <div class="relative hidden sm:block" x-data="{ open: false }">
@@ -148,6 +149,12 @@
                                     <span class="mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700"><i class="ti ti-file-check"></i></span>
                                     <span><span class="block text-sm font-medium text-[#1E2A24]">Laporan hasil magang</span><span class="block text-xs text-[#8A94A6]">{{ $pendingReportNotifications }} laporan baru perlu ditinjau</span></span>
                                 </a>
+                                @if ($pendingDocumentationNotifications > 0)
+                                    <a href="{{ route('admin.documentation.index') }}" class="flex items-start gap-3 rounded-lg px-2 py-2.5 hover:bg-[#F4F6FB]">
+                                        <span class="mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-700"><i class="ti ti-photo"></i></span>
+                                        <span><span class="block text-sm font-medium text-[#1E2A24]">Dokumentasi magang</span><span class="block text-xs text-[#8A94A6]">{{ $pendingDocumentationNotifications }} foto baru perlu ditinjau</span></span>
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </div>

@@ -11,6 +11,8 @@ use App\Http\Controllers\Intern\AttendanceController as InternAttendanceControll
 use App\Http\Controllers\Intern\LeaveRequestController;
 use App\Http\Controllers\Intern\InternshipReportController;
 use App\Http\Controllers\Intern\InternshipDocumentationController;
+use App\Http\Controllers\Intern\ReplyLetterController as InternReplyLetterController;
+use App\Http\Controllers\Intern\InternshipCertificateController as InternInternshipCertificateController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
@@ -49,6 +51,11 @@ Route::middleware('auth:intern')->group(function () {
         Route::post('/mahasiswa/laporan-magang', [InternshipReportController::class, 'store'])->name('intern.reports.store');
         Route::get('/mahasiswa/dokumentasi-magang', [InternshipDocumentationController::class, 'index'])->name('intern.documentation.index');
         Route::post('/mahasiswa/dokumentasi-magang', [InternshipDocumentationController::class, 'store'])->name('intern.documentation.store');
+        Route::delete('/mahasiswa/dokumentasi-magang/{photo}', [InternshipDocumentationController::class, 'destroy'])->name('intern.documentation.destroy');
+        Route::get('/mahasiswa/surat-balasan', [InternReplyLetterController::class, 'index'])->name('intern.reply-letters.index');
+        Route::get('/mahasiswa/surat-balasan/{replyLetter}/unduh', [InternReplyLetterController::class, 'download'])->name('intern.reply-letters.download');
+        Route::get('/mahasiswa/sertifikat-magang', [InternInternshipCertificateController::class, 'index'])->name('intern.certificates.index');
+        Route::get('/mahasiswa/sertifikat-magang/{certificate}/unduh', [InternInternshipCertificateController::class, 'download'])->name('intern.certificates.download');
         Route::get('/mahasiswa/absensi/riwayat', [InternAttendanceController::class, 'history'])->name('intern.attendance.history');
         Route::middleware('intern.active')->group(function () {
             Route::get('/mahasiswa/absensi', [InternAttendanceController::class, 'index'])->name('intern.attendance.index');

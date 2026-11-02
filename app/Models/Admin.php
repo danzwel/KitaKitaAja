@@ -31,6 +31,11 @@ class Admin extends Authenticatable
         return $this->hasMany(ReplyLetter::class, 'uploaded_by');
     }
 
+    public function issuedCertificates()
+    {
+        return $this->hasMany(InternshipCertificate::class, 'issued_by');
+    }
+
     public function attendanceSessions()
     {
         return $this->hasMany(AttendanceSession::class, 'created_by');

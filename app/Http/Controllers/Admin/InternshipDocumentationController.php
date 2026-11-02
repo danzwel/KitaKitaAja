@@ -22,12 +22,18 @@ class InternshipDocumentationController extends Controller
             ->unique()
             ->values();
 
-        return view('admin.documentation.index', [
-            'photos' => InternshipDocumentationPhoto::query()
+        $photos = InternshipDocumentationPhoto::query()
                 ->with(['intern', 'uploadedBy'])
                 ->where('year', $selectedYear)
                 ->latest()
-                ->get(),
+                ->get();
+
+        InternshipDocumentationPhoto::query()
+            ->whereIn('id', $photos->whereNull('viewed_at')->pluck('id'))
+            ->update(['viewed_at' => now()]);
+
+        return view('admin.documentation.index', [
+            'photos' => $photos,
             'years' => $years,
             'selectedYear' => $selectedYear,
             'currentYear' => $currentYear,

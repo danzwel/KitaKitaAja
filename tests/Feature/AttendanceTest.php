@@ -433,4 +433,38 @@ class AttendanceTest extends TestCase
             Carbon::setTestNow();
         }
     }
+
+    public function test_recap_keeps_completed_interns_for_admin_archives(): void
+    {
+        $activeIntern = Intern::factory()->create(['status' => Intern::STATUS_AKTIF]);
+        $completedIntern = Intern::factory()->selesai()->create();
+
+        $view = app(AdminAttendanceController::class)->recap(new Request());
+        $internIds = $view->getData()['summaryRows']->pluck('intern.id');
+
+        $this->assertTrue($internIds->contains($activeIntern->id));
+        $this->assertTrue($internIds->contains($completedIntern->id));
+    }
+
+    public function test_recap_groups_an_intern_by_the_year_the_internship_starts(): void
+    {
+        $internStartingInDecember = Intern::factory()->selesai()->create([
+            'internship_application_id' => InternshipApplication::factory()->create([
+                'periode_mulai' => '2026-12-15',
+                'periode_selesai' => '2027-01-15',
+            ])->id,
+        ]);
+        $internStartingInJanuary = Intern::factory()->create([
+            'internship_application_id' => InternshipApplication::factory()->create([
+                'periode_mulai' => '2027-01-10',
+                'periode_selesai' => '2027-02-10',
+            ])->id,
+        ]);
+
+        $view = app(AdminAttendanceController::class)->recap(new Request(['year' => 2026]));
+        $internIds = $view->getData()['summaryRows']->pluck('intern.id');
+
+        $this->assertTrue($internIds->contains($internStartingInDecember->id));
+        $this->assertFalse($internIds->contains($internStartingInJanuary->id));
+    }
 }

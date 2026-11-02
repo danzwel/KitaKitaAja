@@ -69,4 +69,35 @@ class InternshipDocumentationTest extends TestCase
 
         $this->assertSame(4, $intern->documentationPhotos()->count());
     }
+
+    public function test_completed_intern_can_delete_their_own_documentation_photo(): void
+    {
+        Storage::fake('public');
+        $intern = Intern::factory()->selesai()->create();
+        $photo = InternshipDocumentationPhoto::factory()->create([
+            'intern_id' => $intern->id,
+            'image_path' => 'internship-documentation/foto-salah.jpg',
+        ]);
+        Storage::disk('public')->put($photo->image_path, 'photo-content');
+
+        $this->actingAs($intern, 'intern')
+            ->delete(route('intern.documentation.destroy', $photo))
+            ->assertRedirect(route('intern.documentation.index'))
+            ->assertSessionHas('status');
+
+        $this->assertDatabaseMissing('internship_documentation_photos', ['id' => $photo->id]);
+        Storage::disk('public')->assertMissing($photo->image_path);
+    }
+
+    public function test_intern_cannot_delete_another_intern_documentation_photo(): void
+    {
+        $intern = Intern::factory()->selesai()->create();
+        $photo = InternshipDocumentationPhoto::factory()->create();
+
+        $this->actingAs($intern, 'intern')
+            ->delete(route('intern.documentation.destroy', $photo))
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('internship_documentation_photos', ['id' => $photo->id]);
+    }
 }

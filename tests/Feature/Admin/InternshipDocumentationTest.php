@@ -30,6 +30,8 @@ class InternshipDocumentationTest extends TestCase
             ->assertDontSee('Unggah Foto Dokumentasi')
             ->assertDontSee('ti-trash');
 
+        $this->assertNotNull(InternshipDocumentationPhoto::first()->viewed_at);
+
         $this->actingAs($admin, 'admin')
             ->post('/admin/documentation')
             ->assertNotFound();
