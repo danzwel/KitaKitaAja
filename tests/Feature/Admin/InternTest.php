@@ -3,8 +3,9 @@
 namespace Tests\Feature\Admin;
 
 use App\Models\Admin;
-use App\Models\Department;
+use App\Models\Bidang;
 use App\Models\Intern;
+use App\Models\InternshipApplication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -25,19 +26,21 @@ class InternTest extends TestCase
     public function test_admin_can_update_intern_data(): void
     {
         $admin = Admin::factory()->create();
-        $intern = Intern::factory()->create();
-        $newDepartment = Department::factory()->create();
+        $application = InternshipApplication::factory()->diterima()->create();
+        $intern = Intern::factory()->create(['internship_application_id' => $application->id]);
+        $newBidang = Bidang::factory()->create();
 
         $response = $this->actingAs($admin, 'admin')
             ->put(route('admin.interns.update', $intern), [
                 'name' => 'Nama Diperbarui',
                 'university' => $intern->university,
-                'department_id' => $newDepartment->id,
+                'bidang_id' => $newBidang->id,
                 'period' => $intern->period,
             ]);
 
         $response->assertRedirect(route('admin.interns.index'));
         $this->assertDatabaseHas('interns', ['id' => $intern->id, 'name' => 'Nama Diperbarui']);
+        $this->assertDatabaseHas('internship_applications', ['id' => $application->id, 'bidang_id' => $newBidang->id]);
     }
 
     public function test_admin_can_reset_intern_password(): void

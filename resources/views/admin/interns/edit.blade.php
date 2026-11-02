@@ -23,10 +23,10 @@
 
             <div>
                 <label class="mb-1.5 block text-sm font-medium text-[#1E2A24]">Bidang Magang</label>
-                <select name="department_id" required
+                <select name="bidang_id" required
                         class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">
-                    @foreach (\App\Models\Department::active()->get() as $department)
-                        <option value="{{ $department->id }}" @selected(old('department_id', $intern->department_id) == $department->id)>{{ $department->name }}</option>
+                    @foreach ($bidangs as $bidang)
+                        <option value="{{ $bidang->id }}" @selected(old('bidang_id', $intern->internshipApplication?->bidang_id) == $bidang->id)>{{ $bidang->nama_bidang }}</option>
                     @endforeach
                 </select>
             </div>
