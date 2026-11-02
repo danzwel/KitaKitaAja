@@ -16,7 +16,7 @@ class UpdateInternRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'university' => ['required', 'string', 'max:255'],
-            'department_id' => ['required', 'exists:departments,id'],
+            'bidang_id' => ['required', 'exists:bidangs,id'],
             'period' => ['required', 'string', 'max:255'],
         ];
     }

@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateInternRequest;
+use App\Models\Bidang;
 use App\Models\Intern;
 use App\Services\Admin\InternAccountService;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -43,16 +46,35 @@ class InternController extends Controller
     {
         $this->authorize('update', $intern);
 
-        $intern->load('department');
+        $intern->load('internshipApplication.bidang');
 
-        return view('admin.interns.edit', compact('intern'));
+        $selectedBidangId = $intern->internshipApplication?->bidang_id;
+        $bidangs = Bidang::query()
+            ->where(function ($query) use ($selectedBidangId): void {
+                $query->where('is_active', true);
+
+                if ($selectedBidangId) {
+                    $query->orWhere('id', $selectedBidangId);
+                }
+            })
+            ->orderBy('nama_bidang')
+            ->get();
+
+        return view('admin.interns.edit', compact('intern', 'bidangs'));
     }
 
     public function update(UpdateInternRequest $request, Intern $intern): RedirectResponse
     {
         $this->authorize('update', $intern);
 
-        $intern->update($request->validated());
+        DB::transaction(function () use ($request, $intern): void {
+            $data = $request->validated();
+
+            $intern->update(Arr::except($data, 'bidang_id'));
+            $intern->internshipApplication()->update([
+                'bidang_id' => $data['bidang_id'],
+            ]);
+        });
 
         return redirect()->route('admin.interns.index')
             ->with('success', 'Data peserta magang berhasil diperbarui.');
