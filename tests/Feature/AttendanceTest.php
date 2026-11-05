@@ -282,6 +282,35 @@ class AttendanceTest extends TestCase
         }
     }
 
+    public function test_admin_can_record_manual_sick_leave_when_participant_brings_evidence(): void
+    {
+        Carbon::setTestNow('2026-10-30 17:00:00');
+
+        try {
+            $admin = Admin::factory()->create();
+            $intern = Intern::factory()->create();
+
+            $this->actingAs($admin, 'admin')
+                ->patch(route('admin.attendance.manual-confirmation', $intern), [
+                    'attendance_date' => now()->toDateString(),
+                    'confirmation_type' => 'manual_sakit',
+                    'admin_note' => 'Surat dokter diterima langsung oleh admin.',
+                ])
+                ->assertRedirect()
+                ->assertSessionHas('success', 'Sakit manual berhasil dicatat.');
+
+            $leave = LeaveRequest::firstOrFail();
+            $this->assertSame($intern->id, $leave->intern_id);
+            $this->assertSame($admin->id, $leave->reviewed_by);
+            $this->assertSame('sakit', $leave->type);
+            $this->assertSame(now()->toDateString(), $leave->start_date->toDateString());
+            $this->assertSame(now()->toDateString(), $leave->end_date->toDateString());
+            $this->assertSame('approved', $leave->status);
+        } finally {
+            Carbon::setTestNow();
+        }
+    }
+
     public function test_admin_can_correct_late_check_in_and_confirm_missed_check_out_for_working_hours(): void
     {
         Carbon::setTestNow('2026-10-30 17:00:00');

@@ -183,7 +183,9 @@ class AttendanceController extends Controller
 
                 return ! $day->isWeekend() && ! in_array($date, $holidays, true);
             })->unique()->values();
-            $resolvedDates = $presentDates
+            // Convert to a base Collection before merging date strings. The
+            // Eloquent collection only accepts model instances in merge().
+            $resolvedDates = collect($presentDates->all())
                 ->merge($pendingDates)
                 ->merge(array_keys($leaveDays['izin']))
                 ->merge(array_keys($leaveDays['sakit']))
@@ -434,8 +436,8 @@ class AttendanceController extends Controller
     {
         $validated = $request->validate([
             'attendance_date' => ['required', 'date', 'before_or_equal:'.now()->toDateString()],
-            'confirmation_type' => ['required', 'in:missed_check_in,correct_late_check_in,missed_check_out,missed_check_in_and_out'],
-            'admin_note' => ['nullable', 'string', 'max:1000'],
+            'confirmation_type' => ['required', 'in:missed_check_in,correct_late_check_in,missed_check_out,missed_check_in_and_out,manual_izin,manual_sakit'],
+            'admin_note' => ['nullable', 'string', 'max:1000', 'required_if:confirmation_type,manual_izin,manual_sakit'],
         ]);
 
         $date = Carbon::parse($validated['attendance_date'])->startOfDay();
@@ -447,6 +449,35 @@ class AttendanceController extends Controller
         $record = $intern->attendanceRecords()->whereDate('attendance_date', $date->toDateString())->first();
         $adminId = $request->user('admin')->id;
         $type = $validated['confirmation_type'];
+
+        if (in_array($type, ['manual_izin', 'manual_sakit'], true)) {
+            if ($record?->check_in_at || $record?->check_out_at) {
+                return back()->with('error', 'Izin atau sakit tidak dapat dicatat karena kehadiran peserta sudah tercatat pada tanggal tersebut.');
+            }
+
+            $existingLeave = $intern->leaveRequests()
+                ->where('status', 'approved')
+                ->where('attendance_exception', false)
+                ->whereDate('start_date', '<=', $date->toDateString())
+                ->whereDate('end_date', '>=', $date->toDateString())
+                ->exists();
+            if ($existingLeave) {
+                return back()->with('error', 'Izin atau sakit untuk tanggal tersebut sudah tercatat.');
+            }
+
+            $leaveType = $type === 'manual_sakit' ? 'sakit' : 'izin';
+            $intern->leaveRequests()->create([
+                'reviewed_by' => $adminId,
+                'type' => $leaveType,
+                'start_date' => $date->toDateString(),
+                'end_date' => $date->toDateString(),
+                'reason' => 'Dicatat langsung oleh admin berdasarkan bukti peserta. '.$validated['admin_note'],
+                'status' => 'approved',
+                'reviewed_at' => now(),
+            ]);
+
+            return back()->with('success', ucfirst($leaveType).' manual berhasil dicatat.');
+        }
 
         if (in_array($type, ['missed_check_in', 'missed_check_in_and_out'], true)) {
             if ($record?->check_in_at) {
