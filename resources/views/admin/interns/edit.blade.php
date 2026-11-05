@@ -31,13 +31,22 @@
                 </select>
             </div>
 
-            <div>
-                <label class="mb-1.5 block text-sm font-medium text-[#1E2A24]">Periode</label>
-                <input type="text" name="period" value="{{ old('period', $intern->period) }}" required
-                       class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">
+            <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                    <label class="mb-1.5 block text-sm font-medium text-[#1E2A24]">Tanggal Mulai</label>
+                    <input type="date" name="periode_mulai" value="{{ old('periode_mulai', $intern->internshipApplication?->periode_mulai?->toDateString()) }}" required
+                           class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">
+                    @error('periode_mulai')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label class="mb-1.5 block text-sm font-medium text-[#1E2A24]">Tanggal Selesai</label>
+                    <input type="date" name="periode_selesai" value="{{ old('periode_selesai', $intern->internshipApplication?->periode_selesai?->toDateString()) }}" required
+                           class="w-full rounded-lg border border-[#E3E5DE] px-3 py-2.5 text-sm focus:border-[#0C2340] focus:outline-none focus:ring-1 focus:ring-[#0C2340]">
+                    @error('periode_selesai')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
             </div>
 
-            <div class="rounded-lg bg-[#F4F6FB] p-4 text-sm text-[#687386]"><p class="font-semibold text-[#0C2340]">Status magang: {{ ucfirst($intern->status) }}</p><p class="mt-1 text-xs">Status berubah otomatis menjadi selesai setelah tanggal akhir periode magang berlalu.</p></div>
+            <div class="rounded-lg bg-[#F4F6FB] p-4 text-sm text-[#687386]"><p class="font-semibold text-[#0C2340]">Status magang: {{ ucfirst($intern->status) }}</p><p class="mt-1 text-xs">Perubahan data ini juga langsung digunakan di akun peserta, absensi, dan sertifikat. Status akan disesuaikan dengan tanggal selesai.</p></div>
 
             <div class="flex justify-end gap-2 pt-2">
                 <a href="{{ route('admin.interns.index') }}" class="rounded-lg border border-[#E3E5DE] px-4 py-2.5 text-sm font-medium text-[#4B564B]">Batal</a>

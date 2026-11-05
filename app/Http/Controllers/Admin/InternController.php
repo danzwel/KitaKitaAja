@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\UpdateInternRequest;
 use App\Models\Bidang;
 use App\Models\Intern;
 use App\Services\Admin\InternAccountService;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
@@ -69,10 +70,24 @@ class InternController extends Controller
 
         DB::transaction(function () use ($request, $intern): void {
             $data = $request->validated();
+            $periodStart = Carbon::parse($data['periode_mulai']);
+            $periodEnd = Carbon::parse($data['periode_selesai']);
 
-            $intern->update(Arr::except($data, 'bidang_id'));
+            $intern->update([
+                ...Arr::only($data, ['name', 'university']),
+                'period' => $periodStart->format('d M Y').' - '.$periodEnd->format('d M Y'),
+                // Jika tanggal lama diperbaiki ke tanggal yang belum berakhir,
+                // akses peserta aktif kembali secara otomatis.
+                'status' => $periodEnd->lt(now()->startOfDay())
+                    ? Intern::STATUS_SELESAI
+                    : Intern::STATUS_AKTIF,
+            ]);
             $intern->internshipApplication()->update([
+                'nama' => $data['name'],
+                'universitas' => $data['university'],
                 'bidang_id' => $data['bidang_id'],
+                'periode_mulai' => $periodStart->toDateString(),
+                'periode_selesai' => $periodEnd->toDateString(),
             ]);
         });
 

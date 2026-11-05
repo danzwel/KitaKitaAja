@@ -35,12 +35,20 @@ class InternTest extends TestCase
                 'name' => 'Nama Diperbarui',
                 'university' => $intern->university,
                 'bidang_id' => $newBidang->id,
-                'period' => $intern->period,
+                'periode_mulai' => '2026-09-21',
+                'periode_selesai' => '2026-12-21',
             ]);
 
         $response->assertRedirect(route('admin.interns.index'));
         $this->assertDatabaseHas('interns', ['id' => $intern->id, 'name' => 'Nama Diperbarui']);
-        $this->assertDatabaseHas('internship_applications', ['id' => $application->id, 'bidang_id' => $newBidang->id]);
+        $this->assertDatabaseHas('interns', ['id' => $intern->id, 'period' => '21 Sep 2026 - 21 Dec 2026']);
+        $this->assertDatabaseHas('internship_applications', [
+            'id' => $application->id,
+            'nama' => 'Nama Diperbarui',
+            'bidang_id' => $newBidang->id,
+            'periode_mulai' => '2026-09-21',
+            'periode_selesai' => '2026-12-21',
+        ]);
     }
 
     public function test_admin_can_reset_intern_password(): void

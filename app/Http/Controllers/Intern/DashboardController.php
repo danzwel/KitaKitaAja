@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Intern;
 
 use App\Http\Controllers\Controller;
+use App\Services\InternshipStatusService;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -10,6 +11,9 @@ class DashboardController extends Controller
     public function __invoke(): View
     {
         $intern = auth('intern')->user();
+        $intern->loadMissing('internshipApplication.bidang', 'department');
+        app(InternshipStatusService::class)->syncFor($intern);
+        $intern = $intern->fresh(['internshipApplication.bidang', 'department']);
         $isCompleted = $intern->status === \App\Models\Intern::STATUS_SELESAI;
         // working_minutes adalah atribut hasil hitung dari waktu datang/pulang,
         // bukan kolom fisik di database.

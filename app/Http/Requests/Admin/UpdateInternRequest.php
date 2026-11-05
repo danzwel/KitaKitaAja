@@ -17,7 +17,8 @@ class UpdateInternRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'university' => ['required', 'string', 'max:255'],
             'bidang_id' => ['required', 'exists:bidangs,id'],
-            'period' => ['required', 'string', 'max:255'],
+            'periode_mulai' => ['required', 'date'],
+            'periode_selesai' => ['required', 'date', 'after_or_equal:periode_mulai'],
         ];
     }
 }
